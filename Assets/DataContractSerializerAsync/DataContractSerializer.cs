@@ -56,7 +56,10 @@ namespace AsyncSerialization
         {
             string type = GetTypeString(graph.GetType());
             writer.WriteStartElement(type, Namespace);
-            writer.WriteAttributeString("xmlns", "i", null, XmlSchema.InstanceNamespace);
+            if (graph.GetType() == rootType)
+            {
+                writer.WriteAttributeString("xmlns", "i", null, XmlSchema.InstanceNamespace);
+            }
         }
 
         private IEnumerable InternalWriteObjectContent(XmlWriter writer, object graph)
@@ -81,12 +84,39 @@ namespace AsyncSerialization
                     {
                         if (property.GetIndexParameters().Length == 0)
                         {
-                            writer.WriteStartElement(property.Name);
                             object value = property.GetValue(graph);
                             if (value != null)
                             {
-                                writer.WriteString(value.ToString());
+                                Type subType = value.GetType();
+                                if (subType.IsDefined(typeof(DataContractAttribute), true))
+                                {
+                                    writer.WriteStartElement(property.Name);
+                                    writer.WriteAttributeString("i", "type", null, GetTypeString(subType));
+                                    foreach (var subItem in InternalWriteObjectContent(writer, value))
+                                    {
+                                        yield return subItem;
+                                    }
+                                    writer.WriteEndElement();
+                                }
+                                else
+                                {
+                                    writer.WriteStartElement(property.Name);
+                                    writer.WriteString(value.ToString());
+                                    writer.WriteEndElement();
+                                }
                             }
+                        }
+                    }
+                }
+                foreach (var field in type.GetFields())
+                {
+                    if (field.IsDefined(typeof(DataMemberAttribute), true))
+                    {
+                        object value = field.GetValue(graph);
+                        if (value != null)
+                        {
+                            writer.WriteStartElement(field.Name);
+                            writer.WriteString(value.ToString());
                             writer.WriteEndElement();
                         }
                     }
