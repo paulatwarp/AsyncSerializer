@@ -5,25 +5,9 @@ using System.Runtime.Serialization;
 using System.Xml;
 using UnityEngine;
 
-public class AsyncSerializer : MonoBehaviour
+[System.Serializable, DataContract]
+public class Container : AsyncSerializer.SaveValue
 {
-    [System.Serializable, DataContract]
-    [KnownType(typeof(SaveValue))]
-    public struct SaveValue
-    {
-        string key;
-        SaveValues value;
-        public SaveValue(string key, int value)
-        {
-            this.key = key;
-            this.value = new SaveValues() { alpha = value, beta = value, gamma = (char)value };
-        }
-        [DataMember]
-        public string Key => key;
-        [DataMember]
-        public SaveValues Value => value;
-    }
-
     [System.Serializable, DataContract]
     public class SaveValues
     {
@@ -32,13 +16,40 @@ public class AsyncSerializer : MonoBehaviour
         [DataMember] public char gamma;
     }
 
+    string key;
+    SaveValues value;
+
+    public Container(string key, int value)
+    {
+        this.key = key;
+        this.value = new SaveValues() { alpha = value, beta = value, gamma = (char)value };
+    }
+
+    [DataMember]
+    public override string Key => key;
+    [DataMember]
+    public override object Value => value;
+}
+
+public class AsyncSerializer : MonoBehaviour
+{
+    [System.Serializable, DataContract]
+    [KnownType(typeof(SaveValue))]
+    public abstract class SaveValue
+    {
+        [DataMember]
+        public abstract string Key { get; }
+        [DataMember]
+        public abstract object Value { get; }
+    }
+
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
-        list.Add(new SaveValue("1", 1));
-        list.Add(new SaveValue("2", 2));
-        list.Add(new SaveValue("3", 3));
-        list.Add(new SaveValue("4", 4));
+        list.Add(new Container("1", 1));
+        list.Add(new Container("2", 2));
+        list.Add(new Container("3", 3));
+        list.Add(new Container("4", 4));
         yield return null;
         var serialiser = new AsyncSerialization.DataContractSerializer(list.GetType());
         var settings = new XmlWriterSettings()
