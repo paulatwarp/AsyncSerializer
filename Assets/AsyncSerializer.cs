@@ -13,19 +13,18 @@ public class Container : AsyncSerializer.IKeyValue
     {
         [DataMember] public double alpha;
         [DataMember] public int beta;
-        [DataMember] public char gamma;
+        [DataMember] public byte gamma;
     }
 
+    [DataMember]
     SaveValues value;
 
     public Container(int value)
     {
-        this.value = new SaveValues() { alpha = value, beta = value, gamma = (char)value };
+        this.value = new SaveValues() { alpha = value, beta = value, gamma = (byte)value };
     }
 
-    [DataMember]
     public string Key => GetType().Name;
-    [DataMember]
     public object Value => value;
 }
 
