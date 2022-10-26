@@ -12,7 +12,11 @@ namespace AsyncSerialization
 
     public class DataContractSerializer
     {
-        const string Namespace = "http://schemas.datacontract.org/2004/07/";
+        public const string Namespace = "http://schemas.datacontract.org/2004/07/";
+        public const string CollectionsNamespace = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+        public const string XsiTypeLocalName = "type";
+        public const string XsiPrefix = "i";
+        public const string XmlnsPrefix = "xmlns";
         Type rootType;
 
         public DataContractSerializer(Type type)
@@ -58,7 +62,7 @@ namespace AsyncSerialization
             writer.WriteStartElement(type, Namespace);
             if (graph.GetType() == rootType)
             {
-                writer.WriteAttributeString("xmlns", "i", null, XmlSchema.InstanceNamespace);
+                writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
             }
         }
 
@@ -76,7 +80,7 @@ namespace AsyncSerialization
                     }
                 }
             }
-            if (type.IsDefined(typeof(DataContractAttribute), true))
+            else if (type.IsDefined(typeof(DataContractAttribute), true))
             {
                 foreach (var property in type.GetProperties())
                 {
@@ -91,7 +95,8 @@ namespace AsyncSerialization
                                 if (subType.IsDefined(typeof(DataContractAttribute), true))
                                 {
                                     writer.WriteStartElement(property.Name);
-                                    writer.WriteAttributeString("i", "type", null, GetTypeString(subType));
+                                    string prefix = writer.LookupPrefix(XmlSchema.InstanceNamespace);
+                                    writer.WriteAttributeString(prefix, XsiTypeLocalName, XmlSchema.InstanceNamespace, GetTypeString(subType));
                                     foreach (var subItem in InternalWriteObjectContent(writer, value))
                                     {
                                         yield return subItem;
@@ -115,9 +120,28 @@ namespace AsyncSerialization
                         object value = field.GetValue(graph);
                         if (value != null)
                         {
-                            writer.WriteStartElement(field.Name);
-                            writer.WriteString(value.ToString());
-                            writer.WriteEndElement();
+                            if (value is IEnumerable)
+                            {
+                                writer.WriteStartElement(field.Name);
+                                writer.WriteStartAttribute(null, XsiTypeLocalName, CollectionsNamespace);
+                                writer.WriteEndAttribute();
+                                Type[] elements = value.GetType().GetGenericArguments();
+                                string element = GetTypeString(elements[0]);
+                                foreach (var item in value as IEnumerable)
+                                {
+                                    writer.WriteStartElement(element, CollectionsNamespace);
+                                    writer.WriteString(item.ToString());
+                                    writer.WriteEndElement();
+                                    yield return item;
+                                }
+                                writer.WriteEndElement();
+                            }
+                            else
+                            {
+                                writer.WriteStartElement(field.Name);
+                                writer.WriteString(value.ToString());
+                                writer.WriteEndElement();
+                            }
                         }
                     }
                 }

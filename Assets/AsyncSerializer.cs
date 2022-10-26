@@ -14,6 +14,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public double alpha;
         [DataMember] public int beta;
         [DataMember] public byte gamma;
+        [DataMember] public List<string> list;
     }
 
     [DataMember]
@@ -21,7 +22,16 @@ public class Container : AsyncSerializer.IKeyValue
 
     public Container(int value)
     {
-        this.value = new SaveValues() { alpha = value, beta = value, gamma = (byte)value };
+        this.value = new SaveValues() {
+            alpha = value,
+            beta = value,
+            gamma = (byte)value,
+            list = new List<string>()
+        };
+        for (int i = 0; i < value; ++i)
+        {
+            this.value.list.Add(i.ToString());
+        }
     }
 
     public string Key => GetType().Name;
@@ -64,7 +74,8 @@ public class AsyncSerializer : MonoBehaviour
         var settings = new XmlWriterSettings()
         {
             Indent = true,
-            IndentChars = "\t"
+            IndentChars = "\t",
+            NamespaceHandling = NamespaceHandling.OmitDuplicates
         };
         string xml;
         using (var writer = new StringWriter())
