@@ -15,6 +15,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public int beta;
         [DataMember] public byte gamma;
         [DataMember] public List<string> list;
+        [DataMember] public List<NestedData> nested;
     }
 
     [DataMember]
@@ -22,20 +23,38 @@ public class Container : AsyncSerializer.IKeyValue
 
     public Container(int value)
     {
-        this.value = new SaveValues() {
+        this.value = new SaveValues()
+        {
             alpha = value,
             beta = value,
             gamma = (byte)value,
-            list = new List<string>()
+            list = new List<string>(),
+            nested = new List<NestedData>()
         };
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());
+            this.value.nested.Add(new NestedData(value));
         }
     }
 
     public string Key => GetType().Name;
     public object Value => value;
+}
+
+[System.Serializable, DataContract]
+public class NestedData
+{
+    [DataMember] public List<string> list;
+
+    public NestedData(int value)
+    {
+        this.list = new List<string>();
+        for (int i = 0; i < value; ++i)
+        {
+            this.list.Add(i.ToString());
+        }
+    }
 }
 
 public class AsyncSerializer : MonoBehaviour
@@ -57,9 +76,9 @@ public class AsyncSerializer : MonoBehaviour
         IKeyValue keyValue;
 
         [DataMember]
-        public string Key => keyValue.Key;
+        public string Key { get { return keyValue.Key; } set { } } 
         [DataMember]
-        public object Value => keyValue.Value;
+        public object Value { get { return keyValue.Value; } set { } }
     }
 
     IEnumerator Start()
@@ -70,7 +89,8 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new Container(3)));
         list.Add(new SaveValue(new Container(4)));
         yield return null;
-        var serialiser = new AsyncSerialization.DataContractSerializer(list.GetType());
+        var serialiser = new DataContractSerializer(list.GetType());
+        var asyncSerialiser = new AsyncSerialization.DataContractSerializer(list.GetType());
         var settings = new XmlWriterSettings()
         {
             Indent = true,
@@ -78,11 +98,33 @@ public class AsyncSerializer : MonoBehaviour
             NamespaceHandling = NamespaceHandling.OmitDuplicates
         };
         string xml;
+        XmlSpy spy;
         using (var writer = new StringWriter())
         {
             using (var xwr = XmlWriter.Create(writer, settings))
             {
-                foreach (var entry in serialiser.WriteObject(xwr, list))
+                spy = new XmlSpy(xwr, "serialise.log");
+                try
+                {
+                    serialiser.WriteObject(spy, list);
+                }
+                catch (System.Exception exception)
+                {
+                    Debug.Log(exception.ToString());
+                }
+                spy.WriteLog();
+            }
+            xml = writer.ToString();
+        }
+        File.WriteAllText("original.xml", xml.ToString());
+        Debug.Log(xml);
+
+        using (var writer = new StringWriter())
+        {
+            using (var xwr = XmlWriter.Create(writer, settings))
+            {
+                spy.CheckLog(xwr);
+                foreach (var entry in asyncSerialiser.WriteObject(spy, list))
                 {
                     yield return null;
                 }
