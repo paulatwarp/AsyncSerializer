@@ -40,7 +40,7 @@ public class Container : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
-public class ContainerList : IEnumerable<ContainerList.SaveValues>, AsyncSerializer.IKeyValue
+public class ContainerList : AsyncSerializer.IKeyValue
 {
     [System.Serializable, DataContract]
     public class SaveValues
@@ -50,7 +50,7 @@ public class ContainerList : IEnumerable<ContainerList.SaveValues>, AsyncSeriali
         [DataMember] public byte gamma;
     }
 
-    List<SaveValues> list = new List<SaveValues>();
+    SaveValues[] list = new SaveValues[0];
 
     public ContainerList()
     {
@@ -58,29 +58,20 @@ public class ContainerList : IEnumerable<ContainerList.SaveValues>, AsyncSeriali
 
     public ContainerList(int value)
     {
+        list = new SaveValues[value];
         for (int i = 0; i < value; ++i)
         {
-            list.Add(new SaveValues()
+            list[i] = new SaveValues()
             {
                 alpha = value,
                 beta = value,
                 gamma = (byte)value,
-            });
+            };
         }
     }
 
     public string Key => GetType().Name;
     public object Value => list;
-
-    public IEnumerator<SaveValues> GetEnumerator()
-    {
-        return list.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return list.GetEnumerator();
-    }
 }
 
 public class AsyncSerializer : MonoBehaviour

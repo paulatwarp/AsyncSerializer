@@ -29,7 +29,7 @@ namespace AsyncSerialization
             rootType = type;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
-            primitives[typeof(System.String)] = "string";
+            primitives[typeof(string)] = "string";
         }
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
@@ -68,7 +68,7 @@ namespace AsyncSerialization
                 prefix = writer.LookupPrefix(Namespace);
                 writer.WriteString(prefix);
                 writer.WriteString(":");
-                writer.WriteString(GetTypeString(value.GetType()));
+                writer.WriteString(GetTypeString(type));
                 writer.WriteEndAttribute();
                 if (value is IEnumerable)
                 {
@@ -122,13 +122,12 @@ namespace AsyncSerialization
 
         string GetTypeString(Type type)
         {
+            Type element = GetArrayType(type);
             var stringBuilder = new StringBuilder();
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            if (element != null)
             {
-                Type[] elements = type.GetGenericArguments();
-                string element = GetTypeString(elements[0]);
                 stringBuilder.Append("ArrayOf");
-                stringBuilder.Append(element);
+                stringBuilder.Append(GetTypeString(element));
             }
             else
             {
