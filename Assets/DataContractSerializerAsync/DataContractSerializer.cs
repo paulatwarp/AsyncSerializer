@@ -17,6 +17,7 @@ namespace AsyncSerialization
         public const string XsiPrefix = "i";
         public const string XmlnsPrefix = "xmlns";
         Type rootType;
+        Type rootElementType;
         XmlWriter writer;
         int depth;
         int prefixes;
@@ -25,6 +26,7 @@ namespace AsyncSerialization
         public DataContractSerializer(Type type)
         {
             rootType = type;
+            rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
             primitives[typeof(System.String)] = "string";
         }
@@ -32,16 +34,8 @@ namespace AsyncSerialization
         public IEnumerable WriteObject(XmlWriter writer, object graph)
         {
             this.writer = writer;
-            foreach (var item in WriteObject(graph))
-            {
-                yield return item;
-            }
-        }
-
-        IEnumerable WriteObject(object @object)
-        {
-            string type = GetTypeString(@object.GetType());
-            foreach (var item in WriteField(type, @object))
+            string type = GetTypeString(graph.GetType());
+            foreach (var item in WriteField(type, graph))
             {
                 yield return item;
             }
@@ -59,11 +53,12 @@ namespace AsyncSerialization
         {
             writer.WriteStartElement(field, Namespace);
             Type type = value.GetType();
+            Type element = GetArrayType(type);
             if (type == rootType)
             {
                 writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
             }
-            if (type.IsDefined(typeof(DataContractAttribute), true))
+            if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
                 depth++;
                 prefixes = 0;
@@ -74,9 +69,19 @@ namespace AsyncSerialization
                 writer.WriteString(":");
                 writer.WriteString(GetTypeString(value.GetType()));
                 writer.WriteEndAttribute();
-                foreach (var item in InternalWriteObjectContent(value))
+                if (value is IEnumerable)
                 {
-                    yield return item;
+                    foreach (var item in WriteEnumerable(value as IEnumerable))
+                    {
+                        yield return item;
+                    }
+                }
+                else
+                {
+                    foreach (var item in WriteObjectContents(value))
+                    {
+                        yield return item;
+                    }
                 }
                 depth--;
             }
@@ -84,8 +89,7 @@ namespace AsyncSerialization
             {
                 depth++;
                 prefixes = 0;
-                Type element = GetArrayType(type);
-                if (type != rootType && !element.IsDefined(typeof(DataContractAttribute), true))
+                if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
                 {
                     string prefix = writer.LookupPrefix(CollectionsNamespace);
                     if (prefix == null)
@@ -95,7 +99,7 @@ namespace AsyncSerialization
                     }
                     writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
                 }
-                foreach (var item in InternalWriteObjectContent(value as IEnumerable))
+                foreach (var item in WriteEnumerable(value as IEnumerable))
                 {
                     yield return item;
                 }
@@ -132,36 +136,38 @@ namespace AsyncSerialization
             return stringBuilder.ToString();
         }
 
-        private IEnumerable InternalWriteObjectContent(object graph)
+        private IEnumerable WriteEnumerable(IEnumerable array)
+        {
+            depth++;
+            prefixes = 0;
+            foreach (var item in array as IEnumerable)
+            {
+                Type itemType = item.GetType();
+                string description = GetTypeString(itemType);
+                if (itemType.IsDefined(typeof(DataContractAttribute), true))
+                {
+                    writer.WriteStartElement(description, Namespace);
+                    foreach (var subitem in WriteObjectContents(item))
+                    {
+                        yield return subitem;
+                    }
+                }
+                else
+                {
+                    writer.WriteStartElement(description, CollectionsNamespace);
+                    writer.WriteString(item.ToString());
+                }
+                writer.WriteEndElement();
+            }
+            depth--;
+        }
+
+
+        private IEnumerable WriteObjectContents(object graph)
         {
             Type type = graph.GetType();
             yield return graph;
-            if (graph is IEnumerable)
-            {
-                depth++;
-                prefixes = 0;
-                foreach (var item in graph as IEnumerable)
-                {
-                    Type itemType = item.GetType();
-                    string description = GetTypeString(itemType);
-                    if (itemType.IsDefined(typeof(DataContractAttribute), true))
-                    {
-                        writer.WriteStartElement(description, Namespace);
-                        foreach (var subitem in InternalWriteObjectContent(item))
-                        {
-                            yield return subitem;
-                        }
-                    }
-                    else
-                    {
-                        writer.WriteStartElement(description, CollectionsNamespace);
-                        writer.WriteString(item.ToString());
-                    }
-                    writer.WriteEndElement();
-                }
-                depth--;
-            }
-            else if (type.IsDefined(typeof(DataContractAttribute), true))
+            if (type.IsDefined(typeof(DataContractAttribute), true))
             {
                 foreach (var property in type.GetProperties())
                 {

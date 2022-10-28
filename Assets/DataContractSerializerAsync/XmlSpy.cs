@@ -55,7 +55,7 @@ public class XmlSpy : XmlWriter
             string expected = log[position];
             if (expected != line)
             {
-                Debug.LogError($"excpected {expected} got {line}");
+                Debug.LogError($"excpected {expected} got {line} at line {position + 1}");
             }
             position++;
         }

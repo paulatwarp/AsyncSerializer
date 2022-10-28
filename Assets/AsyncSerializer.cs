@@ -15,7 +15,6 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public int beta;
         [DataMember] public byte gamma;
         [DataMember] public List<string> list;
-        [DataMember] public List<NestedData> nested;
     }
 
     [DataMember]
@@ -29,12 +28,10 @@ public class Container : AsyncSerializer.IKeyValue
             beta = value,
             gamma = (byte)value,
             list = new List<string>(),
-            nested = new List<NestedData>()
         };
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());
-            this.value.nested.Add(new NestedData(value));
         }
     }
 
@@ -43,17 +40,46 @@ public class Container : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
-public class NestedData
+public class ContainerList : IEnumerable<ContainerList.SaveValues>, AsyncSerializer.IKeyValue
 {
-    [DataMember] public List<string> list;
-
-    public NestedData(int value)
+    [System.Serializable, DataContract]
+    public class SaveValues
     {
-        this.list = new List<string>();
+        [DataMember] public double alpha;
+        [DataMember] public int beta;
+        [DataMember] public byte gamma;
+    }
+
+    List<SaveValues> list = new List<SaveValues>();
+
+    public ContainerList()
+    {
+    }
+
+    public ContainerList(int value)
+    {
         for (int i = 0; i < value; ++i)
         {
-            this.list.Add(i.ToString());
+            list.Add(new SaveValues()
+            {
+                alpha = value,
+                beta = value,
+                gamma = (byte)value,
+            });
         }
+    }
+
+    public string Key => GetType().Name;
+    public object Value => list;
+
+    public IEnumerator<SaveValues> GetEnumerator()
+    {
+        return list.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return list.GetEnumerator();
     }
 }
 
@@ -84,10 +110,10 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new ContainerList()));
+        list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new Container(2)));
-        list.Add(new SaveValue(new Container(3)));
-        list.Add(new SaveValue(new Container(4)));
         yield return null;
         var serialiser = new DataContractSerializer(list.GetType());
         var asyncSerialiser = new AsyncSerialization.DataContractSerializer(list.GetType());
