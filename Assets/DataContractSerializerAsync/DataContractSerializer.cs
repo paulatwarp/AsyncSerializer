@@ -47,6 +47,14 @@ namespace AsyncSerialization
             }
         }
 
+        Type GetArrayType(Type arrayType)
+        {
+            Type type;
+            Type[] elements = arrayType.GetGenericArguments();
+            type = (elements == null || elements.Length == 0) ? arrayType.GetElementType() : elements[0];
+            return type;
+        }
+
         IEnumerable WriteField(string field, object value)
         {
             writer.WriteStartElement(field, Namespace);
@@ -55,28 +63,7 @@ namespace AsyncSerialization
             {
                 writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
             }
-            if (!(value is string) && value is IEnumerable)
-            {
-                depth++;
-                prefixes = 0;
-                Type[] elements = type.GetGenericArguments();
-                if (type != rootType && !elements[0].IsDefined(typeof(DataContractAttribute), true))
-                {
-                    string prefix = writer.LookupPrefix(CollectionsNamespace);
-                    if (prefix == null)
-                    {
-                        prefixes++;
-                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
-                    }
-                    writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
-                }
-                foreach (var item in InternalWriteObjectContent(value as IEnumerable))
-                {
-                    yield return item;
-                }
-                depth--;
-            }
-            else if (type.IsDefined(typeof(DataContractAttribute), true))
+            if (type.IsDefined(typeof(DataContractAttribute), true))
             {
                 depth++;
                 prefixes = 0;
@@ -88,6 +75,27 @@ namespace AsyncSerialization
                 writer.WriteString(GetTypeString(value.GetType()));
                 writer.WriteEndAttribute();
                 foreach (var item in InternalWriteObjectContent(value))
+                {
+                    yield return item;
+                }
+                depth--;
+            }
+            else if (!(value is string) && value is IEnumerable)
+            {
+                depth++;
+                prefixes = 0;
+                Type element = GetArrayType(type);
+                if (type != rootType && !element.IsDefined(typeof(DataContractAttribute), true))
+                {
+                    string prefix = writer.LookupPrefix(CollectionsNamespace);
+                    if (prefix == null)
+                    {
+                        prefixes++;
+                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+                    }
+                    writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
+                }
+                foreach (var item in InternalWriteObjectContent(value as IEnumerable))
                 {
                     yield return item;
                 }
