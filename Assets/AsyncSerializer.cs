@@ -112,6 +112,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(new ContainerList(1)));
+        list.Add(new SaveValue(new Container(0)));
         list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new Container(2)));
         yield return null;

@@ -8,6 +8,7 @@ namespace AsyncSerialization
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
+    using UnityEngine;
 
     public class DataContractSerializer
     {
@@ -71,14 +72,14 @@ namespace AsyncSerialization
                 writer.WriteEndAttribute();
                 if (value is IEnumerable)
                 {
-                    foreach (var item in WriteEnumerable(value as IEnumerable))
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    foreach (var item in WriteObjectContents(value))
+                    foreach (var item in WriteDataContractObjectContents(value))
                     {
                         yield return item;
                     }
@@ -98,10 +99,17 @@ namespace AsyncSerialization
                         prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
                     }
                     writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
+                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
+                    {
+                        yield return item;
+                    }
                 }
-                foreach (var item in WriteEnumerable(value as IEnumerable))
+                else
                 {
-                    yield return item;
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
+                    {
+                        yield return item;
+                    }
                 }
                 depth--;
             }
@@ -136,67 +144,68 @@ namespace AsyncSerialization
             return stringBuilder.ToString();
         }
 
-        private IEnumerable WriteEnumerable(IEnumerable array)
+        private IEnumerable WriteDataContractEnumerable(IEnumerable array)
         {
             depth++;
             prefixes = 0;
-            foreach (var item in array as IEnumerable)
+            foreach (var item in array)
             {
-                Type itemType = item.GetType();
-                string description = GetTypeString(itemType);
-                if (itemType.IsDefined(typeof(DataContractAttribute), true))
+                Type type = item.GetType();
+                string description = GetTypeString(type);
+                writer.WriteStartElement(description, Namespace);
+                foreach (var subitem in WriteDataContractObjectContents(item))
                 {
-                    writer.WriteStartElement(description, Namespace);
-                    foreach (var subitem in WriteObjectContents(item))
-                    {
-                        yield return subitem;
-                    }
-                }
-                else
-                {
-                    writer.WriteStartElement(description, CollectionsNamespace);
-                    writer.WriteString(item.ToString());
+                    yield return subitem;
                 }
                 writer.WriteEndElement();
             }
             depth--;
         }
 
+        private IEnumerable WritePrimitiveEnumerable(IEnumerable array)
+        {
+            foreach (var item in array)
+            {
+                Type type = item.GetType();
+                string description = GetTypeString(type);
+                writer.WriteStartElement(description, CollectionsNamespace);
+                writer.WriteString(item.ToString());
+                writer.WriteEndElement();
+                yield return item;
+            }
+        }
 
-        private IEnumerable WriteObjectContents(object graph)
+
+        private IEnumerable WriteDataContractObjectContents(object graph)
         {
             Type type = graph.GetType();
-            yield return graph;
-            if (type.IsDefined(typeof(DataContractAttribute), true))
+            foreach (var property in type.GetProperties())
             {
-                foreach (var property in type.GetProperties())
+                if (property.IsDefined(typeof(DataMemberAttribute), true))
                 {
-                    if (property.IsDefined(typeof(DataMemberAttribute), true))
+                    if (property.GetIndexParameters().Length == 0)
                     {
-                        if (property.GetIndexParameters().Length == 0)
+                        object value = property.GetValue(graph);
+                        if (value != null)
                         {
-                            object value = property.GetValue(graph);
-                            if (value != null)
+                            foreach (var item in WriteField(property.Name, value))
                             {
-                                foreach (var item in WriteField(property.Name, value))
-                                {
-                                    yield return item;
-                                }
+                                yield return item;
                             }
                         }
                     }
                 }
-                foreach (var field in type.GetFields())
+            }
+            foreach (var field in type.GetFields())
+            {
+                if (field.IsDefined(typeof(DataMemberAttribute), true))
                 {
-                    if (field.IsDefined(typeof(DataMemberAttribute), true))
+                    object value = field.GetValue(graph);
+                    if (value != null)
                     {
-                        object value = field.GetValue(graph);
-                        if (value != null)
+                        foreach (var item in WriteField(field.Name, value))
                         {
-                            foreach (var item in WriteField(field.Name, value))
-                            {
-                                yield return item;
-                            }
+                            yield return item;
                         }
                     }
                 }

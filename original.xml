@@ -17,6 +17,15 @@
 	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
 		<Value i:type=":Container.SaveValues">
+			<alpha>0</alpha>
+			<beta>0</beta>
+			<gamma>0</gamma>
+			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>Container</Key>
+		<Value i:type=":Container.SaveValues">
 			<alpha>1</alpha>
 			<beta>1</beta>
 			<gamma>1</gamma>
