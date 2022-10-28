@@ -8,8 +8,8 @@ namespace AsyncSerialization
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
-    using UnityEngine;
-
+    using System.Linq;
+    
     public class DataContractSerializer
     {
         public const string Namespace = "http://schemas.datacontract.org/2004/07/";
@@ -50,6 +50,17 @@ namespace AsyncSerialization
             return type;
         }
 
+        bool IsEmpty(IEnumerable array)
+        {
+            bool empty = true;
+            foreach (var entry in array)
+            {
+                empty = false;
+                break;
+            }
+            return empty;
+        }
+
         IEnumerable WriteField(string field, object value)
         {
             writer.WriteStartElement(field, Namespace);
@@ -63,13 +74,16 @@ namespace AsyncSerialization
             {
                 depth++;
                 prefixes = 0;
-                string prefix = writer.LookupPrefix(Namespace);
-                writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                prefix = writer.LookupPrefix(Namespace);
-                writer.WriteString(prefix);
-                writer.WriteString(":");
-                writer.WriteString(GetTypeString(type));
-                writer.WriteEndAttribute();
+                if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
+                {
+                    string prefix = writer.LookupPrefix(Namespace);
+                    writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                    prefix = writer.LookupPrefix(Namespace);
+                    writer.WriteString(prefix);
+                    writer.WriteString(":");
+                    writer.WriteString(GetTypeString(type));
+                    writer.WriteEndAttribute();
+                }
                 if (value is IEnumerable)
                 {
                     foreach (var item in WriteDataContractEnumerable(value as IEnumerable))

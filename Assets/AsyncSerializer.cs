@@ -15,6 +15,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public int beta;
         [DataMember] public byte gamma;
         [DataMember] public List<string> list;
+        [DataMember] public List<ContractType> contracts;
     }
 
     [DataMember]
@@ -28,15 +29,28 @@ public class Container : AsyncSerializer.IKeyValue
             beta = value,
             gamma = (byte)value,
             list = new List<string>(),
+            contracts = new List<ContractType>()
         };
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());
+            //this.value.contracts.Add(new ContractType(i));
         }
     }
 
     public string Key => GetType().Name;
     public object Value => value;
+}
+
+[System.Serializable, DataContract]
+public class ContractType
+{
+    public ContractType(int i)
+    {
+        alpha = i;
+    }
+
+    [DataMember] public double alpha;
 }
 
 [System.Serializable, DataContract]
