@@ -78,10 +78,7 @@ namespace AsyncSerialization
                 {
                     string prefix = writer.LookupPrefix(Namespace);
                     writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                    prefix = writer.LookupPrefix(Namespace);
-                    writer.WriteString(prefix);
-                    writer.WriteString(":");
-                    writer.WriteString(GetTypeString(type));
+                    writer.WriteQualifiedName(GetTypeString(type), Namespace);
                     writer.WriteEndAttribute();
                 }
                 if (value is IEnumerable)
