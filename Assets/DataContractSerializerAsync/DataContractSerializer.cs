@@ -178,6 +178,7 @@ namespace AsyncSerialization
         private IEnumerable WriteDataContractObjectContents(object graph)
         {
             Type type = graph.GetType();
+            var members = new SortedList<string, object>();
             foreach (var property in type.GetProperties())
             {
                 if (property.IsDefined(typeof(DataMemberAttribute), true))
@@ -187,10 +188,7 @@ namespace AsyncSerialization
                         object value = property.GetValue(graph);
                         if (value != null)
                         {
-                            foreach (var item in WriteField(property.Name, value))
-                            {
-                                yield return item;
-                            }
+                            members.Add(property.Name, value);
                         }
                     }
                 }
@@ -202,11 +200,15 @@ namespace AsyncSerialization
                     object value = field.GetValue(graph);
                     if (value != null)
                     {
-                        foreach (var item in WriteField(field.Name, value))
-                        {
-                            yield return item;
-                        }
+                        members.Add(field.Name, value);
                     }
+                }
+            }
+            foreach (var (name, value) in members)
+            {
+                foreach (var item in WriteField(name, value))
+                {
+                    yield return item;
                 }
             }
         }

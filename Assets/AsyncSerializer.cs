@@ -46,8 +46,8 @@ public class ContainerList : AsyncSerializer.IKeyValue
     public class SaveValues
     {
         [DataMember] public double alpha;
-        [DataMember] public int beta;
         [DataMember] public byte gamma;
+        [DataMember] public int beta;
     }
 
     SaveValues[] list = new SaveValues[0];
