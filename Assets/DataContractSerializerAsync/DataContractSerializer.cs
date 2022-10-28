@@ -138,9 +138,17 @@ namespace AsyncSerialization
             }
             else
             {
-                if (value is Boolean)
+                if (value is bool)
                 {
                     writer.WriteString(XmlConvert.ToString((bool)value));
+                }
+                else if (value is double)
+                {
+                    writer.WriteValue((double)value);
+                }
+                else if (value is float)
+                {
+                    writer.WriteValue((float)value);
                 }
                 else
                 {

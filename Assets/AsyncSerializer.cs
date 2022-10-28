@@ -12,6 +12,7 @@ public class Container : AsyncSerializer.IKeyValue
     public class SaveValues
     {
         [DataMember] public double alpha;
+        [DataMember] public float phi;
         [DataMember] public int beta;
         [DataMember] public byte gamma;
         [DataMember] public bool condition;
@@ -26,7 +27,8 @@ public class Container : AsyncSerializer.IKeyValue
     {
         this.value = new SaveValues()
         {
-            alpha = value,
+            alpha = 1.0 / (value + 1),
+            phi = 1.0f / (value + 1),
             beta = value,
             gamma = (byte)value,
             condition = value != 0,
