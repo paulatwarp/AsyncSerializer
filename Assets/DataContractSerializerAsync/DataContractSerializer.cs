@@ -23,9 +23,11 @@ namespace AsyncSerialization
         int depth;
         int prefixes;
         Dictionary<Type, string> primitives;
+        Stack<string> namespaces;
 
         public DataContractSerializer(Type type)
         {
+            namespaces = new Stack<string>();
             rootType = type;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
@@ -74,12 +76,18 @@ namespace AsyncSerialization
             {
                 depth++;
                 prefixes = 0;
+                bool namespaced = false;
                 if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
                 {
-                    string prefix = writer.LookupPrefix(Namespace);
-                    writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                    writer.WriteQualifiedName(GetTypeString(type), Namespace);
-                    writer.WriteEndAttribute();
+                    if (!namespaces.Contains(Namespace))
+                    {
+                        string prefix = writer.LookupPrefix(Namespace);
+                        writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                        writer.WriteQualifiedName(GetTypeString(type), Namespace);
+                        writer.WriteEndAttribute();
+                        namespaces.Push(Namespace);
+                        namespaced = true;
+                    }
                 }
                 if (value is IEnumerable)
                 {
@@ -94,6 +102,10 @@ namespace AsyncSerialization
                     {
                         yield return item;
                     }
+                }
+                if (namespaced)
+                {
+                    namespaces.Pop();
                 }
                 depth--;
             }

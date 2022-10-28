@@ -34,7 +34,7 @@ public class Container : AsyncSerializer.IKeyValue
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());
-            //this.value.contracts.Add(new ContractType(i));
+            this.value.contracts.Add(new ContractType(i));
         }
     }
 

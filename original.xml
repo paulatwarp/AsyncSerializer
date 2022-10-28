@@ -29,7 +29,11 @@
 		<Value i:type=":Container.SaveValues">
 			<alpha>1</alpha>
 			<beta>1</beta>
-			<contracts />
+			<contracts>
+				<ContractType>
+					<alpha>0</alpha>
+				</ContractType>
+			</contracts>
 			<gamma>1</gamma>
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string>0</d4p1:string>
@@ -41,7 +45,14 @@
 		<Value i:type=":Container.SaveValues">
 			<alpha>2</alpha>
 			<beta>2</beta>
-			<contracts />
+			<contracts>
+				<ContractType>
+					<alpha>0</alpha>
+				</ContractType>
+				<ContractType>
+					<alpha>1</alpha>
+				</ContractType>
+			</contracts>
 			<gamma>2</gamma>
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string>0</d4p1:string>
