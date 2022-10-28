@@ -14,6 +14,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public double alpha;
         [DataMember] public int beta;
         [DataMember] public byte gamma;
+        [DataMember] public bool condition;
         [DataMember] public List<string> list;
         [DataMember] public List<ContractType> contracts;
     }
@@ -28,6 +29,7 @@ public class Container : AsyncSerializer.IKeyValue
             alpha = value,
             beta = value,
             gamma = (byte)value,
+            condition = value != 0,
             list = new List<string>(),
             contracts = new List<ContractType>()
         };
