@@ -17,6 +17,7 @@ namespace AsyncSerialization
         public const string XsiTypeLocalName = "type";
         public const string XsiPrefix = "i";
         public const string XmlnsPrefix = "xmlns";
+        public const string XsiNilLocalName = "nil";
         Type rootType;
         Type rootElementType;
         XmlWriter writer;
@@ -61,6 +62,13 @@ namespace AsyncSerialization
                 break;
             }
             return empty;
+        }
+
+        void WriteNull(string field)
+        {
+            writer.WriteStartElement(field, Namespace);
+            writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
+            writer.WriteEndElement();
         }
 
         IEnumerable WriteField(string field, object value)
@@ -212,7 +220,6 @@ namespace AsyncSerialization
             }
         }
 
-
         private IEnumerable WriteDataContractObjectContents(object graph)
         {
             Type type = graph.GetType();
@@ -224,10 +231,7 @@ namespace AsyncSerialization
                     if (property.GetIndexParameters().Length == 0)
                     {
                         object value = property.GetValue(graph);
-                        if (value != null)
-                        {
-                            members.Add(property.Name, value);
-                        }
+                        members.Add(property.Name, value);
                     }
                 }
             }
@@ -236,17 +240,21 @@ namespace AsyncSerialization
                 if (field.IsDefined(typeof(DataMemberAttribute), true))
                 {
                     object value = field.GetValue(graph);
-                    if (value != null)
-                    {
-                        members.Add(field.Name, value);
-                    }
+                    members.Add(field.Name, value);
                 }
             }
             foreach (var (name, value) in members)
             {
-                foreach (var item in WriteField(name, value))
+                if (value != null)
                 {
-                    yield return item;
+                    foreach (var item in WriteField(name, value))
+                    {
+                        yield return item;
+                    }
+                }
+                else
+                {
+                    WriteNull(name);
                 }
             }
         }
