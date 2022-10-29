@@ -9,7 +9,9 @@ namespace AsyncSerialization
     using System.Xml;
     using System.Xml.Schema;
     using System.Linq;
-    
+    using UnityEngine;
+    using System.Reflection;
+
     public class DataContractSerializer
     {
         public const string Namespace = "http://schemas.datacontract.org/2004/07/";
@@ -157,6 +159,28 @@ namespace AsyncSerialization
                 else if (value is float)
                 {
                     writer.WriteValue((float)value);
+                }
+                else if (type.Namespace == "UnityEngine")
+                {
+                    depth++;
+                    string prefix = writer.LookupPrefix(Namespace + type.Namespace);
+                    if (prefix == null)
+                    {
+                        prefixes++;
+                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+                    }
+                    writer.WriteAttributeString("xmlns", prefix, null, Namespace + type.Namespace);
+                    writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                    writer.WriteQualifiedName(type.Name, Namespace + type.Namespace);
+                    writer.WriteEndAttribute();
+
+                    foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        writer.WriteStartElement(null, member.Name, Namespace + type.Namespace);
+                        writer.WriteString(member.GetValue(value).ToString());
+                        writer.WriteEndElement();
+                    }
+                    depth--;
                 }
                 else
                 {
