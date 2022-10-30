@@ -128,7 +128,7 @@ namespace AsyncSerialization
                         prefixes++;
                         prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
                     }
-                    writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
+                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, CollectionsNamespace);
                     foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -164,7 +164,7 @@ namespace AsyncSerialization
                         prefixes++;
                         prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
                     }
-                    writer.WriteAttributeString("xmlns", prefix, null, Namespace + type.Namespace);
+                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, Namespace + type.Namespace);
                     writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
                     writer.WriteQualifiedName(type.Name, Namespace + type.Namespace);
                     writer.WriteEndAttribute();
