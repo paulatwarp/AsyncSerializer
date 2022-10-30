@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>BoolAsString</Key>
+		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:string">False</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>Vector</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/UnityEngine" i:type="d3p1:Vector3">
 			<d3p1:x>1</d3p1:x>
