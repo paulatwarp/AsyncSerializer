@@ -41,7 +41,7 @@ namespace AsyncSerialization
         {
             this.writer = writer;
             string type = GetTypeString(graph.GetType());
-            foreach (var item in WriteField(type, graph))
+            foreach (var item in WriteField(type, graph, Namespace))
             {
                 yield return item;
             }
@@ -73,29 +73,41 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        IEnumerable WriteField(string field, object value)
+        void GeneratePrefix(Type type, string ns)
+        {
+            string prefix = writer.LookupPrefix(ns);
+            if (prefix == null && type.Namespace != null)
+            {
+                prefixes++;
+                prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+            }
+        }
+
+        void WriteTypeNamespace(Type type, string ns)
+        {
+            writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+            writer.WriteQualifiedName(GetTypeString(type), ns);
+            writer.WriteEndAttribute();
+        }
+
+        IEnumerable WriteField(string field, object value, string ns)
         {
             depth++;
             prefixes = 0;
-            writer.WriteStartElement(field, Namespace);
+            writer.WriteStartElement(field, ns);
             Type type = value.GetType();
             Type element = GetArrayType(type);
-            if (type == rootType)
-            {
-                writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
-            }
             if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
                 bool namespaced = false;
                 if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
                 {
-                    if (!namespaces.Contains(Namespace))
+                    if (!namespaces.Contains(ns))
                     {
-                        string prefix = writer.LookupPrefix(Namespace);
-                        writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                        writer.WriteQualifiedName(GetTypeString(type), Namespace);
-                        writer.WriteEndAttribute();
-                        namespaces.Push(Namespace);
+                        GeneratePrefix(type, ns);
+                        WriteTypeNamespace(type, ns);
+                        namespaces.Push(ns);
                         namespaced = true;
                     }
                 }
@@ -120,15 +132,13 @@ namespace AsyncSerialization
             }
             else if (!(value is string) && value is IEnumerable)
             {
+                if (type == rootType)
+                {
+                    writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
+                }
                 if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    string prefix = writer.LookupPrefix(CollectionsNamespace);
-                    if (prefix == null)
-                    {
-                        prefixes++;
-                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
-                    }
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, CollectionsNamespace);
+                    GeneratePrefix(type, CollectionsNamespace);
                     foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -158,22 +168,14 @@ namespace AsyncSerialization
                 }
                 else if (type.Namespace == "UnityEngine")
                 {
-                    string prefix = writer.LookupPrefix(Namespace + type.Namespace);
-                    if (prefix == null)
-                    {
-                        prefixes++;
-                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
-                    }
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, Namespace + type.Namespace);
-                    writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                    writer.WriteQualifiedName(type.Name, Namespace + type.Namespace);
-                    writer.WriteEndAttribute();
-
+                    GeneratePrefix(type, ns + type.Namespace);
+                    WriteTypeNamespace(type, ns + type.Namespace);
                     foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        writer.WriteStartElement(null, member.Name, Namespace + type.Namespace);
-                        writer.WriteString(member.GetValue(value).ToString());
-                        writer.WriteEndElement();
+                        foreach (var item in WriteField(member.Name, member.GetValue(value), ns + type.Namespace))
+                        {
+                            yield return item;
+                        }
                     }
                 }
                 else
@@ -199,6 +201,10 @@ namespace AsyncSerialization
                 if (primitives.TryGetValue(type, out string primitive))
                 {
                     stringBuilder.Append(primitive);
+                }
+                else if (type.Namespace != null && type.FullName.Contains(type.Namespace))
+                {
+                    stringBuilder.Append(type.Name);
                 }
                 else
                 {
@@ -266,7 +272,7 @@ namespace AsyncSerialization
             {
                 if (value != null)
                 {
-                    foreach (var item in WriteField(name, value))
+                    foreach (var item in WriteField(name, value, Namespace))
                     {
                         yield return item;
                     }
