@@ -75,6 +75,8 @@ namespace AsyncSerialization
 
         IEnumerable WriteField(string field, object value)
         {
+            depth++;
+            prefixes = 0;
             writer.WriteStartElement(field, Namespace);
             Type type = value.GetType();
             Type element = GetArrayType(type);
@@ -84,8 +86,6 @@ namespace AsyncSerialization
             }
             if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
-                depth++;
-                prefixes = 0;
                 bool namespaced = false;
                 if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
                 {
@@ -117,12 +117,9 @@ namespace AsyncSerialization
                 {
                     namespaces.Pop();
                 }
-                depth--;
             }
             else if (!(value is string) && value is IEnumerable)
             {
-                depth++;
-                prefixes = 0;
                 if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
                 {
                     string prefix = writer.LookupPrefix(CollectionsNamespace);
@@ -144,7 +141,6 @@ namespace AsyncSerialization
                         yield return item;
                     }
                 }
-                depth--;
             }
             else
             {
@@ -162,7 +158,6 @@ namespace AsyncSerialization
                 }
                 else if (type.Namespace == "UnityEngine")
                 {
-                    depth++;
                     string prefix = writer.LookupPrefix(Namespace + type.Namespace);
                     if (prefix == null)
                     {
@@ -180,13 +175,13 @@ namespace AsyncSerialization
                         writer.WriteString(member.GetValue(value).ToString());
                         writer.WriteEndElement();
                     }
-                    depth--;
                 }
                 else
                 {
                     writer.WriteString(value.ToString());
                 }
             }
+            depth--;
             writer.WriteEndElement();
         }
 
