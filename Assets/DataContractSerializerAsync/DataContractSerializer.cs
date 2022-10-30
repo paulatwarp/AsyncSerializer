@@ -4,13 +4,12 @@ namespace AsyncSerialization
     using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Reflection;
     using System.Runtime.Serialization;
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
-    using System.Linq;
     using UnityEngine;
-    using System.Reflection;
 
     public class DataContractSerializer
     {
@@ -105,15 +104,12 @@ namespace AsyncSerialization
             if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
                 bool namespaced = false;
-                if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
+                if (!namespaces.Contains(ns))
                 {
-                    if (!namespaces.Contains(ns))
-                    {
-                        WritePrefix(null, type, ns);
-                        WriteTypeNamespace(type, ns);
-                        namespaces.Push(ns);
-                        namespaced = true;
-                    }
+                    WritePrefix(null, type, ns);
+                    WriteTypeNamespace(type, ns);
+                    namespaces.Push(ns);
+                    namespaced = true;
                 }
                 if (value is IEnumerable)
                 {
@@ -171,6 +167,7 @@ namespace AsyncSerialization
                 {
                     WritePrefix(null, type, ns + type.Namespace);
                     WriteTypeNamespace(type, ns + type.Namespace);
+                    namespaces.Push(ns + type.Namespace);
                     foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
                         foreach (var item in WriteField(member.Name, member.GetValue(value), ns + type.Namespace))
@@ -178,6 +175,7 @@ namespace AsyncSerialization
                             yield return item;
                         }
                     }
+                    namespaces.Pop();
                 }
                 else
                 {
