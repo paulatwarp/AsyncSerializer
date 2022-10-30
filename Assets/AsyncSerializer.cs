@@ -5,6 +5,14 @@ using System.Runtime.Serialization;
 using System.Xml;
 using UnityEngine;
 
+
+[System.Serializable, DataContract]
+public class Vector: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => new Vector3(1, 2, 3);
+}
+
 [System.Serializable, DataContract]
 public class Container : AsyncSerializer.IKeyValue
 {
@@ -121,6 +129,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new Vector()));
         list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new Container(0)));

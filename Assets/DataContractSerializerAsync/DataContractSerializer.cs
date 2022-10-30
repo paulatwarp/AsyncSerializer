@@ -4,12 +4,13 @@ namespace AsyncSerialization
     using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Reflection;
     using System.Runtime.Serialization;
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
-    using System.Linq;
-    
+    using UnityEngine;
+
     public class DataContractSerializer
     {
         public const string Namespace = "http://schemas.datacontract.org/2004/07/";
@@ -18,7 +19,6 @@ namespace AsyncSerialization
         public const string XsiPrefix = "i";
         public const string XmlnsPrefix = "xmlns";
         public const string XsiNilLocalName = "nil";
-        Type rootType;
         Type rootElementType;
         XmlWriter writer;
         int depth;
@@ -29,7 +29,6 @@ namespace AsyncSerialization
         public DataContractSerializer(Type type)
         {
             namespaces = new Stack<string>();
-            rootType = type;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
             primitives[typeof(string)] = "string";
@@ -39,7 +38,7 @@ namespace AsyncSerialization
         {
             this.writer = writer;
             string type = GetTypeString(graph.GetType());
-            foreach (var item in WriteField(type, graph))
+            foreach (var item in WriteField(type, graph, Namespace))
             {
                 yield return item;
             }
@@ -71,31 +70,46 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        IEnumerable WriteField(string field, object value)
+        void WritePrefix(string prefix, Type type, string ns)
         {
-            writer.WriteStartElement(field, Namespace);
+            if (prefix == null)
+            {
+                prefix = writer.LookupPrefix(ns);
+            }
+            if (prefix == null)
+            {
+                prefixes++;
+                prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+            }
+            if (type.Namespace != null)
+            {
+                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+            }
+        }
+
+        void WriteTypeNamespace(Type type, string ns)
+        {
+            writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+            writer.WriteQualifiedName(GetTypeString(type), ns);
+            writer.WriteEndAttribute();
+        }
+
+        IEnumerable WriteField(string field, object value, string ns)
+        {
+            depth++;
+            prefixes = 0;
+            writer.WriteStartElement(field, ns);
             Type type = value.GetType();
             Type element = GetArrayType(type);
-            if (type == rootType)
-            {
-                writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
-            }
             if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
-                depth++;
-                prefixes = 0;
                 bool namespaced = false;
-                if (value is Array || value is not IEnumerable || !IsEmpty(value as IEnumerable))
+                if (!namespaces.Contains(ns))
                 {
-                    if (!namespaces.Contains(Namespace))
-                    {
-                        string prefix = writer.LookupPrefix(Namespace);
-                        writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                        writer.WriteQualifiedName(GetTypeString(type), Namespace);
-                        writer.WriteEndAttribute();
-                        namespaces.Push(Namespace);
-                        namespaced = true;
-                    }
+                    WritePrefix(null, type, ns);
+                    WriteTypeNamespace(type, ns);
+                    namespaces.Push(ns);
+                    namespaced = true;
                 }
                 if (value is IEnumerable)
                 {
@@ -115,34 +129,25 @@ namespace AsyncSerialization
                 {
                     namespaces.Pop();
                 }
-                depth--;
             }
             else if (!(value is string) && value is IEnumerable)
             {
-                depth++;
-                prefixes = 0;
-                if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
+                if (element != null && element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    string prefix = writer.LookupPrefix(CollectionsNamespace);
-                    if (prefix == null)
-                    {
-                        prefixes++;
-                        prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
-                    }
-                    writer.WriteAttributeString("xmlns", prefix, null, CollectionsNamespace);
-                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
+                    WritePrefix(XsiPrefix, type, XmlSchema.InstanceNamespace);
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
+                    WritePrefix(null, type, CollectionsNamespace);
+                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
                     }
                 }
-                depth--;
             }
             else
             {
@@ -158,11 +163,26 @@ namespace AsyncSerialization
                 {
                     writer.WriteValue((float)value);
                 }
+                else if (type.Namespace == "UnityEngine")
+                {
+                    WritePrefix(null, type, ns + type.Namespace);
+                    WriteTypeNamespace(type, ns + type.Namespace);
+                    namespaces.Push(ns + type.Namespace);
+                    foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        foreach (var item in WriteField(member.Name, member.GetValue(value), ns + type.Namespace))
+                        {
+                            yield return item;
+                        }
+                    }
+                    namespaces.Pop();
+                }
                 else
                 {
                     writer.WriteString(value.ToString());
                 }
             }
+            depth--;
             writer.WriteEndElement();
         }
 
@@ -180,6 +200,10 @@ namespace AsyncSerialization
                 if (primitives.TryGetValue(type, out string primitive))
                 {
                     stringBuilder.Append(primitive);
+                }
+                else if (type.Namespace != null && type.FullName.Contains(type.Namespace))
+                {
+                    stringBuilder.Append(type.Name);
                 }
                 else
                 {
@@ -247,7 +271,7 @@ namespace AsyncSerialization
             {
                 if (value != null)
                 {
-                    foreach (var item in WriteField(name, value))
+                    foreach (var item in WriteField(name, value, Namespace))
                     {
                         yield return item;
                     }
