@@ -20,7 +20,6 @@ namespace AsyncSerialization
         public const string XsiPrefix = "i";
         public const string XmlnsPrefix = "xmlns";
         public const string XsiNilLocalName = "nil";
-        Type rootType;
         Type rootElementType;
         XmlWriter writer;
         int depth;
@@ -31,7 +30,6 @@ namespace AsyncSerialization
         public DataContractSerializer(Type type)
         {
             namespaces = new Stack<string>();
-            rootType = type;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
             primitives[typeof(string)] = "string";
@@ -138,18 +136,18 @@ namespace AsyncSerialization
             }
             else if (!(value is string) && value is IEnumerable)
             {
-                if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
+                if (element != null && element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    WritePrefix(null, type, CollectionsNamespace);
-                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
+                    WritePrefix(XsiPrefix, type, XmlSchema.InstanceNamespace);
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    WritePrefix(XsiPrefix, type, XmlSchema.InstanceNamespace);
-                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
+                    WritePrefix(null, type, CollectionsNamespace);
+                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
                     }
