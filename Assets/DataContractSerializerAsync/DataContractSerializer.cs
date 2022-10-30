@@ -73,13 +73,19 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        void GeneratePrefix(Type type, string ns)
+        void WritePrefix(string prefix, Type type, string ns)
         {
-            string prefix = writer.LookupPrefix(ns);
-            if (prefix == null && type.Namespace != null)
+            if (prefix == null)
+            {
+                prefix = writer.LookupPrefix(ns);
+            }
+            if (prefix == null)
             {
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+            }
+            if (type.Namespace != null)
+            {
                 writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
             }
         }
@@ -105,7 +111,7 @@ namespace AsyncSerialization
                 {
                     if (!namespaces.Contains(ns))
                     {
-                        GeneratePrefix(type, ns);
+                        WritePrefix(null, type, ns);
                         WriteTypeNamespace(type, ns);
                         namespaces.Push(ns);
                         namespaced = true;
@@ -132,13 +138,9 @@ namespace AsyncSerialization
             }
             else if (!(value is string) && value is IEnumerable)
             {
-                if (type == rootType)
-                {
-                    writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
-                }
                 if (type != rootType && element != null && !element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    GeneratePrefix(type, CollectionsNamespace);
+                    WritePrefix(null, type, CollectionsNamespace);
                     foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -146,6 +148,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
+                    WritePrefix(XsiPrefix, type, XmlSchema.InstanceNamespace);
                     foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -168,7 +171,7 @@ namespace AsyncSerialization
                 }
                 else if (type.Namespace == "UnityEngine")
                 {
-                    GeneratePrefix(type, ns + type.Namespace);
+                    WritePrefix(null, type, ns + type.Namespace);
                     WriteTypeNamespace(type, ns + type.Namespace);
                     foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
