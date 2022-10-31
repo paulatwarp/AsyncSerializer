@@ -51,6 +51,7 @@ public class EnumValueNoContract : AsyncSerializer.IKeyValue
     public class Content
     {
         public EnumNoContract type;
+        public bool alpha;
     }
 
     SaveValues values;
@@ -61,6 +62,7 @@ public class EnumValueNoContract : AsyncSerializer.IKeyValue
         values.list = new List<Content>();
         values.list.Add(new Content());
         values.list[0].type = type;
+        values.list[0].alpha = true;
     }
 }
 

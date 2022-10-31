@@ -5,6 +5,7 @@
 		<Value i:type=":EnumValueNoContract.SaveValues">
 			<list>
 				<EnumValueNoContract.Content>
+					<alpha>true</alpha>
 					<type>FIRST</type>
 				</EnumValueNoContract.Content>
 			</list>
