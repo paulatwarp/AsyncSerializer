@@ -210,7 +210,33 @@ namespace AsyncSerialization
                 {
                     writer.WriteValue((float)value);
                 }
-                else if (valueType.Namespace == "UnityEngine")
+                else if (value is int)
+                {
+                    writer.WriteValue((int)value);
+                }
+                else if (value is byte)
+                {
+                    writer.WriteValue((byte)value);
+                }
+                else if (value is string)
+                {
+                    if (type == typeof(object))
+                    {
+                        WritePrefix(null, valueType, XmlSchema.Namespace);
+                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                    }
+                    writer.WriteValue((string)value);
+                }
+                else if (value is Enum)
+                {
+                    if (!namespaces.Contains(ns))
+                    {
+                        WritePrefix(null, valueType, ns);
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
+                    writer.WriteString(value.ToString());
+                }
+                else
                 {
                     if (!ns.EndsWith("UnityEngine"))
                     {
@@ -239,24 +265,6 @@ namespace AsyncSerialization
                             yield return item;
                         }
                     }
-                }
-                else if (value is Enum)
-                {
-                    if (!namespaces.Contains(ns))
-                    {
-                        WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
-                    }
-                    writer.WriteString(value.ToString());
-                }
-                else
-                {
-                    if (type == typeof(object))
-                    {
-                        WritePrefix(null, valueType, XmlSchema.Namespace);
-                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
-                    }
-                    writer.WriteString(value.ToString());
                 }
             }
             if (namespaced)

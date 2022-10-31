@@ -39,13 +39,19 @@ public class EnumValue : AsyncSerializer.IKeyValue
 public class EnumValueNoContract : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
-    public object Value => type;
+    public object Value => values;
 
-    EnumNoContract type;
+    public class SaveValues
+    {
+        public EnumNoContract type;
+    }
+
+    SaveValues values;
 
     public EnumValueNoContract(EnumNoContract type)
     {
-        this.type = type;
+        values = new SaveValues();
+        values.type = type;
     }
 }
 
