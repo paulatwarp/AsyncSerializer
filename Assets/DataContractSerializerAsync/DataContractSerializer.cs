@@ -33,6 +33,7 @@ namespace AsyncSerialization
             primitives = new Dictionary<Type, string>();
             primitives[typeof(string)] = "string";
             primitives[typeof(int)] = "int";
+            primitives[typeof(bool)] = "boolean";
         }
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
@@ -159,7 +160,15 @@ namespace AsyncSerialization
                     {
                         ns += element.Namespace;
                     }
-                    if (!IsEmpty(value as IEnumerable))
+                    if (value is IDictionary)
+                    {
+                        WritePrefix(null, valueType, ns);
+                        foreach (var sequencePoint in WriteDictionary(value as IDictionary, ns))
+                        {
+                            yield return sequencePoint;
+                        }
+                    }
+                    else if (!IsEmpty(value as IEnumerable))
                     {
                         WritePrefix(null, valueType, ns);
                         if (type.Namespace == "System")
@@ -228,14 +237,46 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
+        bool IsDictionary(Type type)
+        {
+            return type.GetInterface("IDictionary", false) != null;
+        }
+
+        bool IsArray(Type type)
+        {
+            return type != typeof(string) && type.GetInterface("IEnumerable", false) != null;
+        }
+
+        string GetTypeString(DictionaryEntry entry)
+        {
+            var builder = new StringBuilder();
+            builder.Append("KeyValueOf");
+            builder.Append(GetTypeString(entry.Key.GetType()));
+            builder.Append(GetTypeString(entry.Value.GetType()));
+            return builder.ToString();
+        }
+
         string GetTypeString(Type type)
         {
-            Type element = GetArrayType(type);
             var stringBuilder = new StringBuilder();
-            if (element != null)
+            if (IsDictionary(type))
             {
-                stringBuilder.Append("ArrayOf");
-                stringBuilder.Append(GetTypeString(element));
+                Type[] elements = type.GetGenericArguments();
+                if (elements != null && elements.Length == 2)
+                {
+                    stringBuilder.Append("KeyValueOf");
+                    stringBuilder.Append(GetTypeString(elements[0]));
+                    stringBuilder.Append(GetTypeString(elements[1]));
+                }
+            }
+            else if (IsArray(type))
+            {
+                Type element = GetArrayType(type);
+                if (element != null)
+                {
+                    stringBuilder.Append("ArrayOf");
+                    stringBuilder.Append(GetTypeString(element));
+                }
             }
             else
             {
@@ -278,6 +319,23 @@ namespace AsyncSerialization
                 }
             }
             depth--;
+        }
+
+        private IEnumerable WriteDictionary(IDictionary dictionary, string ns)
+        {
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                writer.WriteStartElement(null, GetTypeString(entry), ns);
+                foreach (var sequencePoint in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
+                {
+                    yield return sequencePoint;
+                }
+                foreach (var sequencePoint in WriteField("Value", entry.Value.GetType(), entry.Value, ns))
+                {
+                    yield return sequencePoint;
+                }
+                writer.WriteEndElement();
+            }
         }
 
         private IEnumerable WritePrimitiveEnumerable(IEnumerable array, string ns)

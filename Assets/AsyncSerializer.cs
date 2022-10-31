@@ -78,6 +78,29 @@ public class EmptyArrayOfNonContract : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class DictionaryData : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => saveValues;
+
+    SaveValues saveValues;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public Dictionary<int, bool> entries;
+    }
+
+    public DictionaryData()
+    {
+        saveValues = new SaveValues();
+        saveValues.entries = new Dictionary<int, bool>();
+        saveValues.entries.Add(0, true);
+        saveValues.entries.Add(1, false);
+    }
+}
+
+[System.Serializable, DataContract]
 public class Container : AsyncSerializer.IKeyValue
 {
     [System.Serializable, DataContract]
@@ -198,6 +221,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new DictionaryData()));
         list.Add(new SaveValue(new EmptyArrayOfNonContract()));
         list.Add(new SaveValue(new ArrayOfInt()));
         list.Add(new SaveValue(new ArrayOfNull()));
