@@ -30,6 +30,22 @@ public class EnumValue : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class ListOfList : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => flags;
+
+    List<List<bool>> flags;
+
+    public ListOfList()
+    {
+        flags = new List<List<bool>>();
+        flags.Add(new List<bool>());
+        flags[0].Add(true);
+    }
+}
+
+[System.Serializable, DataContract]
 public class Vector : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -257,6 +273,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));
         list.Add(new SaveValue(new EnumValue(EnumType.Second)));

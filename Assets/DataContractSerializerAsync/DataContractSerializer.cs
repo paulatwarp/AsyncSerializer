@@ -34,6 +34,7 @@ namespace AsyncSerialization
             primitives[typeof(string)] = "string";
             primitives[typeof(int)] = "int";
             primitives[typeof(bool)] = "boolean";
+            primitives[typeof(float)] = "float";
         }
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
@@ -156,7 +157,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (element == null || element.Namespace == "System")
+                    if (element == null || element.Namespace == "System" || element.Namespace == "System.Collections.Generic")
                     {
                         ns = CollectionsNamespace;
                     }
@@ -174,10 +175,13 @@ namespace AsyncSerialization
                     }
                     else if (!IsEmpty(value as IEnumerable))
                     {
-                        WritePrefix(null, valueType, ns);
-                        if (type.Namespace == "System")
+                        if (!namespaces.Contains(ns))
                         {
-                            namespaced = WriteTypeNamespace(valueType, ns);
+                            WritePrefix(null, valueType, ns);
+                            if (type.Namespace == "System")
+                            {
+                                namespaced = WriteTypeNamespace(valueType, ns);
+                            }
                         }
                         foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
                         {
