@@ -2,10 +2,12 @@
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfList</Key>
-		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfArrayOfboolean">
-			<d3p1:ArrayOfboolean>
-				<d3p1:boolean>true</d3p1:boolean>
-			</d3p1:ArrayOfboolean>
+		<Value i:type=":ListOfList.SaveValues">
+			<flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:ArrayOfboolean>
+					<d4p1:boolean>true</d4p1:boolean>
+				</d4p1:ArrayOfboolean>
+			</flags>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>

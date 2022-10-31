@@ -33,15 +33,22 @@ public class EnumValue : AsyncSerializer.IKeyValue
 public class ListOfList : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
-    public object Value => flags;
+    public object Value => values;
 
-    List<List<bool>> flags;
+    SaveValues values;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public List<List<bool>> flags;
+    }
 
     public ListOfList()
     {
-        flags = new List<List<bool>>();
-        flags.Add(new List<bool>());
-        flags[0].Add(true);
+        values = new SaveValues();
+        values.flags = new List<List<bool>>();
+        values.flags.Add(new List<bool>());
+        values.flags[0].Add(true);
     }
 }
 
