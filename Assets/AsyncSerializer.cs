@@ -111,6 +111,13 @@ public class BoolAsString : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class BoolAsObject: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => false;
+}
+
+[System.Serializable, DataContract]
 public class ArrayOfNull : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -317,6 +324,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new BoolAsObject()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Vector2D()));

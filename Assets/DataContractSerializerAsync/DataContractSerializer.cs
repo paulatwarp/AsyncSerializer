@@ -200,6 +200,11 @@ namespace AsyncSerialization
             {
                 if (value is bool)
                 {
+                    if (type == typeof(object))
+                    {
+                        WritePrefix(null, valueType, XmlSchema.Namespace);
+                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                    }
                     writer.WriteString(XmlConvert.ToString((bool)value));
                 }
                 else if (value is double)
@@ -259,7 +264,7 @@ namespace AsyncSerialization
                         }
                         else
                         {
-                            WriteNull(name);
+                            WriteNull(fieldName);
                         }
                     }
                 }
