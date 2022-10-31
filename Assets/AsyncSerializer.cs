@@ -21,6 +21,36 @@ public class BoolAsString : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class ArrayOfNull : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => arrayOfNull;
+
+    List<Vector> arrayOfNull;
+
+    public ArrayOfNull()
+    {
+        arrayOfNull = new List<Vector>();
+        arrayOfNull.Add(null);
+    }
+}
+
+[System.Serializable, DataContract]
+public class ArrayOfInt: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => arrayOfInt;
+
+    List<int> arrayOfInt;
+
+    public ArrayOfInt()
+    {
+        arrayOfInt = new List<int>();
+        arrayOfInt.Add(1);
+    }
+}
+
+[System.Serializable, DataContract]
 public class Container : AsyncSerializer.IKeyValue
 {
     [System.Serializable, DataContract]
@@ -32,6 +62,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public byte gamma;
         [DataMember] public bool condition;
         [DataMember] public List<string> list;
+        [DataMember] public List<Vector3> vectors;
         [DataMember] public List<ContractType> contracts;
         [DataMember] public object nil;
     }
@@ -49,12 +80,14 @@ public class Container : AsyncSerializer.IKeyValue
             gamma = (byte)value,
             condition = value != 0,
             list = new List<string>(),
+            vectors = new List<Vector3>(),
             contracts = new List<ContractType>(),
             nil = null
         };
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());
+            this.value.vectors.Add(Vector3.one * i);
             this.value.contracts.Add(new ContractType(i));
         }
     }
@@ -136,6 +169,8 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new ArrayOfInt()));
+        list.Add(new SaveValue(new ArrayOfNull()));
         list.Add(new SaveValue(new BoolAsString()));
         list.Add(new SaveValue(new Vector()));
         list.Add(new SaveValue(new ContainerList()));

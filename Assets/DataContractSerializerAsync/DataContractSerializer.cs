@@ -32,6 +32,7 @@ namespace AsyncSerialization
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
             primitives[typeof(string)] = "string";
+            primitives[typeof(int)] = "int";
         }
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
@@ -87,11 +88,18 @@ namespace AsyncSerialization
             }
         }
 
-        void WriteTypeNamespace(Type type, string ns)
+        bool WriteTypeNamespace(Type type, string ns)
         {
-            writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-            writer.WriteQualifiedName(GetTypeString(type), ns);
-            writer.WriteEndAttribute();
+            bool written = false;
+            if (!namespaces.Contains(ns))
+            {
+                writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                writer.WriteQualifiedName(GetTypeString(type), ns);
+                writer.WriteEndAttribute();
+                namespaces.Push(ns);
+                written = true;
+            }
+            return written;
         }
 
         IEnumerable WriteField(string name, Type type, object value, string ns)
@@ -101,33 +109,34 @@ namespace AsyncSerialization
             writer.WriteStartElement(name, ns);
             Type valueType = value.GetType();
             Type element = GetArrayType(valueType);
+            bool namespaced = false;
             if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
-                bool namespaced = false;
                 if (!namespaces.Contains(ns))
                 {
-                    WritePrefix(null, valueType, ns);
-                    WriteTypeNamespace(valueType, ns);
-                    namespaces.Push(ns);
-                    namespaced = true;
+                    if (value is IEnumerable)
+                    {
+                        writer.LookupPrefix(ns);
+                    }
+                    else
+                    {
+                        WritePrefix(null, valueType, ns);
+                    }
+                    namespaced = WriteTypeNamespace(valueType, ns);
                 }
                 if (value is IEnumerable)
                 {
-                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    foreach (var item in WriteDataContractObjectContents(value))
+                    foreach (var item in WriteDataContractObjectContents(value, ns))
                     {
                         yield return item;
                     }
-                }
-                if (namespaced)
-                {
-                    namespaces.Pop();
                 }
             }
             else if (!(value is string) && value is IEnumerable)
@@ -135,17 +144,32 @@ namespace AsyncSerialization
                 if (element != null && element.IsDefined(typeof(DataContractAttribute), true))
                 {
                     WritePrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
-                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
+                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    WritePrefix(null, valueType, CollectionsNamespace);
-                    foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
+                    if (element == null || element.Namespace == "System")
                     {
-                        yield return item;
+                        ns = CollectionsNamespace;
+                    }
+                    else
+                    {
+                        ns += element.Namespace;
+                    }
+                    WritePrefix(null, valueType, ns);
+                    if (!IsEmpty(value as IEnumerable))
+                    {
+                        if (type.Namespace == "System")
+                        {
+                            namespaced = WriteTypeNamespace(valueType, ns);
+                        }
+                        foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
+                        {
+                            yield return item;
+                        }
                     }
                 }
             }
@@ -165,27 +189,33 @@ namespace AsyncSerialization
                 }
                 else if (valueType.Namespace == "UnityEngine")
                 {
-                    WritePrefix(null, valueType, ns + valueType.Namespace);
-                    WriteTypeNamespace(valueType, ns + valueType.Namespace);
-                    namespaces.Push(ns + valueType.Namespace);
+                    if (!ns.EndsWith("UnityEngine"))
+                    {
+                        ns += valueType.Namespace;
+                        WritePrefix(null, valueType, ns);
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
                     foreach (var member in valueType.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        foreach (var item in WriteField(member.Name, member.FieldType, member.GetValue(value), ns + valueType.Namespace))
+                        foreach (var item in WriteField(member.Name, member.FieldType, member.GetValue(value), ns))
                         {
                             yield return item;
                         }
                     }
-                    namespaces.Pop();
                 }
                 else
                 {
                     if (type == typeof(object))
                     {
                         WritePrefix(null, valueType, XmlSchema.Namespace);
-                        WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
                     }
                     writer.WriteString(value.ToString());
                 }
+            }
+            if (namespaced)
+            {
+                namespaces.Pop();
             }
             depth--;
             writer.WriteEndElement();
@@ -218,38 +248,45 @@ namespace AsyncSerialization
             return stringBuilder.ToString();
         }
 
-        private IEnumerable WriteDataContractEnumerable(IEnumerable array)
+        private IEnumerable WriteDataContractEnumerable(IEnumerable array, string ns)
         {
             depth++;
             prefixes = 0;
             foreach (var item in array)
             {
-                Type type = item.GetType();
-                string description = GetTypeString(type);
-                writer.WriteStartElement(description, Namespace);
-                foreach (var subitem in WriteDataContractObjectContents(item))
+                if (item == null)
                 {
-                    yield return subitem;
+                    WriteNull(GetTypeString(GetArrayType(array.GetType())));
                 }
-                writer.WriteEndElement();
+                else
+                {
+                    Type type = item.GetType();
+                    string description = GetTypeString(type);
+                    writer.WriteStartElement(description, Namespace);
+                    foreach (var subitem in WriteDataContractObjectContents(item, ns))
+                    {
+                        yield return subitem;
+                    }
+                    writer.WriteEndElement();
+                }
             }
             depth--;
         }
 
-        private IEnumerable WritePrimitiveEnumerable(IEnumerable array)
+        private IEnumerable WritePrimitiveEnumerable(IEnumerable array, string ns)
         {
             foreach (var item in array)
             {
                 Type type = item.GetType();
                 string description = GetTypeString(type);
-                writer.WriteStartElement(description, CollectionsNamespace);
-                writer.WriteString(item.ToString());
-                writer.WriteEndElement();
-                yield return item;
+                foreach (var sequencePoint in WriteField(description, type, item, ns))
+                {
+                    yield return sequencePoint;
+                }
             }
         }
 
-        private IEnumerable WriteDataContractObjectContents(object graph)
+        private IEnumerable WriteDataContractObjectContents(object graph, string ns)
         {
             Type type = graph.GetType();
             var members = new SortedList<string, (Type, object)>();
@@ -276,7 +313,7 @@ namespace AsyncSerialization
             {
                 if (value != null)
                 {
-                    foreach (var item in WriteField(name, fieldType, value, Namespace))
+                    foreach (var item in WriteField(name, fieldType, value, ns))
                     {
                         yield return item;
                     }

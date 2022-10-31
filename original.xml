@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ArrayOfInt</Key>
+		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfint">
+			<d3p1:int>1</d3p1:int>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>ArrayOfNull</Key>
+		<Value i:type=":ArrayOfVector">
+			<Vector i:nil="true" />
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>BoolAsString</Key>
 		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:string">False</Value>
 	</AsyncSerializer.SaveValue>
@@ -37,6 +49,7 @@
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
 			<nil i:nil="true" />
 			<phi>1</phi>
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -56,6 +69,13 @@
 			</list>
 			<nil i:nil="true" />
 			<phi>0.5</phi>
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<d4p1:Vector3>
+					<d4p1:x>0</d4p1:x>
+					<d4p1:y>0</d4p1:y>
+					<d4p1:z>0</d4p1:z>
+				</d4p1:Vector3>
+			</vectors>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -79,6 +99,18 @@
 			</list>
 			<nil i:nil="true" />
 			<phi>0.333333343</phi>
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<d4p1:Vector3>
+					<d4p1:x>0</d4p1:x>
+					<d4p1:y>0</d4p1:y>
+					<d4p1:z>0</d4p1:z>
+				</d4p1:Vector3>
+				<d4p1:Vector3>
+					<d4p1:x>1</d4p1:x>
+					<d4p1:y>1</d4p1:y>
+					<d4p1:z>1</d4p1:z>
+				</d4p1:Vector3>
+			</vectors>
 		</Value>
 	</AsyncSerializer.SaveValue>
 </ArrayOfAsyncSerializer.SaveValue>
