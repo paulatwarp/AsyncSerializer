@@ -247,22 +247,19 @@ namespace AsyncSerialization
                             namespaced = WriteTypeNamespace(valueType, ns);
                         }
                     }
-                    foreach (var member in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                    var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.Instance);
+                    foreach (var (fieldName, (fieldType, fieldValue)) in members)
                     {
-                        if (member.GetSetMethod() == null || member.GetGetMethod().GetParameters().Length > 0)
+                        if (fieldValue != null)
                         {
-                            continue;
+                            foreach (var item in WriteField(fieldName, fieldType, fieldValue, ns))
+                            {
+                                yield return item;
+                            }
                         }
-                        foreach (var item in WriteField(member.Name, member.PropertyType, member.GetValue(value), ns))
+                        else
                         {
-                            yield return item;
-                        }
-                    }
-                    foreach (var member in valueType.GetFields(BindingFlags.Public | BindingFlags.Instance))
-                    {
-                        foreach (var item in WriteField(member.Name, member.FieldType, member.GetValue(value), ns))
-                        {
-                            yield return item;
+                            WriteNull(name);
                         }
                     }
                 }
@@ -389,13 +386,17 @@ namespace AsyncSerialization
             }
         }
 
-        private IEnumerable WriteDataContractObjectContents(object graph, string ns)
+        SortedList<string, (Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
         {
             Type type = graph.GetType();
             var members = new SortedList<string, (Type, object)>();
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            foreach (var property in type.GetProperties(flags))
             {
-                if (property.IsDefined(typeof(DataMemberAttribute), true))
+                if (property.GetSetMethod() == null || property.GetGetMethod().GetParameters().Length > 0)
+                {
+                    continue;
+                }
+                if (filter == null || property.IsDefined(filter, true))
                 {
                     if (property.GetIndexParameters().Length == 0)
                     {
@@ -404,19 +405,25 @@ namespace AsyncSerialization
                     }
                 }
             }
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            foreach (var field in type.GetFields(flags))
             {
-                if (field.IsDefined(typeof(DataMemberAttribute), true))
+                if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
                     members.Add(field.Name, (field.FieldType, value));
                 }
             }
-            foreach (var (name, (fieldType, value)) in members)
+            return members;
+        }
+
+        private IEnumerable WriteDataContractObjectContents(object graph, string ns)
+        {
+            var members = GetSortedMembers(graph, typeof(DataMemberAttribute), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var (name, (type, value)) in members)
             {
                 if (value != null)
                 {
-                    foreach (var item in WriteField(name, fieldType, value, ns))
+                    foreach (var item in WriteField(name, type, value, ns))
                     {
                         yield return item;
                     }
