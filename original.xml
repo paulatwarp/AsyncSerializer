@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>Vector2D</Key>
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/UnityEngine" i:type="d3p1:Vector2Int">
+			<d3p1:x>1</d3p1:x>
+			<d3p1:y>2</d3p1:y>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>EnumValue</Key>
 		<Value i:type=":EnumType">First</Value>
 	</AsyncSerializer.SaveValue>

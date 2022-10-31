@@ -215,6 +215,17 @@ namespace AsyncSerialization
                             namespaced = WriteTypeNamespace(valueType, ns);
                         }
                     }
+                    foreach (var member in valueType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        if (member.GetSetMethod() == null || member.GetGetMethod().GetParameters().Length > 0)
+                        {
+                            continue;
+                        }
+                        foreach (var item in WriteField(member.Name, member.PropertyType, member.GetValue(value), ns))
+                        {
+                            yield return item;
+                        }
+                    }
                     foreach (var member in valueType.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
                         foreach (var item in WriteField(member.Name, member.FieldType, member.GetValue(value), ns))

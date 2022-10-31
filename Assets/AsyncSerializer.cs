@@ -37,6 +37,13 @@ public class Vector : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class Vector2D : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => new Vector2Int(1, 2);
+}
+
+[System.Serializable, DataContract]
 public class BoolAsString : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -250,6 +257,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));
         list.Add(new SaveValue(new EnumValue(EnumType.Second)));
         list.Add(new SaveValue(new DictionaryData()));
