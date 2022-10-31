@@ -193,7 +193,10 @@ namespace AsyncSerialization
                     {
                         ns += valueType.Namespace;
                         WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        if (type.Namespace != "UnityEngine")
+                        {
+                            namespaced = WriteTypeNamespace(valueType, ns);
+                        }
                     }
                     foreach (var member in valueType.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
