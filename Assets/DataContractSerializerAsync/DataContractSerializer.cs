@@ -38,7 +38,7 @@ namespace AsyncSerialization
         {
             this.writer = writer;
             string type = GetTypeString(graph.GetType());
-            foreach (var item in WriteField(type, graph, Namespace))
+            foreach (var item in WriteField(type, graph.GetType(), graph, Namespace))
             {
                 yield return item;
             }
@@ -94,20 +94,20 @@ namespace AsyncSerialization
             writer.WriteEndAttribute();
         }
 
-        IEnumerable WriteField(string field, object value, string ns)
+        IEnumerable WriteField(string name, Type type, object value, string ns)
         {
             depth++;
             prefixes = 0;
-            writer.WriteStartElement(field, ns);
-            Type type = value.GetType();
-            Type element = GetArrayType(type);
-            if (type.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
+            writer.WriteStartElement(name, ns);
+            Type valueType = value.GetType();
+            Type element = GetArrayType(valueType);
+            if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
                 bool namespaced = false;
                 if (!namespaces.Contains(ns))
                 {
-                    WritePrefix(null, type, ns);
-                    WriteTypeNamespace(type, ns);
+                    WritePrefix(null, valueType, ns);
+                    WriteTypeNamespace(valueType, ns);
                     namespaces.Push(ns);
                     namespaced = true;
                 }
@@ -134,7 +134,7 @@ namespace AsyncSerialization
             {
                 if (element != null && element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    WritePrefix(XsiPrefix, type, XmlSchema.InstanceNamespace);
+                    WritePrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
                     foreach (var item in WriteDataContractEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -142,7 +142,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    WritePrefix(null, type, CollectionsNamespace);
+                    WritePrefix(null, valueType, CollectionsNamespace);
                     foreach (var item in WritePrimitiveEnumerable(value as IEnumerable))
                     {
                         yield return item;
@@ -163,14 +163,14 @@ namespace AsyncSerialization
                 {
                     writer.WriteValue((float)value);
                 }
-                else if (type.Namespace == "UnityEngine")
+                else if (valueType.Namespace == "UnityEngine")
                 {
-                    WritePrefix(null, type, ns + type.Namespace);
-                    WriteTypeNamespace(type, ns + type.Namespace);
-                    namespaces.Push(ns + type.Namespace);
-                    foreach (var member in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+                    WritePrefix(null, valueType, ns + valueType.Namespace);
+                    WriteTypeNamespace(valueType, ns + valueType.Namespace);
+                    namespaces.Push(ns + valueType.Namespace);
+                    foreach (var member in valueType.GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        foreach (var item in WriteField(member.Name, member.GetValue(value), ns + type.Namespace))
+                        foreach (var item in WriteField(member.Name, member.FieldType, member.GetValue(value), ns + valueType.Namespace))
                         {
                             yield return item;
                         }
@@ -179,6 +179,11 @@ namespace AsyncSerialization
                 }
                 else
                 {
+                    if (type == typeof(object))
+                    {
+                        WritePrefix(null, valueType, XmlSchema.Namespace);
+                        WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                    }
                     writer.WriteString(value.ToString());
                 }
             }
@@ -247,7 +252,7 @@ namespace AsyncSerialization
         private IEnumerable WriteDataContractObjectContents(object graph)
         {
             Type type = graph.GetType();
-            var members = new SortedList<string, object>();
+            var members = new SortedList<string, (Type, object)>();
             foreach (var property in type.GetProperties())
             {
                 if (property.IsDefined(typeof(DataMemberAttribute), true))
@@ -255,7 +260,7 @@ namespace AsyncSerialization
                     if (property.GetIndexParameters().Length == 0)
                     {
                         object value = property.GetValue(graph);
-                        members.Add(property.Name, value);
+                        members.Add(property.Name, (property.PropertyType, value));
                     }
                 }
             }
@@ -264,14 +269,14 @@ namespace AsyncSerialization
                 if (field.IsDefined(typeof(DataMemberAttribute), true))
                 {
                     object value = field.GetValue(graph);
-                    members.Add(field.Name, value);
+                    members.Add(field.Name, (field.FieldType, value));
                 }
             }
-            foreach (var (name, value) in members)
+            foreach (var (name, (fieldType, value)) in members)
             {
                 if (value != null)
                 {
-                    foreach (var item in WriteField(name, value, Namespace))
+                    foreach (var item in WriteField(name, fieldType, value, Namespace))
                     {
                         yield return item;
                     }
