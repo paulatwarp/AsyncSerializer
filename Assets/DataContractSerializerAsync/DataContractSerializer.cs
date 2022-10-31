@@ -238,7 +238,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (!ns.EndsWith("UnityEngine"))
+                    if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
                     {
                         ns += valueType.Namespace;
                         WritePrefix(null, valueType, ns);

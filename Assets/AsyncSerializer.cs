@@ -41,7 +41,14 @@ public class EnumValueNoContract : AsyncSerializer.IKeyValue
     public string Key => GetType().Name;
     public object Value => values;
 
+    [System.Serializable, DataContract]
     public class SaveValues
+    {
+        [DataMember] public List<Content> list;
+    }
+
+    [System.Serializable]
+    public class Content
     {
         public EnumNoContract type;
     }
@@ -51,7 +58,9 @@ public class EnumValueNoContract : AsyncSerializer.IKeyValue
     public EnumValueNoContract(EnumNoContract type)
     {
         values = new SaveValues();
-        values.type = type;
+        values.list = new List<Content>();
+        values.list.Add(new Content());
+        values.list[0].type = type;
     }
 }
 

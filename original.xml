@@ -3,7 +3,11 @@
 	<AsyncSerializer.SaveValue>
 		<Key>EnumValueNoContract</Key>
 		<Value i:type=":EnumValueNoContract.SaveValues">
-			<type>FIRST</type>
+			<list>
+				<EnumValueNoContract.Content>
+					<type>FIRST</type>
+				</EnumValueNoContract.Content>
+			</list>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
