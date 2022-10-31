@@ -132,6 +132,10 @@ namespace AsyncSerialization
                         yield return item;
                     }
                 }
+                else if (value is Enum)
+                {
+                    writer.WriteString(value.ToString());
+                }
                 else
                 {
                     foreach (var item in WriteDataContractObjectContents(value, ns))

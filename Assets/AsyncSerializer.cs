@@ -7,6 +7,29 @@ using UnityEngine;
 
 
 [System.Serializable, DataContract]
+public enum EnumType
+{
+    [EnumMember(Value = "First")]
+    First,
+    [EnumMember(Value = "Second")]
+    Second
+}
+
+[System.Serializable, DataContract]
+public class EnumValue : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => type;
+
+    EnumType type;
+
+    public EnumValue(EnumType type)
+    {
+        this.type = type;
+    }
+}
+
+[System.Serializable, DataContract]
 public class Vector : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -227,6 +250,8 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new EnumValue(EnumType.First)));
+        list.Add(new SaveValue(new EnumValue(EnumType.Second)));
         list.Add(new SaveValue(new DictionaryData()));
         list.Add(new SaveValue(new EmptyArrayOfNonContract()));
         list.Add(new SaveValue(new ArrayOfInt()));
