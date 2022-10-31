@@ -50,6 +50,33 @@ public class ArrayOfInt: AsyncSerializer.IKeyValue
     }
 }
 
+[System.Serializable]
+public class NonContract
+{
+    public int i;
+}
+
+[System.Serializable, DataContract]
+public class EmptyArrayOfNonContract : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => saveValues;
+
+    SaveValues saveValues;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public List<NonContract> contracts;
+    }
+
+    public EmptyArrayOfNonContract()
+    {
+        saveValues = new SaveValues();
+        saveValues.contracts = new List<NonContract>();
+    }
+}
+
 [System.Serializable, DataContract]
 public class Container : AsyncSerializer.IKeyValue
 {
@@ -171,6 +198,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new EmptyArrayOfNonContract()));
         list.Add(new SaveValue(new ArrayOfInt()));
         list.Add(new SaveValue(new ArrayOfNull()));
         list.Add(new SaveValue(new BoolAsString()));

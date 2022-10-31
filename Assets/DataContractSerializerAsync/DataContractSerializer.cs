@@ -159,9 +159,9 @@ namespace AsyncSerialization
                     {
                         ns += element.Namespace;
                     }
-                    WritePrefix(null, valueType, ns);
                     if (!IsEmpty(value as IEnumerable))
                     {
+                        WritePrefix(null, valueType, ns);
                         if (type.Namespace == "System")
                         {
                             namespaced = WriteTypeNamespace(valueType, ns);
@@ -170,6 +170,10 @@ namespace AsyncSerialization
                         {
                             yield return item;
                         }
+                    }
+                    else if (element != null && element.Namespace != null)
+                    {
+                        WritePrefix(null, valueType, ns);
                     }
                 }
             }
