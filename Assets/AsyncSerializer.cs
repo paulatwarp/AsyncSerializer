@@ -106,6 +106,12 @@ public class Container : AsyncSerializer.IKeyValue
     [System.Serializable, DataContract]
     public class SaveValues
     {
+        public SaveValues(int secret)
+        {
+            this.secret = secret;
+        }
+
+        [DataMember] int secret;
         [DataMember] public Vector3 vector;
         [DataMember] public double alpha;
         [DataMember] public float phi;
@@ -123,7 +129,7 @@ public class Container : AsyncSerializer.IKeyValue
 
     public Container(int value)
     {
-        this.value = new SaveValues()
+        this.value = new SaveValues(value)
         {
             vector = Vector3.one * value,
             alpha = 1.0 / (value + 1),

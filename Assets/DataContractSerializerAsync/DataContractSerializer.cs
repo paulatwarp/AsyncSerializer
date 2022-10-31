@@ -355,7 +355,7 @@ namespace AsyncSerialization
         {
             Type type = graph.GetType();
             var members = new SortedList<string, (Type, object)>();
-            foreach (var property in type.GetProperties())
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
                 if (property.IsDefined(typeof(DataMemberAttribute), true))
                 {
@@ -366,7 +366,7 @@ namespace AsyncSerialization
                     }
                 }
             }
-            foreach (var field in type.GetFields())
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
                 if (field.IsDefined(typeof(DataMemberAttribute), true))
                 {
