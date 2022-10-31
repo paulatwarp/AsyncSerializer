@@ -15,6 +15,12 @@ public enum EnumType
     Second
 }
 
+public enum EnumNoContract
+{
+    FIRST,
+    SECOND
+}
+
 [System.Serializable, DataContract]
 public class EnumValue : AsyncSerializer.IKeyValue
 {
@@ -24,6 +30,20 @@ public class EnumValue : AsyncSerializer.IKeyValue
     EnumType type;
 
     public EnumValue(EnumType type)
+    {
+        this.type = type;
+    }
+}
+
+[System.Serializable, DataContract]
+public class EnumValueNoContract : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => type;
+
+    EnumNoContract type;
+
+    public EnumValueNoContract(EnumNoContract type)
     {
         this.type = type;
     }
@@ -280,6 +300,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));

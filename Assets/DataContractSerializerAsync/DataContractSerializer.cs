@@ -240,6 +240,15 @@ namespace AsyncSerialization
                         }
                     }
                 }
+                else if (value is Enum)
+                {
+                    if (!namespaces.Contains(ns))
+                    {
+                        WritePrefix(null, valueType, ns);
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
+                    writer.WriteString(value.ToString());
+                }
                 else
                 {
                     if (type == typeof(object))
