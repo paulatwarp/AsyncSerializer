@@ -6,6 +6,42 @@ using System.Xml;
 using UnityEngine;
 
 
+namespace My.Namespace
+{
+    [System.Serializable, DataContract(IsReference = true)]
+    [KnownType(typeof(SaveName))]
+    public abstract class SaveData
+    {
+        [DataMember] public bool enable;
+    }
+
+    [System.Serializable, DataContract(IsReference = true)]
+    public class SaveName : SaveData
+    {
+        [DataMember] public string name;
+    }
+}
+
+[System.Serializable, DataContract]
+public class ReferenceObject : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    IEnumerable<My.Namespace.SaveData> values;
+
+    public ReferenceObject()
+    {
+        var saves = new My.Namespace.SaveData[1];
+        saves[0] = new My.Namespace.SaveName()
+        {
+            enable = true,
+            name = "MyName"
+        };
+        values = saves;
+    }
+}
+
 [System.Serializable, DataContract]
 public enum EnumType
 {
@@ -324,6 +360,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfList()));
