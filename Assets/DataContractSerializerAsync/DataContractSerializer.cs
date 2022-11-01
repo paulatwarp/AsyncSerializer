@@ -15,20 +15,25 @@ namespace AsyncSerialization
     {
         public const string Namespace = "http://schemas.datacontract.org/2004/07/";
         public const string CollectionsNamespace = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+        public const string SerializationNamespace = "http://schemas.microsoft.com/2003/10/Serialization/";
         public const string XsiTypeLocalName = "type";
         public const string XsiPrefix = "i";
+        public const string SerPrefix = "z";
         public const string XmlnsPrefix = "xmlns";
         public const string XsiNilLocalName = "nil";
+        public const string IdLocalName = "Id";
         Type rootElementType;
         XmlWriter writer;
         int depth;
         int prefixes;
+        int id;
         Dictionary<Type, string> primitives;
         Stack<string> namespaces;
 
         public DataContractSerializer(Type type)
         {
             namespaces = new Stack<string>();
+            id = 0;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
             primitives[typeof(string)] = "string";
@@ -114,11 +119,15 @@ namespace AsyncSerialization
             bool namespaced = false;
             if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
+                if (element != null && element.Namespace != null)
+                {
+                    ns += element.Namespace;
+                }
                 if (!namespaces.Contains(ns))
                 {
-                    if (value is IEnumerable)
+                    if (element != null)
                     {
-                        writer.LookupPrefix(ns);
+                        WritePrefix(null, element, ns);
                     }
                     else
                     {
@@ -168,9 +177,9 @@ namespace AsyncSerialization
                     if (value is IDictionary)
                     {
                         WritePrefix(null, valueType, ns);
-                        foreach (var sequencePoint in WriteDictionary(value as IDictionary, ns))
+                        foreach (var step in WriteDictionary(value as IDictionary, ns))
                         {
-                            yield return sequencePoint;
+                            yield return step;
                         }
                     }
                     else if (!IsEmpty(value as IEnumerable))
@@ -340,20 +349,30 @@ namespace AsyncSerialization
         {
             depth++;
             prefixes = 0;
+            string type = GetTypeString(GetArrayType(array.GetType()));
             foreach (var item in array)
             {
                 if (item == null)
                 {
-                    WriteNull(GetTypeString(GetArrayType(array.GetType())));
+                    WriteNull(type);
                 }
                 else
                 {
-                    Type type = item.GetType();
-                    string description = GetTypeString(type);
-                    writer.WriteStartElement(description, Namespace);
-                    foreach (var subitem in WriteDataContractObjectContents(item, ns))
+                    writer.WriteStartElement(type, ns);
+                    Type itemType = item.GetType();
+                    DataContractAttribute contract = itemType.GetCustomAttribute<DataContractAttribute>();
+                    if (contract != null && contract.IsReference)
                     {
-                        yield return subitem;
+                        id++;
+                        writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, $"{XsiPrefix}{id}");
+                        writer.LookupPrefix(ns);
+                        writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                        writer.WriteQualifiedName(GetTypeString(itemType), ns);
+                        writer.WriteEndAttribute();
+                    }
+                    foreach (var step in WriteDataContractObjectContents(item, ns))
+                    {
+                        yield return step;
                     }
                     writer.WriteEndElement();
                 }
@@ -366,13 +385,13 @@ namespace AsyncSerialization
             foreach (DictionaryEntry entry in dictionary)
             {
                 writer.WriteStartElement(null, GetTypeString(entry), ns);
-                foreach (var sequencePoint in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
+                foreach (var step in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
                 {
-                    yield return sequencePoint;
+                    yield return step;
                 }
-                foreach (var sequencePoint in WriteField("Value", entry.Value.GetType(), entry.Value, ns))
+                foreach (var step in WriteField("Value", entry.Value.GetType(), entry.Value, ns))
                 {
-                    yield return sequencePoint;
+                    yield return step;
                 }
                 writer.WriteEndElement();
             }
@@ -384,9 +403,9 @@ namespace AsyncSerialization
             {
                 Type type = item.GetType();
                 string description = GetTypeString(type);
-                foreach (var sequencePoint in WriteField(description, type, item, ns))
+                foreach (var step in WriteField(description, type, item, ns))
                 {
-                    yield return sequencePoint;
+                    yield return step;
                 }
             }
         }
