@@ -361,6 +361,7 @@ public class AsyncSerializer : MonoBehaviour
     {
         var list = new List<SaveValue>();
         list.Add(new SaveValue(new ReferenceObject()));
+        list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfList()));
