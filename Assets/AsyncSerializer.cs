@@ -8,17 +8,28 @@ using UnityEngine;
 
 namespace My.Namespace
 {
-    [System.Serializable, DataContract(IsReference = true)]
-    [KnownType(typeof(SaveName))]
+    [DataContract(IsReference = true), KnownType(typeof(SaveName))]
     public abstract class SaveData
     {
-        [DataMember] public bool enable;
+        [DataMember] protected bool enable;
+        [DataMember] public string name;
+        [DataMember] public object [] list;
+
+        protected abstract void Save(bool enable);
     }
 
     [System.Serializable, DataContract(IsReference = true)]
     public class SaveName : SaveData
     {
-        [DataMember] public string name;
+        public SaveName(bool enable)
+        {
+            Save(enable);
+        }
+
+        protected override void Save(bool enable)
+        {
+            this.enable = enable;
+        }
     }
 }
 
@@ -33,10 +44,10 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
     public ReferenceObject()
     {
         var saves = new My.Namespace.SaveData[1];
-        saves[0] = new My.Namespace.SaveName()
+        saves[0] = new My.Namespace.SaveName(true)
         {
-            enable = true,
-            name = "MyName"
+            name = "MyName",
+            list = new object[1] { "MyName" }
         };
         values = saves;
     }

@@ -187,7 +187,7 @@ namespace AsyncSerialization
                         if (!namespaces.Contains(ns))
                         {
                             WritePrefix(null, valueType, ns);
-                            if (type.Namespace == "System")
+                            if (type.Namespace == "System" && type != valueType)
                             {
                                 namespaced = WriteTypeNamespace(valueType, ns);
                             }
@@ -401,7 +401,7 @@ namespace AsyncSerialization
         {
             foreach (var item in array)
             {
-                Type type = item.GetType();
+                Type type = GetArrayType(array.GetType());
                 string description = GetTypeString(type);
                 foreach (var step in WriteField(description, type, item, ns))
                 {
@@ -410,10 +410,8 @@ namespace AsyncSerialization
             }
         }
 
-        SortedList<string, (Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
+        void AddSorterMembers(SortedList<string, (Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
         {
-            Type type = graph.GetType();
-            var members = new SortedList<string, (Type, object)>();
             foreach (var property in type.GetProperties(flags))
             {
                 if (property.GetSetMethod() == null || property.GetGetMethod().GetParameters().Length > 0)
@@ -425,7 +423,10 @@ namespace AsyncSerialization
                     if (property.GetIndexParameters().Length == 0)
                     {
                         object value = property.GetValue(graph);
-                        members.Add(property.Name, (property.PropertyType, value));
+                        if (!list.ContainsKey(property.Name))
+                        {
+                            list.Add(property.Name, (property.PropertyType, value));
+                        }
                     }
                 }
             }
@@ -434,9 +435,23 @@ namespace AsyncSerialization
                 if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
-                    members.Add(field.Name, (field.FieldType, value));
+                    if (!list.ContainsKey(field.Name))
+                    {
+                        list.Add(field.Name, (field.FieldType, value));
+                    }
                 }
             }
+            if (type.BaseType != null)
+            {
+                AddSorterMembers(list, graph, type.BaseType, filter, flags);
+            }
+        }
+
+        SortedList<string, (Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
+        {
+            Type type = graph.GetType();
+            var members = new SortedList<string, (Type, object)>();
+            AddSorterMembers(members, graph, type, filter, flags);
             return members;
         }
 
