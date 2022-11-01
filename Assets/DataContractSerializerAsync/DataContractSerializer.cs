@@ -40,6 +40,7 @@ namespace AsyncSerialization
             primitives[typeof(int)] = "int";
             primitives[typeof(bool)] = "boolean";
             primitives[typeof(float)] = "float";
+            primitives[typeof(object)] = "anyType";
         }
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
