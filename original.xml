@@ -12,6 +12,10 @@
 					</d5p1:anyType>
 					<d5p1:anyType i:type=":ContractType">
 						<alpha>1</alpha>
+						<list>
+							<d5p1:string>1</d5p1:string>
+							<d5p1:string>2</d5p1:string>
+						</list>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>
@@ -30,6 +34,10 @@
 					</d5p1:anyType>
 					<d5p1:anyType i:type=":ContractType">
 						<alpha>1</alpha>
+						<list>
+							<d5p1:string>1</d5p1:string>
+							<d5p1:string>2</d5p1:string>
+						</list>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>
@@ -164,6 +172,10 @@
 			<contracts>
 				<ContractType>
 					<alpha>0</alpha>
+					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+						<d6p1:string>1</d6p1:string>
+					</list>
 				</ContractType>
 			</contracts>
 			<gamma>1</gamma>
@@ -196,9 +208,17 @@
 			<contracts>
 				<ContractType>
 					<alpha>0</alpha>
+					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+						<d6p1:string>1</d6p1:string>
+					</list>
 				</ContractType>
 				<ContractType>
 					<alpha>1</alpha>
+					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>1</d6p1:string>
+						<d6p1:string>2</d6p1:string>
+					</list>
 				</ContractType>
 			</contracts>
 			<gamma>2</gamma>

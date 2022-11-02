@@ -304,9 +304,13 @@ public class ContractType
     public ContractType(int i)
     {
         alpha = i;
+        list = new List<string>();
+        list.Add(i.ToString());
+        list.Add((i+1).ToString());
     }
 
     [DataMember] public double alpha;
+    [DataMember] public List<string> list;
 }
 
 [System.Serializable, DataContract]

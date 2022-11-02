@@ -196,13 +196,17 @@ namespace AsyncSerialization
                     }
                     else if (!IsEmpty(value as IEnumerable))
                     {
-                        if (!IsTopNamespace(ns))
+                        if (!namespaces.Contains(ns))
                         {
                             WritePrefix(null, valueType, ns);
                             if (type.Namespace == "System" && type != valueType)
                             {
                                 namespaced = WriteTypeNamespace(valueType, ns);
                             }
+                        }
+                        else if (!IsTopNamespace(ns))
+                        {
+                            writer.LookupPrefix(ns);
                         }
                         if (!namespaced)
                         {
