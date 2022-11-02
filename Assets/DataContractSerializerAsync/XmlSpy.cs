@@ -52,10 +52,17 @@ public class XmlSpy : XmlWriter
     {
         if (compare)
         {
-            string expected = log[position];
-            if (expected != line)
+            if (position < log.Count)
             {
-                Debug.LogError($"excpected {expected} got {line} at line {position + 1}");
+                string expected = log[position];
+                if (expected != line)
+                {
+                    Debug.LogError($"expected {expected} got {line} at line {position + 1}");
+                }
+            }
+            else
+            {
+                Debug.LogError($"additional entry {line} at line {position + 1}");
             }
             position++;
         }

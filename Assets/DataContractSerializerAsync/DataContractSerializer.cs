@@ -293,7 +293,7 @@ namespace AsyncSerialization
                         namespaced = WriteTypeNamespace(valueType, ns);
                     }
                     var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.Instance);
-                    foreach (var (fieldName, (fieldType, fieldValue)) in members)
+                    foreach (var (fieldName, fieldType, fieldValue) in members)
                     {
                         if (fieldValue != null)
                         {
@@ -448,8 +448,13 @@ namespace AsyncSerialization
             }
         }
 
-        void AddSorterMembers(SortedList<string, (Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
+        void AddSorterMembers(List<(string, Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
         {
+            var sortedList = new SortedList<string, (Type, object)>();
+            if (type.BaseType != null)
+            {
+                AddSorterMembers(list, graph, type.BaseType, filter, flags);
+            }
             foreach (var property in type.GetProperties(flags))
             {
                 if (property.GetSetMethod() == null || property.GetGetMethod().GetParameters().Length > 0)
@@ -461,9 +466,9 @@ namespace AsyncSerialization
                     if (property.GetIndexParameters().Length == 0)
                     {
                         object value = property.GetValue(graph);
-                        if (!list.ContainsKey(property.Name))
+                        if (!sortedList.ContainsKey(property.Name))
                         {
-                            list.Add(property.Name, (property.PropertyType, value));
+                            sortedList.Add(property.Name, (property.PropertyType, value));
                         }
                     }
                 }
@@ -473,22 +478,25 @@ namespace AsyncSerialization
                 if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
-                    if (!list.ContainsKey(field.Name))
+                    if (!sortedList.ContainsKey(field.Name))
                     {
-                        list.Add(field.Name, (field.FieldType, value));
+                        sortedList.Add(field.Name, (field.FieldType, value));
                     }
                 }
             }
-            if (type.BaseType != null)
+            foreach (var (name, (memberType, value)) in sortedList)
             {
-                AddSorterMembers(list, graph, type.BaseType, filter, flags);
+                if (!list.Contains((name, memberType, value)))
+                {
+                    list.Add((name, memberType, value));
+                }
             }
         }
 
-        SortedList<string, (Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
+        List<(string, Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
         {
             Type type = graph.GetType();
-            var members = new SortedList<string, (Type, object)>();
+            var members = new List<(string, Type, object)>();
             AddSorterMembers(members, graph, type, filter, flags);
             return members;
         }
@@ -496,7 +504,7 @@ namespace AsyncSerialization
         private IEnumerable WriteDataContractObjectContents(object graph, string ns)
         {
             var members = GetSortedMembers(graph, typeof(DataMemberAttribute), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            foreach (var (name, (type, value)) in members)
+            foreach (var (name, type, value) in members)
             {
                 if (value != null)
                 {

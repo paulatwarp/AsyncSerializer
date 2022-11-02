@@ -271,6 +271,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public int beta;
         [DataMember] public byte gamma;
         [DataMember] public bool condition;
+        [DataMember] public bool conditions;
         [DataMember] public List<string> list;
         [DataMember] public List<Vector3> vectors;
         [DataMember] public List<ContractType> contracts;
@@ -290,6 +291,7 @@ public class Container : AsyncSerializer.IKeyValue
             beta = value,
             gamma = (byte)value,
             condition = value != 0,
+            conditions = value != 0,
             list = new List<string>(),
             vectors = new List<Vector3>(),
             contracts = new List<ContractType>(),
@@ -446,7 +448,7 @@ public class AsyncSerializer : MonoBehaviour
             }
             xml = writer.ToString();
         }
-
+        File.WriteAllText("new.xml", xml.ToString());
         Debug.Log(xml);
     }
 }
