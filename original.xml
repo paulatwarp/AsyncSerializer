@@ -10,6 +10,9 @@
 					<d5p1:anyType i:type=":NonContract">
 						<i>0</i>
 					</d5p1:anyType>
+					<d5p1:anyType i:type=":ContractType">
+						<alpha>1</alpha>
+					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>
 			</d3p1:SaveData>
@@ -24,6 +27,9 @@
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
 					<d5p1:anyType i:type=":NonContract">
 						<i>0</i>
+					</d5p1:anyType>
+					<d5p1:anyType i:type=":ContractType">
+						<alpha>1</alpha>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>

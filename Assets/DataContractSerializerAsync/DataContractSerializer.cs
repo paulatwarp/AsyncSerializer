@@ -149,6 +149,12 @@ namespace AsyncSerialization
                 }
                 else
                 {
+                    if (type == typeof(object) && !namespaces.Contains(Namespace))
+                    {
+                        ns = Namespace;
+                        WritePrefix(null, valueType, ns);
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
                     foreach (var item in WriteDataContractObjectContents(value, ns))
                     {
                         yield return item;
