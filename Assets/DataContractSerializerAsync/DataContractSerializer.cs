@@ -118,10 +118,6 @@ namespace AsyncSerialization
         IEnumerable WriteField(string name, Type type, object value, string ns)
         {
             depth++;
-            if (depth > 10)
-            {
-                Debug.Log("Overflow");
-            }
             prefixes = 0;
             writer.WriteStartElement(name, ns);
             Type valueType = value.GetType();
@@ -482,6 +478,14 @@ namespace AsyncSerialization
                     }
                 }
             }
+            foreach (var (name, (memberType, value)) in sortedList)
+            {
+                if (!list.Contains((name, memberType, value)))
+                {
+                    list.Add((name, memberType, value));
+                }
+            }
+            sortedList.Clear();
             foreach (var field in type.GetFields(flags))
             {
                 if (filter == null || field.IsDefined(filter, true))
