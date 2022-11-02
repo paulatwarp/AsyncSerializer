@@ -143,7 +143,7 @@ namespace AsyncSerialization
                 }
                 if (value is IEnumerable)
                 {
-                    if (!namespaces.Contains(ns) && type != valueType)
+                    if (!namespaced && type != valueType)
                     {
                         WritePrefix(null, valueType, ns);
                         namespaced = WriteTypeNamespace(valueType, ns);
