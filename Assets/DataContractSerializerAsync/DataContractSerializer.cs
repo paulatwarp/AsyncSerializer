@@ -262,6 +262,12 @@ namespace AsyncSerialization
                             namespaced = WriteTypeNamespace(valueType, ns);
                         }
                     }
+                    else if (type == typeof(object))
+                    {
+                        ns = Namespace;
+                        WritePrefix(null, valueType, ns);
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
                     var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.Instance);
                     foreach (var (fieldName, (fieldType, fieldValue)) in members)
                     {
