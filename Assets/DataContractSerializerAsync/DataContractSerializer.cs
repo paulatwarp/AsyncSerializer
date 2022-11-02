@@ -137,6 +137,10 @@ namespace AsyncSerialization
                     }
                     else
                     {
+                        if (valueType.Namespace != null)
+                        {
+                            ns += valueType.Namespace;
+                        }
                         WritePrefix(null, valueType, ns);
                     }
                     namespaced = WriteTypeNamespace(valueType, ns);
@@ -163,8 +167,15 @@ namespace AsyncSerialization
                     if (type == typeof(object) && !namespaces.Contains(Namespace))
                     {
                         ns = Namespace;
-                        WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        if (element == null && valueType.Namespace != null)
+                        {
+                            ns += valueType.Namespace;
+                        }
+                        else
+                        {
+                            WritePrefix(null, valueType, ns);
+                            namespaced = WriteTypeNamespace(valueType, ns);
+                        }
                     }
                     foreach (var item in WriteDataContractObjectContents(value, ns))
                     {
@@ -200,33 +211,39 @@ namespace AsyncSerialization
                             yield return step;
                         }
                     }
-                    else if (!IsEmpty(value as IEnumerable))
+                    else
                     {
-                        if (!namespaces.Contains(ns))
+                        if (IsEmpty(value as IEnumerable))
                         {
-                            WritePrefix(null, valueType, ns);
-                            if (type.Namespace == "System" && type != valueType)
+                            if (element != null && element.Namespace != null && !namespaces.Contains(CollectionsNamespace))
                             {
-                                namespaced = WriteTypeNamespace(valueType, ns);
+                                WritePrefix(null, valueType, ns);
                             }
                         }
-                        else if (!IsTopNamespace(ns))
+                        else
                         {
-                            writer.LookupPrefix(ns);
+                            if (!namespaces.Contains(ns))
+                            {
+                                WritePrefix(null, valueType, ns);
+                                if (type.Namespace == "System" && type != valueType)
+                                {
+                                    namespaced = WriteTypeNamespace(valueType, ns);
+                                }
+                            }
+                            else if (!IsTopNamespace(ns))
+                            {
+                                writer.LookupPrefix(ns);
+                            }
+                            if (!namespaced)
+                            {
+                                namespaces.Push(ns);
+                                namespaced = true;
+                            }
+                            foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
+                            {
+                                yield return item;
+                            }
                         }
-                        if (!namespaced)
-                        {
-                            namespaces.Push(ns);
-                            namespaced = true;
-                        }
-                        foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
-                        {
-                            yield return item;
-                        }
-                    }
-                    else if (element != null && element.Namespace != null)
-                    {
-                        WritePrefix(null, valueType, ns);
                     }
                 }
             }
@@ -366,7 +383,7 @@ namespace AsyncSerialization
                 }
                 else if (type.Namespace != null && type.FullName.Contains(type.Namespace))
                 {
-                    stringBuilder.Append(type.Name);
+                    stringBuilder.Append(type.FullName.Replace(type.Namespace + ".", "").Replace("+", "."));
                 }
                 else
                 {
