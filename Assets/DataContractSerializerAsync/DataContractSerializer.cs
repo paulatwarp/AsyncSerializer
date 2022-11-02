@@ -110,6 +110,11 @@ namespace AsyncSerialization
             return written;
         }
 
+        bool IsTopNamespace(string ns)
+        {
+            return namespaces.Count == 0? false : namespaces.Peek() == ns;
+        }
+
         IEnumerable WriteField(string name, Type type, object value, string ns)
         {
             depth++;
@@ -191,7 +196,7 @@ namespace AsyncSerialization
                     }
                     else if (!IsEmpty(value as IEnumerable))
                     {
-                        if (!namespaces.Contains(ns))
+                        if (!IsTopNamespace(ns))
                         {
                             WritePrefix(null, valueType, ns);
                             if (type.Namespace == "System" && type != valueType)
