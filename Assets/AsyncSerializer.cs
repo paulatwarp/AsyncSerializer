@@ -69,6 +69,29 @@ public enum EnumNoContract
 }
 
 [System.Serializable, DataContract]
+public class InternalData
+{
+    int internalData;
+
+    [DataMember] public int Data { get { return internalData; } internal set { internalData = value; } }
+}
+
+[System.Serializable, DataContract]
+public class InternalSet : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => data;
+
+    InternalData data;
+
+    public InternalSet(int x)
+    {
+        data = new InternalData();
+        data.Data = x;
+    }
+}
+
+[System.Serializable, DataContract]
 public class EnumValue : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -386,6 +409,7 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new InternalSet(1)));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));

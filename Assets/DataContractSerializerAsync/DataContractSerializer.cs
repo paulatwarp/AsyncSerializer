@@ -118,6 +118,10 @@ namespace AsyncSerialization
         IEnumerable WriteField(string name, Type type, object value, string ns)
         {
             depth++;
+            if (depth > 10)
+            {
+                Debug.Log("Overflow");
+            }
             prefixes = 0;
             writer.WriteStartElement(name, ns);
             Type valueType = value.GetType();
@@ -457,7 +461,12 @@ namespace AsyncSerialization
             }
             foreach (var property in type.GetProperties(flags))
             {
-                if (property.GetSetMethod() == null || property.GetGetMethod().GetParameters().Length > 0)
+                if (property.GetSetMethod(true) == null)
+                {
+                    continue;
+                }
+                MethodInfo method = property.GetGetMethod();
+                if (method != null && method.GetParameters().Length > 0)
                 {
                     continue;
                 }
