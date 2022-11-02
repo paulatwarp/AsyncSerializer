@@ -143,9 +143,17 @@ namespace AsyncSerialization
                 }
                 if (value is IEnumerable)
                 {
-                    foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
+                    if (!IsEmpty(value as IEnumerable))
                     {
-                        yield return item;
+                        if (!namespaces.Contains(ns) && type != valueType)
+                        {
+                            WritePrefix(null, valueType, ns);
+                            namespaced = WriteTypeNamespace(valueType, ns);
+                        }
+                        foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
+                        {
+                            yield return item;
+                        }
                     }
                 }
                 else if (value is Enum)

@@ -202,9 +202,11 @@ public class NonContract
         this.i = i;
         list = new List<string>();
         list.Add(null);
+        array = new ContractType[0];
     }
     public int i;
     public List<string> list;
+    public ContractType[] array;
 }
 
 [System.Serializable, DataContract]
