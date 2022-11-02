@@ -47,7 +47,7 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
         saves[0] = new My.Namespace.SaveName(true)
         {
             name = "MyName",
-            list = new object[] { "MyName", new NonContract(), new ContractType(1) }
+            list = new object[] { "MyName", new NonContract(1), new ContractType(1) }
         };
         values = saves;
     }
@@ -197,7 +197,14 @@ public class ArrayOfInt: AsyncSerializer.IKeyValue
 [System.Serializable]
 public class NonContract
 {
+    public NonContract(int i)
+    {
+        this.i = i;
+        list = new List<string>();
+        list.Add(null);
+    }
     public int i;
+    public List<string> list;
 }
 
 [System.Serializable, DataContract]

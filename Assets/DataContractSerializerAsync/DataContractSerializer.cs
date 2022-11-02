@@ -72,9 +72,9 @@ namespace AsyncSerialization
             return empty;
         }
 
-        void WriteNull(string field)
+        void WriteNull(string field, string ns)
         {
-            writer.WriteStartElement(field, Namespace);
+            writer.WriteStartElement(field, ns);
             writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
             writer.WriteEndElement();
         }
@@ -298,7 +298,7 @@ namespace AsyncSerialization
                         }
                         else
                         {
-                            WriteNull(fieldName);
+                            WriteNull(fieldName, ns);
                         }
                     }
                 }
@@ -379,7 +379,7 @@ namespace AsyncSerialization
             {
                 if (item == null)
                 {
-                    WriteNull(type);
+                    WriteNull(type, ns);
                 }
                 else
                 {
@@ -424,13 +424,20 @@ namespace AsyncSerialization
 
         private IEnumerable WritePrimitiveEnumerable(IEnumerable array, string ns)
         {
+            Type type = GetArrayType(array.GetType());
+            string description = GetTypeString(type);
             foreach (var item in array)
             {
-                Type type = GetArrayType(array.GetType());
-                string description = GetTypeString(type);
-                foreach (var step in WriteField(description, type, item, ns))
+                if (item == null)
                 {
-                    yield return step;
+                    WriteNull(description, ns);
+                }
+                else
+                {
+                    foreach (var step in WriteField(description, type, item, ns))
+                    {
+                        yield return step;
+                    }
                 }
             }
         }
@@ -494,7 +501,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    WriteNull(name);
+                    WriteNull(name, ns);
                 }
             }
         }
