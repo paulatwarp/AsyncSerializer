@@ -47,7 +47,7 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
         saves[0] = new My.Namespace.SaveName(true)
         {
             name = "MyName",
-            list = new object[2] { "MyName", new NonContract() }
+            list = new object[] { "MyName", new NonContract(), new ContractType(1) }
         };
         values = saves;
     }
