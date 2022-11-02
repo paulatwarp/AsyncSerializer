@@ -199,12 +199,15 @@ namespace AsyncSerialization
                                 namespaced = WriteTypeNamespace(valueType, ns);
                             }
                         }
-                        namespaces.Push(ns);
+                        if (!namespaced)
+                        {
+                            namespaces.Push(ns);
+                            namespaced = true;
+                        }
                         foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
                         {
                             yield return item;
                         }
-                        namespaces.Pop();
                     }
                     else if (element != null && element.Namespace != null)
                     {
