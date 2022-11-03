@@ -44,6 +44,7 @@ namespace AsyncSerialization
 
         public IEnumerable WriteObject(XmlWriter writer, object graph)
         {
+            yield return graph;
             this.writer = writer;
             string type = GetTypeString(graph.GetType());
             foreach (var item in WriteField(type, graph.GetType(), graph, Namespace))
@@ -116,6 +117,7 @@ namespace AsyncSerialization
 
         IEnumerable WriteField(string name, Type type, object value, string ns)
         {
+            yield return value;
             depth++;
             prefixes = 0;
             writer.WriteStartElement(name, ns);
@@ -401,6 +403,7 @@ namespace AsyncSerialization
             {
                 if (entry == null)
                 {
+                    yield return entry;
                     WriteNull(type, ns);
                 }
                 else
@@ -431,6 +434,7 @@ namespace AsyncSerialization
         {
             foreach (DictionaryEntry entry in dictionary)
             {
+                yield return entry;
                 writer.WriteStartElement(null, GetTypeString(entry), ns);
                 foreach (var item in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
                 {
@@ -452,6 +456,7 @@ namespace AsyncSerialization
             {
                 if (entry == null)
                 {
+                    yield return entry;
                     WriteNull(description, ns);
                 }
                 else
@@ -544,6 +549,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
+                    yield return value;
                     WriteNull(name, ns);
                 }
             }
