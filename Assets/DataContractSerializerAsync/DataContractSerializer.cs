@@ -9,7 +9,6 @@ namespace AsyncSerialization
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
-    using UnityEngine;
 
     public class DataContractSerializer
     {
@@ -206,9 +205,9 @@ namespace AsyncSerialization
                     if (value is IDictionary)
                     {
                         WritePrefix(null, valueType, ns);
-                        foreach (var step in WriteDictionary(value as IDictionary, ns))
+                        foreach (var item in WriteDictionary(value as IDictionary, ns))
                         {
-                            yield return step;
+                            yield return item;
                         }
                     }
                     else
@@ -398,16 +397,16 @@ namespace AsyncSerialization
             depth++;
             prefixes = 0;
             string type = GetTypeString(GetArrayType(array.GetType()));
-            foreach (var item in array)
+            foreach (var entry in array)
             {
-                if (item == null)
+                if (entry == null)
                 {
                     WriteNull(type, ns);
                 }
                 else
                 {
                     writer.WriteStartElement(type, ns);
-                    Type itemType = item.GetType();
+                    Type itemType = entry.GetType();
                     DataContractAttribute contract = itemType.GetCustomAttribute<DataContractAttribute>();
                     if (contract != null && contract.IsReference)
                     {
@@ -418,9 +417,9 @@ namespace AsyncSerialization
                         writer.WriteQualifiedName(GetTypeString(itemType), ns);
                         writer.WriteEndAttribute();
                     }
-                    foreach (var step in WriteDataContractObjectContents(item, ns))
+                    foreach (var item in WriteDataContractObjectContents(entry, ns))
                     {
-                        yield return step;
+                        yield return item;
                     }
                     writer.WriteEndElement();
                 }
@@ -433,13 +432,13 @@ namespace AsyncSerialization
             foreach (DictionaryEntry entry in dictionary)
             {
                 writer.WriteStartElement(null, GetTypeString(entry), ns);
-                foreach (var step in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
+                foreach (var item in WriteField("Key", entry.Key.GetType(), entry.Key, ns))
                 {
-                    yield return step;
+                    yield return item;
                 }
-                foreach (var step in WriteField("Value", entry.Value.GetType(), entry.Value, ns))
+                foreach (var item in WriteField("Value", entry.Value.GetType(), entry.Value, ns))
                 {
-                    yield return step;
+                    yield return item;
                 }
                 writer.WriteEndElement();
             }
@@ -449,17 +448,17 @@ namespace AsyncSerialization
         {
             Type type = GetArrayType(array.GetType());
             string description = GetTypeString(type);
-            foreach (var item in array)
+            foreach (var entry in array)
             {
-                if (item == null)
+                if (entry == null)
                 {
                     WriteNull(description, ns);
                 }
                 else
                 {
-                    foreach (var step in WriteField(description, type, item, ns))
+                    foreach (var item in WriteField(description, type, entry, ns))
                     {
-                        yield return step;
+                        yield return item;
                     }
                 }
             }
