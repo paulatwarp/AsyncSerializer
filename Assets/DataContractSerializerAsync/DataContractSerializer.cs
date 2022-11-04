@@ -9,6 +9,7 @@ namespace AsyncSerialization
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
+    using UnityEngine;
 
     public class DataContractSerializer
     {
@@ -196,13 +197,16 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (element == null || element.Namespace == "System" || element.Namespace == "System.Collections.Generic")
+                    if (IsArray(type) && element != null && element.Namespace != "System")
                     {
-                        ns = CollectionsNamespace;
+                        if (element.Namespace != null)
+                        {
+                            ns += element.Namespace;
+                        }
                     }
                     else
                     {
-                        ns += element.Namespace;
+                        ns = CollectionsNamespace;
                     }
                     if (value is IDictionary)
                     {
@@ -310,7 +314,7 @@ namespace AsyncSerialization
                         WritePrefix(null, valueType, ns);
                         namespaced = WriteTypeNamespace(valueType, ns);
                     }
-                    var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.Instance);
+                    var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                     foreach (var (fieldName, fieldType, fieldValue) in members)
                     {
                         if (fieldValue != null)
@@ -374,6 +378,16 @@ namespace AsyncSerialization
                 {
                     stringBuilder.Append("ArrayOf");
                     stringBuilder.Append(GetTypeString(element));
+                }
+            }
+            else if (type.IsGenericType)
+            {
+                Type[] elements = type.GetGenericArguments();
+                if (elements != null && elements.Length == 2)
+                {
+                    stringBuilder.Append("KeyValuePairOf");
+                    stringBuilder.Append(GetTypeString(elements[0]));
+                    stringBuilder.Append(GetTypeString(elements[1]));
                 }
             }
             else

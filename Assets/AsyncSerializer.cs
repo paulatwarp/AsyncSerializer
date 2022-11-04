@@ -160,6 +160,51 @@ public class ListOfList : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class ListOfKeyValuePair : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    SaveValues values;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public List<KeyValuePair<string, float>> list;
+    }
+
+    public ListOfKeyValuePair(float x)
+    {
+        values = new SaveValues();
+        values.list = new List<KeyValuePair<string, float>>();
+        values.list.Add(new KeyValuePair<string, float>(x.ToString(), x));
+    }
+}
+
+[System.Serializable, DataContract]
+public class ListOfString: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    SaveValues values;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public List<string> list;
+    }
+
+    public ListOfString(float x)
+    {
+        values = new SaveValues();
+        values.list = new List<string>();
+        values.list.Add(x.ToString());
+    }
+}
+
+
+[System.Serializable, DataContract]
 public class Vector : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -409,11 +454,13 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
+        list.Add(new SaveValue(new ListOfString(1)));
+        list.Add(new SaveValue(new ListOfKeyValuePair(1)));
         list.Add(new SaveValue(new InternalSet(1)));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));
-        list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));

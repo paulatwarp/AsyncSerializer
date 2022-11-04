@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>EnumValueNoContract</Key>
+		<Value i:type=":EnumValueNoContract.SaveValues">
+			<list>
+				<EnumValueNoContract.Content>
+					<alpha>true</alpha>
+					<type>FIRST</type>
+				</EnumValueNoContract.Content>
+			</list>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>ListOfString</Key>
+		<Value i:type=":ListOfString.SaveValues">
+			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:string>1</d4p1:string>
+			</list>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>ListOfKeyValuePair</Key>
+		<Value i:type=":ListOfKeyValuePair.SaveValues">
+			<list xmlns:d4p1="http://schemas.datacontract.org/2004/07/System.Collections.Generic">
+				<d4p1:KeyValuePairOfstringfloat>
+					<d4p1:key>1</d4p1:key>
+					<d4p1:value>1</d4p1:value>
+				</d4p1:KeyValuePairOfstringfloat>
+			</list>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>InternalSet</Key>
 		<Value i:type=":InternalData">
 			<Data>1</Data>
@@ -61,17 +91,6 @@
 	<AsyncSerializer.SaveValue>
 		<Key>BoolAsObject</Key>
 		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:boolean">false</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>EnumValueNoContract</Key>
-		<Value i:type=":EnumValueNoContract.SaveValues">
-			<list>
-				<EnumValueNoContract.Content>
-					<alpha>true</alpha>
-					<type>FIRST</type>
-				</EnumValueNoContract.Content>
-			</list>
-		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfList</Key>
