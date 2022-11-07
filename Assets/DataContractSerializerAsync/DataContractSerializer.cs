@@ -275,7 +275,7 @@ namespace AsyncSerialization
                     {
                         if (IsEmpty(value as IEnumerable))
                         {
-                            if (element != null && element.Namespace != null && !namespaces.Contains(CollectionsNamespace))
+                            if (element != null && element.Namespace != null)
                             {
                                 WritePrefix(null, valueType, ns);
                             }
