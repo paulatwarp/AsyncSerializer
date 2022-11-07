@@ -9,7 +9,7 @@
 	<AsyncSerializer.SaveValue>
 		<Key>SaveCustomType</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
-			<d3p1:anyType>
+			<d3p1:anyType i:type=":CustomType">
 				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
 					<d5p1:x>1</d5p1:x>
 					<d5p1:y>2</d5p1:y>
@@ -31,7 +31,7 @@
 							<d5p1:string i:nil="true" />
 						</list>
 					</d5p1:anyType>
-					<d5p1:anyType>
+					<d5p1:anyType i:type=":ContractType">
 						<alpha>1</alpha>
 						<list>
 							<d5p1:string>1</d5p1:string>
@@ -46,7 +46,7 @@
 	<AsyncSerializer.SaveValue>
 		<Key>Reference</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
-			<d3p1:anyType z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
+			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>

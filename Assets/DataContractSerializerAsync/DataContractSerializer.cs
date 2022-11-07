@@ -80,8 +80,9 @@ namespace AsyncSerialization
         void WriteNull(string field, Type type, string ns)
         {
             writer.WriteStartElement(field, ns);
-            if (type.Namespace != null && type.Namespace != "System" && !namespaces.Contains(ns))
+            if (type.Namespace != null && type.Namespace != "System")
             {
+                ns += type.Namespace;
                 writer.LookupPrefix(ns);
             }
             writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
@@ -106,9 +107,16 @@ namespace AsyncSerialization
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
             }
-            if (type.Namespace != null)
+            if (prefix != string.Empty)
             {
-                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                try
+                {
+                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                }
+                catch (XmlException e)
+                {
+                    Debug.LogError(e);
+                }
             }
         }
 
@@ -118,7 +126,14 @@ namespace AsyncSerialization
             if (!namespaces.Contains(ns))
             {
                 writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                writer.WriteQualifiedName(GetTypeString(type), ns);
+                try
+                {
+                    writer.WriteQualifiedName(GetTypeString(type), ns);
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError(exception);
+                }
                 writer.WriteEndAttribute();
                 namespaces.Push(ns);
                 written = true;
@@ -190,14 +205,13 @@ namespace AsyncSerialization
                             {
                                 ns += valueType.Namespace;
                             }
-                            //WritePrefix(null, valueType, ns);
-                            //namespaced = WriteTypeNamespace(valueType, ns);
+                            WritePrefix(null, valueType, ns);
                         }
                         else
                         {
                             WritePrefix(null, valueType, ns);
-                            namespaced = WriteTypeNamespace(valueType, ns);
                         }
+                        namespaced = WriteTypeNamespace(valueType, ns);
                     }
                     DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
                     if (contract != null && contract.IsReference)
@@ -607,7 +621,7 @@ namespace AsyncSerialization
                 else
                 {
                     yield return value;
-                    WriteNull(name, ns);
+                    WriteNull(name, type, ns);
                 }
             }
         }
