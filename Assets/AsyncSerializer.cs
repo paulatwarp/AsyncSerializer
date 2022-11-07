@@ -160,6 +160,29 @@ public class ListOfList : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class ArrayOfArray : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    SaveValues values;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public bool[][] flags;
+    }
+
+    public ArrayOfArray()
+    {
+        values = new SaveValues();
+        values.flags = new bool[1][];
+        values.flags[0] = new bool[1];
+        values.flags[0][0] = true;
+    }
+}
+
+[System.Serializable, DataContract]
 public class ListOfKeyValuePair : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -454,6 +477,8 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        list.Add(new SaveValue(new ArrayOfArray()));
+        list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfString(1)));
         list.Add(new SaveValue(new ListOfKeyValuePair(1)));
@@ -461,7 +486,6 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));
-        list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));
         list.Add(new SaveValue(new EnumValue(EnumType.Second)));

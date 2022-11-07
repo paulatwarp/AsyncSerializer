@@ -197,9 +197,13 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (IsArray(type) && element != null && element.Namespace != "System")
+                    if (IsArray(type))
                     {
-                        if (element.Namespace != null)
+                        if (element != null && (element.Namespace == "System" || IsArray(element)))
+                        {
+                            ns = CollectionsNamespace;
+                        }
+                        else if (element.Namespace != null)
                         {
                             ns += element.Namespace;
                         }
@@ -314,7 +318,12 @@ namespace AsyncSerialization
                         WritePrefix(null, valueType, ns);
                         namespaced = WriteTypeNamespace(valueType, ns);
                     }
-                    var members = GetSortedMembers(value, null, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+                    if (type.IsGenericType)
+                    {
+                        flags |= BindingFlags.NonPublic;
+                    }
+                    var members = GetSortedMembers(value, null, flags);
                     foreach (var (fieldName, fieldType, fieldValue) in members)
                     {
                         if (fieldValue != null)
