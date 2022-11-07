@@ -31,6 +31,13 @@ namespace My.Namespace
             this.enable = enable;
         }
     }
+
+    [System.Serializable]
+    public struct CustomVector
+    {
+        public int x;
+        public int y;
+    }
 }
 
 [System.Serializable, DataContract]
@@ -63,7 +70,7 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
-public class Reference: AsyncSerializer.IKeyValue
+public class Reference : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
     public object Value => reference;
@@ -73,6 +80,28 @@ public class Reference: AsyncSerializer.IKeyValue
     public Reference(My.Namespace.SaveData reference)
     {
         this.reference = reference;
+    }
+}
+
+[System.Serializable, DataContract]
+public struct CustomType
+{
+    [DataMember] public My.Namespace.CustomVector vector;
+}
+
+[System.Serializable, DataContract]
+public class SaveCustomType : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => custom;
+
+    CustomType custom;
+
+    public SaveCustomType(int x, int y)
+    {
+        custom = new CustomType();
+        custom.vector.x = x;
+        custom.vector.y = y;
     }
 }
 
@@ -502,6 +531,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new SaveCustomType(1, 2)));
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ArrayOfArray()));

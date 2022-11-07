@@ -323,7 +323,7 @@ namespace AsyncSerialization
                     {
                         ns += valueType.Namespace;
                         WritePrefix(null, valueType, ns);
-                        if (type.Namespace != "UnityEngine")
+                        if (type.Namespace != valueType.Namespace)
                         {
                             namespaced = WriteTypeNamespace(valueType, ns);
                         }
