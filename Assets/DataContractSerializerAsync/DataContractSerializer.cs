@@ -77,6 +77,17 @@ namespace AsyncSerialization
             return empty;
         }
 
+        void WriteNull(string field, Type type, string ns)
+        {
+            writer.WriteStartElement(field, ns);
+            if (type.Namespace != null && type.Namespace != "System" && !namespaces.Contains(ns))
+            {
+                writer.LookupPrefix(ns);
+            }
+            writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
+            writer.WriteEndElement();
+        }
+
         void WriteNull(string field, string ns)
         {
             writer.WriteStartElement(field, ns);
@@ -173,9 +184,14 @@ namespace AsyncSerialization
                     if (type == typeof(object) && !namespaces.Contains(Namespace))
                     {
                         ns = Namespace;
-                        if (element == null && valueType.Namespace != null)
+                        if (element == null)
                         {
-                            ns += valueType.Namespace;
+                            if (valueType.Namespace != null)
+                            {
+                                ns += valueType.Namespace;
+                            }
+                            //WritePrefix(null, valueType, ns);
+                            //namespaced = WriteTypeNamespace(valueType, ns);
                         }
                         else
                         {

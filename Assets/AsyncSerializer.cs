@@ -73,13 +73,14 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
 public class Reference : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
-    public object Value => reference;
+    public object Value => references;
 
-    My.Namespace.SaveData reference;
+    object [] references;
 
     public Reference(My.Namespace.SaveData reference)
     {
-        this.reference = reference;
+        this.references = new object[1];
+        this.references[0] = reference;
     }
 }
 
@@ -93,15 +94,17 @@ public struct CustomType
 public class SaveCustomType : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
-    public object Value => custom;
+    public object Value => data;
 
-    CustomType custom;
+    object [] data;
 
     public SaveCustomType(int x, int y)
     {
-        custom = new CustomType();
+        data = new object [1];
+        var custom = new CustomType();
         custom.vector.x = x;
         custom.vector.y = y;
+        data[0] = custom;
     }
 }
 
@@ -531,6 +534,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new Reference(data)));
