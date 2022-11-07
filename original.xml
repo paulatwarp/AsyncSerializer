@@ -191,6 +191,12 @@
 			<condition>false</condition>
 			<conditions>false</conditions>
 			<contracts />
+			<customType>
+				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:x>0</d5p1:x>
+					<d5p1:y>0</d5p1:y>
+				</vector>
+			</customType>
 			<gamma>0</gamma>
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
 			<nil i:nil="true" />
@@ -220,6 +226,12 @@
 					</list>
 				</ContractType>
 			</contracts>
+			<customType>
+				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:x>1</d5p1:x>
+					<d5p1:y>1</d5p1:y>
+				</vector>
+			</customType>
 			<gamma>1</gamma>
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string>0</d4p1:string>
@@ -264,6 +276,12 @@
 					</list>
 				</ContractType>
 			</contracts>
+			<customType>
+				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:x>2</d5p1:x>
+					<d5p1:y>2</d5p1:y>
+				</vector>
+			</customType>
 			<gamma>2</gamma>
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string>0</d4p1:string>

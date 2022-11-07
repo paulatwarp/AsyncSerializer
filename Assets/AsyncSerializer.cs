@@ -412,6 +412,7 @@ public class Container : AsyncSerializer.IKeyValue
 
         [DataMember] int secret;
         [DataMember] public Vector3 vector;
+        [DataMember] public CustomType customType;
         [DataMember] public double alpha;
         [DataMember] public float phi;
         [DataMember] public int beta;
@@ -432,6 +433,7 @@ public class Container : AsyncSerializer.IKeyValue
         this.value = new SaveValues(value)
         {
             vector = Vector3.one * value,
+            customType = new CustomType(),
             alpha = 1.0 / (value + 1),
             phi = 1.0f / (value + 1),
             beta = value,
@@ -443,6 +445,8 @@ public class Container : AsyncSerializer.IKeyValue
             contracts = new List<ContractType>(),
             nil = null
         };
+        this.value.customType.vector.x = value;
+        this.value.customType.vector.y = value;
         for (int i = 0; i < value; ++i)
         {
             this.value.list.Add(i.ToString());

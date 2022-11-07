@@ -107,7 +107,7 @@ namespace AsyncSerialization
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
             }
-            if (prefix != string.Empty)
+            if (prefix != string.Empty && type.Namespace != null && !namespaces.Contains(ns))
             {
                 try
                 {
