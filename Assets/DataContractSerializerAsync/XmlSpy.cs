@@ -10,6 +10,7 @@ public class XmlSpy : XmlWriter
     string logName;
     bool compare = false;
     int position = 0;
+    public bool verified = true;
 
     public XmlSpy(XmlWriter writer, string log)
     {
@@ -32,6 +33,7 @@ public class XmlSpy : XmlWriter
     {
         this.writer = writer;
         compare = true;
+        verified = true;
         position = 0;
     }
 
@@ -45,7 +47,7 @@ public class XmlSpy : XmlWriter
 
     string PrintString(string s)
     {
-        return s == null? "null" : $"\"{s}\"";
+        return s == null ? "null" : $"\"{s}\"";
     }
 
     void LogLine(string line)
@@ -57,11 +59,13 @@ public class XmlSpy : XmlWriter
                 string expected = log[position];
                 if (expected != line)
                 {
+                    verified = false;
                     Debug.LogError($"expected {expected} got {line} at line {position + 1}");
                 }
             }
             else
             {
+                verified = false;
                 Debug.LogError($"additional entry {line} at line {position + 1}");
             }
             position++;

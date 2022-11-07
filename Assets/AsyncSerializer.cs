@@ -51,6 +51,29 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
         };
         values = saves;
     }
+
+    public My.Namespace.SaveData GetReference()
+    {
+        foreach (var value in values)
+        {
+            return value;
+        }
+        return null;
+    }
+}
+
+[System.Serializable, DataContract]
+public class Reference: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => reference;
+
+    My.Namespace.SaveData reference;
+
+    public Reference(My.Namespace.SaveData reference)
+    {
+        this.reference = reference;
+    }
 }
 
 [System.Serializable, DataContract]
@@ -477,14 +500,16 @@ public class AsyncSerializer : MonoBehaviour
     IEnumerator Start()
     {
         var list = new List<SaveValue>();
+        var reference = new ReferenceObject();
+        var data = reference.GetReference();
+        list.Add(new SaveValue(reference));
+        list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ArrayOfArray()));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfString(1)));
         list.Add(new SaveValue(new ListOfKeyValuePair(1)));
         list.Add(new SaveValue(new InternalSet(1)));
-        list.Add(new SaveValue(new ReferenceObject()));
-        list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new BoolAsObject()));
         list.Add(new SaveValue(new Vector2D()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));

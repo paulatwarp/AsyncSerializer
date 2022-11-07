@@ -22,6 +22,8 @@ namespace AsyncSerialization
         public const string XmlnsPrefix = "xmlns";
         public const string XsiNilLocalName = "nil";
         public const string IdLocalName = "Id";
+        public const string RefLocalName = "Ref";
+
         Type rootElementType;
         XmlWriter writer;
         int depth;
@@ -29,10 +31,12 @@ namespace AsyncSerialization
         int id;
         Dictionary<Type, string> primitives;
         Stack<string> namespaces;
+        Dictionary<object, string> references;
 
         public DataContractSerializer(Type type)
         {
             namespaces = new Stack<string>();
+            references = new Dictionary<object, string>();
             id = 0;
             rootElementType = GetArrayType(type);
             primitives = new Dictionary<Type, string>();
@@ -179,10 +183,22 @@ namespace AsyncSerialization
                             namespaced = WriteTypeNamespace(valueType, ns);
                         }
                     }
-                    foreach (var item in WriteDataContractObjectContents(value, ns))
+                    DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
+                    if (contract != null && contract.IsReference)
                     {
-                        yield return item;
+                        if (references.TryGetValue(value, out string referenceId))
+                        {
+                            writer.WriteAttributeString(SerPrefix, RefLocalName, SerializationNamespace, referenceId);
+                        }
                     }
+                    else
+                    {
+                        foreach (var item in WriteDataContractObjectContents(value, ns))
+                        {
+                            yield return item;
+                        }
+                    }
+
                 }
             }
             else if (!(value is string) && value is IEnumerable)
@@ -203,7 +219,7 @@ namespace AsyncSerialization
                         {
                             ns = CollectionsNamespace;
                         }
-                        else if (element.Namespace != null)
+                        else if (element != null && element.Namespace != null)
                         {
                             ns += element.Namespace;
                         }
@@ -437,7 +453,9 @@ namespace AsyncSerialization
                     if (contract != null && contract.IsReference)
                     {
                         id++;
-                        writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, $"{XsiPrefix}{id}");
+                        string referenceId = $"{XsiPrefix}{id}";
+                        references.Add(entry, referenceId);
+                        writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, referenceId);
                         writer.LookupPrefix(ns);
                         writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
                         writer.WriteQualifiedName(GetTypeString(itemType), ns);
