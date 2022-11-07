@@ -213,7 +213,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (IsArray(type))
+                    if (IsArray(type) && !IsDictionary(type))
                     {
                         if (element != null && (element.Namespace == "System" || IsArray(element)))
                         {
