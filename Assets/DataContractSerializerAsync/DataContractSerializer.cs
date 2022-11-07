@@ -213,6 +213,11 @@ namespace AsyncSerialization
                         }
                         namespaced = WriteTypeNamespace(valueType, ns);
                     }
+                    else if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
+                    {
+                        ns += valueType.Namespace;
+                        WritePrefix(null, valueType, ns);
+                    }
                     DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
                     if (contract != null && contract.IsReference)
                     {
