@@ -173,7 +173,7 @@ namespace AsyncSerialization
                     ns += valueType.Namespace;
                 }
 
-                if (!namespaces.Contains(ns))
+                if (!IsTopNamespace(ns))
                 {
                     if (element != null)
                     {
@@ -181,7 +181,12 @@ namespace AsyncSerialization
                     }
                     else
                     {
-                        WritePrefix(null, valueType, ns);
+                        // bodge
+                        DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
+                        if (contract == null || !contract.IsReference)
+                        {
+                            WritePrefix(null, valueType, ns);
+                        }
                     }
                     namespaced = WriteTypeNamespace(valueType, ns);
                 }
