@@ -62,6 +62,30 @@ namespace My.Namespace
 }
 
 [System.Serializable, DataContract]
+public class ArrayOfData: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    IEnumerable<SaveValues> values;
+
+    [System.Serializable, DataContract]
+    public class SaveValues
+    {
+        [DataMember] public My.Namespace.SaveData [] references;
+    }
+
+    public ArrayOfData()
+    {
+        var saveValues = new SaveValues[1];
+        saveValues[0] = new SaveValues();
+        saveValues[0].references = new My.Namespace.SaveData[1];
+        saveValues[0].references[0] = new My.Namespace.SaveName(true);
+        values = saveValues;
+    }
+}
+
+[System.Serializable, DataContract]
 public class ReferenceObject : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -559,6 +583,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
