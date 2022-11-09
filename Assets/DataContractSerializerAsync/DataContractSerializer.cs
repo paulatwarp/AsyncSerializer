@@ -157,10 +157,22 @@ namespace AsyncSerialization
             bool namespaced = false;
             if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
-                if (element != null && element.Namespace != null)
+                if (type == typeof(object) && !namespaces.Contains(Namespace))
                 {
-                    ns += element.Namespace;
+                    ns = Namespace;
                 }
+                if (element != null)
+                {
+                    if (element.Namespace != null && !ns.EndsWith(element.Namespace))
+                    {
+                        ns += element.Namespace;
+                    }
+                }
+                else if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
+                {
+                    ns += valueType.Namespace;
+                }
+
                 if (!namespaces.Contains(ns))
                 {
                     if (element != null)
@@ -169,22 +181,13 @@ namespace AsyncSerialization
                     }
                     else
                     {
-                        if (valueType.Namespace != null)
-                        {
-                            ns += valueType.Namespace;
-                        }
                         WritePrefix(null, valueType, ns);
                     }
                     namespaced = WriteTypeNamespace(valueType, ns);
                 }
+
                 if (value is IEnumerable)
                 {
-                    if (!namespaced && type != valueType && ns != Namespace)
-                    {
-                        ns = Namespace;
-                        WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
-                    }
                     foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
                     {
                         yield return item;
@@ -196,28 +199,6 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (type == typeof(object) && !namespaces.Contains(Namespace))
-                    {
-                        ns = Namespace;
-                        if (element == null)
-                        {
-                            if (valueType.Namespace != null)
-                            {
-                                ns += valueType.Namespace;
-                            }
-                            WritePrefix(null, valueType, ns);
-                        }
-                        else
-                        {
-                            WritePrefix(null, valueType, ns);
-                        }
-                        namespaced = WriteTypeNamespace(valueType, ns);
-                    }
-                    else if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
-                    {
-                        ns += valueType.Namespace;
-                        WritePrefix(null, valueType, ns);
-                    }
                     DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
                     if (contract != null && contract.IsReference)
                     {
