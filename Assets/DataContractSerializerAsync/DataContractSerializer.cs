@@ -181,12 +181,7 @@ namespace AsyncSerialization
                     }
                     else
                     {
-                        // bodge
-                        DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
-                        if (contract == null || !contract.IsReference)
-                        {
-                            WritePrefix(null, valueType, ns);
-                        }
+                        WritePrefix(null, valueType, ns);
                     }
                     namespaced = WriteTypeNamespace(valueType, ns);
                 }
