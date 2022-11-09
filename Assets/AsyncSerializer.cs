@@ -8,6 +8,27 @@ using UnityEngine;
 
 namespace My.Namespace
 {
+    [System.Serializable, DataContract]
+    public class BoolAsData : AsyncSerializer.IKeyValue
+    {
+        public string Key => GetType().Name;
+        public object Value => boolAsData;
+
+        SaveValue boolAsData;
+
+        [System.Serializable, DataContract]
+        public class SaveValue
+        {
+            [DataMember] public bool test;
+        }
+
+        public BoolAsData(bool value)
+        {
+            boolAsData = new SaveValue();
+            boolAsData.test = value;
+        }
+    }
+
     [DataContract(IsReference = true), KnownType(typeof(SaveName))]
     public abstract class SaveData
     {
@@ -304,7 +325,7 @@ public class BoolAsString : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
-public class BoolAsObject: AsyncSerializer.IKeyValue
+public class BoolAsObject : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
     public object Value => false;
@@ -538,6 +559,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
         list.Add(new SaveValue(reference));

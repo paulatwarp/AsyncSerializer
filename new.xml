@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>BoolAsData</Key>
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:BoolAsData.SaveValue">
+			<d3p1:test>false</d3p1:test>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>Reference</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
 			<d3p1:anyType i:nil="true" />
@@ -10,43 +16,43 @@
 		<Key>SaveCustomType</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
 			<d3p1:anyType i:type=":CustomType">
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>1</d5p1:x>
-					<d5p1:y>2</d5p1:y>
+				<vector>
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">2</y>
 				</vector>
 			</d3p1:anyType>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
-		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
-			<d3p1:SaveData z:Id="i1" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
-				<d3p1:enable>true</d3p1:enable>
-				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+		<Value i:type=":ArrayOfSaveData">
+			<SaveData z:Id="i1" i:type=":SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+				<enable>true</enable>
+				<list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
-					<d5p1:anyType i:type=":NonContract">
+					<d5p1:anyType>
 						<array />
 						<i>1</i>
 						<list>
 							<d5p1:string i:nil="true" />
 						</list>
 					</d5p1:anyType>
-					<d5p1:anyType i:type=":ContractType">
-						<alpha>1</alpha>
-						<list>
+					<d5p1:anyType>
+						<d5p1:alpha>1</d5p1:alpha>
+						<d5p1:list>
 							<d5p1:string>1</d5p1:string>
 							<d5p1:string>2</d5p1:string>
-						</list>
+						</d5p1:list>
 					</d5p1:anyType>
-				</d3p1:list>
-				<d3p1:name>MyName</d3p1:name>
-			</d3p1:SaveData>
+				</list>
+				<name>MyName</name>
+			</SaveData>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Reference</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
-			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
+			<d3p1:anyType z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -192,9 +198,9 @@
 			<conditions>false</conditions>
 			<contracts />
 			<customType>
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>0</d5p1:x>
-					<d5p1:y>0</d5p1:y>
+				<vector>
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</y>
 				</vector>
 			</customType>
 			<gamma>0</gamma>
@@ -227,9 +233,9 @@
 				</ContractType>
 			</contracts>
 			<customType>
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>1</d5p1:x>
-					<d5p1:y>1</d5p1:y>
+				<vector>
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</y>
 				</vector>
 			</customType>
 			<gamma>1</gamma>
@@ -277,9 +283,9 @@
 				</ContractType>
 			</contracts>
 			<customType>
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>2</d5p1:x>
-					<d5p1:y>2</d5p1:y>
+				<vector>
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">2</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">2</y>
 				</vector>
 			</customType>
 			<gamma>2</gamma>
