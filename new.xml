@@ -4,7 +4,18 @@
 		<Key>ArrayOfData</Key>
 		<Value i:type=":ArrayOfArrayOfData.SaveValues">
 			<ArrayOfData.SaveValues>
-				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace" />
+				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:NonReferenceData>
+						<d5p1:data>
+							<d5p1:alpha>1</d5p1:alpha>
+							<d5p1:list xmlns:d8p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+								<d8p1:string>1</d8p1:string>
+								<d8p1:string>2</d8p1:string>
+							</d5p1:list>
+						</d5p1:data>
+						<d5p1:test>false</d5p1:test>
+					</d5p1:NonReferenceData>
+				</data>
 			</ArrayOfData.SaveValues>
 		</Value>
 	</AsyncSerializer.SaveValue>

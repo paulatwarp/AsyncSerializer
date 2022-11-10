@@ -56,6 +56,7 @@ namespace My.Namespace
     [System.Serializable, DataContract]
     public class NonReferenceData
     {
+        [DataMember] public ContractType data;
         [DataMember] public bool test;
     }
 
@@ -85,7 +86,9 @@ public class ArrayOfData: AsyncSerializer.IKeyValue
     {
         var saveValues = new SaveValues[1];
         saveValues[0] = new SaveValues();
-        saveValues[0].data = new My.Namespace.NonReferenceData[0];
+        saveValues[0].data = new My.Namespace.NonReferenceData[1];
+        saveValues[0].data[0] = new My.Namespace.NonReferenceData();
+        saveValues[0].data[0].data = new ContractType(1);
         values = saveValues;
     }
 }
