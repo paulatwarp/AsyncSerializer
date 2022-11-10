@@ -540,12 +540,12 @@ namespace AsyncSerialization
             }
         }
 
-        void AddSorterMembers(List<(string, Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
+        void AddSortedMembers(List<(string, Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
         {
             var sortedList = new SortedList<string, (Type, object)>();
             if (type.BaseType != null)
             {
-                AddSorterMembers(list, graph, type.BaseType, filter, flags);
+                AddSortedMembers(list, graph, type.BaseType, filter, flags);
             }
             foreach (var property in type.GetProperties(flags))
             {
@@ -563,10 +563,7 @@ namespace AsyncSerialization
                     if (property.GetIndexParameters().Length == 0)
                     {
                         object value = property.GetValue(graph);
-                        if (!sortedList.ContainsKey(property.Name))
-                        {
-                            sortedList.Add(property.Name, (property.PropertyType, value));
-                        }
+                        sortedList.Add(property.Name, (property.PropertyType, value));
                     }
                 }
             }
@@ -583,10 +580,7 @@ namespace AsyncSerialization
                 if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
-                    if (!sortedList.ContainsKey(field.Name))
-                    {
-                        sortedList.Add(field.Name, (field.FieldType, value));
-                    }
+                    sortedList.Add(field.Name, (field.FieldType, value));
                 }
             }
             foreach (var (name, (memberType, value)) in sortedList)
@@ -602,7 +596,7 @@ namespace AsyncSerialization
         {
             Type type = graph.GetType();
             var members = new List<(string, Type, object)>();
-            AddSorterMembers(members, graph, type, filter, flags);
+            AddSortedMembers(members, graph, type, filter, flags);
             return members;
         }
 

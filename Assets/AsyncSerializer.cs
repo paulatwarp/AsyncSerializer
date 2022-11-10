@@ -537,16 +537,16 @@ public class ContainingClass
     {
         public ContractType(int i)
         {
-            alpha = i;
-            dataList = new List<OtherContainingClass.ContractMixedData>();
-            dataList.Add(new OtherContainingClass.ContractMixedData(i));
-            dataList.Add(new OtherContainingClass.ContractMixedData(i+1));
+            aInt = i;
+            aDataList = new List<OtherContainingClass.ContractMixedData>();
+            aDataList.Add(new OtherContainingClass.ContractMixedData(i));
+            aDataList.Add(new OtherContainingClass.ContractMixedData(i+1));
             aStringList = new List<string>();
             aStringList.Add(i.ToString());
         }
 
-        [DataMember] public double alpha;
-        [DataMember] public List<OtherContainingClass.ContractMixedData> dataList;
+        [DataMember] public List<OtherContainingClass.ContractMixedData> aDataList;
+        [DataMember] public int aInt;
         [DataMember] public List<string> aStringList;
     }
 }
@@ -579,15 +579,67 @@ public class OtherContainingClass
     }
 }
 
+
+[System.Serializable, DataContract]
+public class AlphaTest : AsyncSerializer.IKeyValue
+{
+    [System.Serializable, DataContract]
+    public class SaveData
+    {
+        [DataMember] public int gamma;
+        [DataMember] public int beta;
+        [DataMember] public int alpha;
+    }
+
+    SaveData data;
+
+    public AlphaTest()
+    {
+        data = new SaveData();
+        data.alpha = 1;
+        data.beta = 2;
+        data.gamma = 3;
+    }
+
+    public string Key => GetType().Name;
+    public object Value => data;
+}
+
+[System.Serializable, DataContract]
+public class BetaTest : AsyncSerializer.IKeyValue
+{
+    [System.Serializable, DataContract]
+    public class SaveData
+    {
+        [DataMember] public int delta;
+        [DataMember] public int epsilon;
+        [DataMember] public int alpha;
+    }
+
+    SaveData data;
+
+    public BetaTest()
+    {
+        data = new SaveData();
+        data.delta = 4;
+        data.alpha = 2;
+        data.epsilon = 3;
+    }
+
+    public string Key => GetType().Name;
+    public object Value => data;
+}
+
+
 [System.Serializable, DataContract]
 public class ContainerList : AsyncSerializer.IKeyValue
 {
     [System.Serializable, DataContract]
     public class SaveValues
     {
-        [DataMember] public double alpha;
-        [DataMember] public byte gamma;
-        [DataMember] public int beta;
+        [DataMember] public double aDouble;
+        [DataMember] public byte aByte;
+        [DataMember] public int anInt;
     }
 
     SaveValues[] list = new SaveValues[0];
@@ -603,9 +655,9 @@ public class ContainerList : AsyncSerializer.IKeyValue
         {
             list[i] = new SaveValues()
             {
-                alpha = value,
-                beta = value,
-                gamma = (byte)value,
+                aDouble = value,
+                anInt = value,
+                aByte = (byte)value,
             };
         }
     }
@@ -643,7 +695,10 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new ArrayOfData()));
+        list.Add(new SaveValue(new AlphaTest()));
+        list.Add(new SaveValue(new BetaTest()));
         list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(reference));
@@ -667,7 +722,6 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new ArrayOfNull()));
         list.Add(new SaveValue(new BoolAsString()));
         list.Add(new SaveValue(new Vector()));
-        list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new Container(0)));
         //list.Add(new SaveValue(new Container(2)));
         yield return null;

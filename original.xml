@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ContainerList</Key>
+		<Value i:type=":ArrayOfContainerList.SaveValues">
+			<ContainerList.SaveValues>
+				<aByte>1</aByte>
+				<aDouble>1</aDouble>
+				<anInt>1</anInt>
+			</ContainerList.SaveValues>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfData</Key>
 		<Value i:type=":ArrayOfArrayOfData.SaveValues">
 			<ArrayOfData.SaveValues>
@@ -10,11 +20,7 @@
 						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 							<d7p1:anyType i:nil="true" />
 							<d7p1:anyType i:type=":ContainingClass.ContractType">
-								<aStringList>
-									<d7p1:string>1</d7p1:string>
-								</aStringList>
-								<alpha>1</alpha>
-								<dataList>
+								<aDataList>
 									<OtherContainingClass.ContractMixedData>
 										<list />
 										<text>1</text>
@@ -23,13 +29,33 @@
 										<list />
 										<text>2</text>
 									</OtherContainingClass.ContractMixedData>
-								</dataList>
+								</aDataList>
+								<aInt>1</aInt>
+								<aStringList>
+									<d7p1:string>1</d7p1:string>
+								</aStringList>
 							</d7p1:anyType>
 						</d5p1:list>
 						<d5p1:name i:nil="true" />
 					</d5p1:SaveData>
 				</data>
 			</ArrayOfData.SaveValues>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>AlphaTest</Key>
+		<Value i:type=":AlphaTest.SaveData">
+			<alpha>1</alpha>
+			<beta>2</beta>
+			<gamma>3</gamma>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>BetaTest</Key>
+		<Value i:type=":BetaTest.SaveData">
+			<alpha>2</alpha>
+			<delta>4</delta>
+			<epsilon>3</epsilon>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -41,11 +67,7 @@
 			<conditions>true</conditions>
 			<contracts>
 				<ContainingClass.ContractType>
-					<aStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:string>0</d6p1:string>
-					</aStringList>
-					<alpha>0</alpha>
-					<dataList>
+					<aDataList>
 						<OtherContainingClass.ContractMixedData>
 							<list />
 							<text>0</text>
@@ -54,7 +76,11 @@
 							<list />
 							<text>1</text>
 						</OtherContainingClass.ContractMixedData>
-					</dataList>
+					</aDataList>
+					<aInt>0</aInt>
+					<aStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+					</aStringList>
 				</ContainingClass.ContractType>
 			</contracts>
 			<customType>
@@ -96,11 +122,7 @@
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType i:type=":ArrayOfContainingClass.ContractType">
 						<ContainingClass.ContractType>
-							<aStringList>
-								<d5p1:string>1</d5p1:string>
-							</aStringList>
-							<alpha>1</alpha>
-							<dataList>
+							<aDataList>
 								<OtherContainingClass.ContractMixedData>
 									<list />
 									<text>1</text>
@@ -109,7 +131,11 @@
 									<list />
 									<text>2</text>
 								</OtherContainingClass.ContractMixedData>
-							</dataList>
+							</aDataList>
+							<aInt>1</aInt>
+							<aStringList>
+								<d5p1:string>1</d5p1:string>
+							</aStringList>
 						</ContainingClass.ContractType>
 					</d5p1:anyType>
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
@@ -121,11 +147,7 @@
 						</list>
 					</d5p1:anyType>
 					<d5p1:anyType i:type=":ContainingClass.ContractType">
-						<aStringList>
-							<d5p1:string>2</d5p1:string>
-						</aStringList>
-						<alpha>2</alpha>
-						<dataList>
+						<aDataList>
 							<OtherContainingClass.ContractMixedData>
 								<list />
 								<text>2</text>
@@ -134,7 +156,11 @@
 								<list />
 								<text>3</text>
 							</OtherContainingClass.ContractMixedData>
-						</dataList>
+						</aDataList>
+						<aInt>2</aInt>
+						<aStringList>
+							<d5p1:string>2</d5p1:string>
+						</aStringList>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>
@@ -288,16 +314,6 @@
 			<d3p1:x>1</d3p1:x>
 			<d3p1:y>2</d3p1:y>
 			<d3p1:z>3</d3p1:z>
-		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>ContainerList</Key>
-		<Value i:type=":ArrayOfContainerList.SaveValues">
-			<ContainerList.SaveValues>
-				<alpha>1</alpha>
-				<beta>1</beta>
-				<gamma>1</gamma>
-			</ContainerList.SaveValues>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
