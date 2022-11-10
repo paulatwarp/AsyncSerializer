@@ -20,7 +20,11 @@
 						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 							<d7p1:anyType i:nil="true" />
 							<d7p1:anyType i:type=":ContainingClass.ContractType">
-								<aDataList>
+								<aInt>1</aInt>
+								<bStringList>
+									<d7p1:string>1</d7p1:string>
+								</bStringList>
+								<cDataList i:type=":ArrayOfOtherContainingClass.ContractMixedData">
 									<OtherContainingClass.ContractMixedData>
 										<list />
 										<text>1</text>
@@ -29,11 +33,7 @@
 										<list />
 										<text>2</text>
 									</OtherContainingClass.ContractMixedData>
-								</aDataList>
-								<aInt>1</aInt>
-								<aStringList>
-									<d7p1:string>1</d7p1:string>
-								</aStringList>
+								</cDataList>
 							</d7p1:anyType>
 						</d5p1:list>
 						<d5p1:name i:nil="true" />
@@ -67,7 +67,11 @@
 			<conditions>true</conditions>
 			<contracts>
 				<ContainingClass.ContractType>
-					<aDataList>
+					<aInt>0</aInt>
+					<bStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+					</bStringList>
+					<cDataList i:type=":ArrayOfOtherContainingClass.ContractMixedData">
 						<OtherContainingClass.ContractMixedData>
 							<list />
 							<text>0</text>
@@ -76,11 +80,7 @@
 							<list />
 							<text>1</text>
 						</OtherContainingClass.ContractMixedData>
-					</aDataList>
-					<aInt>0</aInt>
-					<aStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:string>0</d6p1:string>
-					</aStringList>
+					</cDataList>
 				</ContainingClass.ContractType>
 			</contracts>
 			<customType>
@@ -122,7 +122,11 @@
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType i:type=":ArrayOfContainingClass.ContractType">
 						<ContainingClass.ContractType>
-							<aDataList>
+							<aInt>1</aInt>
+							<bStringList>
+								<d5p1:string>1</d5p1:string>
+							</bStringList>
+							<cDataList i:type=":ArrayOfOtherContainingClass.ContractMixedData">
 								<OtherContainingClass.ContractMixedData>
 									<list />
 									<text>1</text>
@@ -131,11 +135,7 @@
 									<list />
 									<text>2</text>
 								</OtherContainingClass.ContractMixedData>
-							</aDataList>
-							<aInt>1</aInt>
-							<aStringList>
-								<d5p1:string>1</d5p1:string>
-							</aStringList>
+							</cDataList>
 						</ContainingClass.ContractType>
 					</d5p1:anyType>
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
@@ -147,7 +147,11 @@
 						</list>
 					</d5p1:anyType>
 					<d5p1:anyType i:type=":ContainingClass.ContractType">
-						<aDataList>
+						<aInt>2</aInt>
+						<bStringList>
+							<d5p1:string>2</d5p1:string>
+						</bStringList>
+						<cDataList i:type=":ArrayOfOtherContainingClass.ContractMixedData">
 							<OtherContainingClass.ContractMixedData>
 								<list />
 								<text>2</text>
@@ -156,11 +160,7 @@
 								<list />
 								<text>3</text>
 							</OtherContainingClass.ContractMixedData>
-						</aDataList>
-						<aInt>2</aInt>
-						<aStringList>
-							<d5p1:string>2</d5p1:string>
-						</aStringList>
+						</cDataList>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>

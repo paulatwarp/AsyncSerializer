@@ -538,16 +538,16 @@ public class ContainingClass
         public ContractType(int i)
         {
             aInt = i;
-            aDataList = new List<OtherContainingClass.ContractMixedData>();
-            aDataList.Add(new OtherContainingClass.ContractMixedData(i));
-            aDataList.Add(new OtherContainingClass.ContractMixedData(i+1));
-            aStringList = new List<string>();
-            aStringList.Add(i.ToString());
+            cDataList = new List<OtherContainingClass.ContractMixedData>();
+            cDataList.Add(new OtherContainingClass.ContractMixedData(i));
+            cDataList.Add(new OtherContainingClass.ContractMixedData(i+1));
+            bStringList = new List<string>();
+            bStringList.Add(i.ToString());
         }
 
-        [DataMember] public List<OtherContainingClass.ContractMixedData> aDataList;
+        [DataMember] public List<OtherContainingClass.ContractMixedData> cDataList;
         [DataMember] public int aInt;
-        [DataMember] public List<string> aStringList;
+        [DataMember] public List<string> bStringList;
     }
 }
 
