@@ -159,23 +159,24 @@ namespace AsyncSerialization
             bool namespaced = false;
             if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
-                if (type == typeof(object) && !namespaces.Contains(Namespace))
+                string incomingNS = ns;
+                if (element != null)
+                {
+                    if (element.Namespace != null)
+                    {
+                        ns = Namespace + element.Namespace;
+                    }
+                }
+                else if (valueType.Namespace != null)
+                {
+                    ns = Namespace + valueType.Namespace;
+                }
+                else if (valueType.Namespace == null)
                 {
                     ns = Namespace;
                 }
-                if (element != null)
-                {
-                    if (element.Namespace != null && !ns.EndsWith(element.Namespace))
-                    {
-                        ns += element.Namespace;
-                    }
-                }
-                else if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
-                {
-                    ns += valueType.Namespace;
-                }
 
-                if (!IsTopNamespace(ns))
+                if (incomingNS != ns || !IsTopNamespace(ns))
                 {
                     if (element != null)
                     {
@@ -242,7 +243,7 @@ namespace AsyncSerialization
                         }
                         else if (element != null && element.Namespace != null)
                         {
-                            ns += element.Namespace;
+                            ns = Namespace + element.Namespace;
                         }
                     }
                     else
