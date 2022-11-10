@@ -296,13 +296,13 @@ namespace AsyncSerialization
             }
             else
             {
+                if (type == typeof(object) && valueType.Namespace == "System")
+                {
+                    WritePrefix(null, valueType, XmlSchema.Namespace);
+                    namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                }
                 if (value is bool)
                 {
-                    if (type == typeof(object))
-                    {
-                        WritePrefix(null, valueType, XmlSchema.Namespace);
-                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
-                    }
                     writer.WriteString(XmlConvert.ToString((bool)value));
                 }
                 else if (value is double)
@@ -323,11 +323,6 @@ namespace AsyncSerialization
                 }
                 else if (value is string)
                 {
-                    if (type == typeof(object))
-                    {
-                        WritePrefix(null, valueType, XmlSchema.Namespace);
-                        namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
-                    }
                     writer.WriteValue((string)value);
                 }
                 else if (value is Enum)
