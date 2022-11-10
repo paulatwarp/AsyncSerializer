@@ -534,11 +534,22 @@ public class ContractType
         alpha = i;
         list = new List<object>();
         list.Add(i);
-        list.Add((i+1));
+        list.Add(new ContractPlainData(i));
     }
 
     [DataMember] public double alpha;
     [DataMember] public List<object> list;
+}
+
+[System.Serializable, DataContract]
+public class ContractPlainData
+{
+    public ContractPlainData(int i)
+    {
+        text = i.ToString();
+    }
+
+    [DataMember] public string text;
 }
 
 [System.Serializable, DataContract]

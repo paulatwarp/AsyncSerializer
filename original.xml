@@ -10,7 +10,9 @@
 							<alpha>1</alpha>
 							<list xmlns:d8p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 								<d8p1:anyType xmlns:d9p1="http://www.w3.org/2001/XMLSchema" i:type="d9p1:int">1</d8p1:anyType>
-								<d8p1:anyType xmlns:d9p1="http://www.w3.org/2001/XMLSchema" i:type="d9p1:int">2</d8p1:anyType>
+								<d8p1:anyType i:type=":ContractPlainData">
+									<text>1</text>
+								</d8p1:anyType>
 							</list>
 						</d5p1:data>
 						<d5p1:test>false</d5p1:test>
@@ -37,7 +39,9 @@
 						<alpha>1</alpha>
 						<list>
 							<d5p1:anyType xmlns:d8p1="http://www.w3.org/2001/XMLSchema" i:type="d8p1:int">1</d5p1:anyType>
-							<d5p1:anyType xmlns:d8p1="http://www.w3.org/2001/XMLSchema" i:type="d8p1:int">2</d5p1:anyType>
+							<d5p1:anyType i:type=":ContractPlainData">
+								<text>1</text>
+							</d5p1:anyType>
 						</list>
 					</d5p1:anyType>
 				</d3p1:list>
@@ -247,7 +251,9 @@
 					<alpha>0</alpha>
 					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">0</d6p1:anyType>
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">1</d6p1:anyType>
+						<d6p1:anyType i:type=":ContractPlainData">
+							<text>0</text>
+						</d6p1:anyType>
 					</list>
 				</ContractType>
 			</contracts>
@@ -290,14 +296,18 @@
 					<alpha>0</alpha>
 					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">0</d6p1:anyType>
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">1</d6p1:anyType>
+						<d6p1:anyType i:type=":ContractPlainData">
+							<text>0</text>
+						</d6p1:anyType>
 					</list>
 				</ContractType>
 				<ContractType>
 					<alpha>1</alpha>
 					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">1</d6p1:anyType>
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">2</d6p1:anyType>
+						<d6p1:anyType i:type=":ContractPlainData">
+							<text>1</text>
+						</d6p1:anyType>
 					</list>
 				</ContractType>
 			</contracts>
