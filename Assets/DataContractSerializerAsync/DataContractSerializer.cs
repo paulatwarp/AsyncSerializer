@@ -479,9 +479,14 @@ namespace AsyncSerialization
                         string referenceId = $"{XsiPrefix}{id}";
                         references.Add(entry, referenceId);
                         writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, referenceId);
-                        writer.LookupPrefix(ns);
+                        string prefixNS = ns;
+                        if (itemType.Namespace == null)
+                        {
+                            prefixNS = Namespace;
+                        }
+                        writer.LookupPrefix(prefixNS);
                         writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                        writer.WriteQualifiedName(GetTypeString(itemType), ns);
+                        writer.WriteQualifiedName(GetTypeString(itemType), prefixNS);
                         writer.WriteEndAttribute();
                     }
                     foreach (var item in WriteDataContractObjectContents(entry, ns))
