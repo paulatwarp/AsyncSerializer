@@ -29,7 +29,7 @@ namespace My.Namespace
         }
     }
 
-    [DataContract(IsReference = true), KnownType(typeof(SaveName))]
+    [DataContract(IsReference = true), KnownType(typeof(SaveName)), KnownType(typeof(OverrideName))]
     public abstract class SaveData
     {
         [DataMember] protected bool enable;
@@ -65,6 +65,20 @@ namespace My.Namespace
     {
         public int x;
         public int y;
+    }
+}
+
+[System.Serializable, DataContract(IsReference = true)]
+public class OverrideName : My.Namespace.SaveData
+{
+    public OverrideName(bool enable)
+    {
+        Save(enable);
+    }
+
+    protected override void Save(bool enable)
+    {
+        this.enable = enable;
     }
 }
 
@@ -104,7 +118,7 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
     public ReferenceObject()
     {
         var saves = new My.Namespace.SaveData[1];
-        saves[0] = new My.Namespace.SaveName(true)
+        saves[0] = new OverrideName(true)
         {
             name = "MyName",
             list = new object[] { "MyName", new NonContract(1), new ContractType(1) }
@@ -591,11 +605,11 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
-        list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ArrayOfArray()));
         list.Add(new SaveValue(new ListOfList()));
