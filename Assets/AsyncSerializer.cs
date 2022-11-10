@@ -532,13 +532,13 @@ public class ContractType
     public ContractType(int i)
     {
         alpha = i;
-        list = new List<string>();
-        list.Add(i.ToString());
-        list.Add((i+1).ToString());
+        list = new List<object>();
+        list.Add(i);
+        list.Add((i+1));
     }
 
     [DataMember] public double alpha;
-    [DataMember] public List<string> list;
+    [DataMember] public List<object> list;
 }
 
 [System.Serializable, DataContract]
@@ -605,8 +605,8 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
-        list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new ArrayOfData()));
+        list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
