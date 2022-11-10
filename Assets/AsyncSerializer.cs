@@ -50,13 +50,16 @@ namespace My.Namespace
         protected override void Save(bool enable)
         {
             this.enable = enable;
+            this.list = new object[2];
+            this.list[0] = null;
+            this.list[1] = new ContainingClass.ContractType(1);
         }
     }
 
     [System.Serializable, DataContract]
     public class NonReferenceData
     {
-        [DataMember] public ContractType data;
+        [DataMember] public ContainingClass.ContractType data;
         [DataMember] public bool test;
     }
 
@@ -93,16 +96,15 @@ public class ArrayOfData: AsyncSerializer.IKeyValue
     [System.Serializable, DataContract]
     public class SaveValues
     {
-        [DataMember] public My.Namespace.NonReferenceData[] data;
+        [DataMember] public My.Namespace.SaveData[] data;
     }
 
     public ArrayOfData()
     {
         var saveValues = new SaveValues[1];
         saveValues[0] = new SaveValues();
-        saveValues[0].data = new My.Namespace.NonReferenceData[1];
-        saveValues[0].data[0] = new My.Namespace.NonReferenceData();
-        saveValues[0].data[0].data = new ContractType(1);
+        saveValues[0].data = new My.Namespace.SaveData[1];
+        saveValues[0].data[0] = new My.Namespace.SaveName(true);
         values = saveValues;
     }
 }
@@ -118,12 +120,12 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
     public ReferenceObject()
     {
         var saves = new My.Namespace.SaveData[1];
-        var array = new ContractType[1];
-        array[0] = new ContractType(1);
+        var array = new ContainingClass.ContractType[1];
+        array[0] = new ContainingClass.ContractType(1);
         saves[0] = new My.Namespace.SaveName(true)
         {
             name = "MyName",
-            list = new object[] { array, "MyName", new NonContract(1), new ContractType(2) }
+            list = new object[] { array, "MyName", new NonContract(1), new ContainingClass.ContractType(2) }
         };
         values = saves;
     }
@@ -417,11 +419,11 @@ public class NonContract
         this.i = i;
         list = new List<string>();
         list.Add(null);
-        array = new ContractType[0];
+        array = new ContainingClass.ContractType[0];
     }
     public int i;
     public List<string> list;
-    public ContractType[] array;
+    public ContainingClass.ContractType[] array;
 }
 
 [System.Serializable, DataContract]
@@ -490,7 +492,7 @@ public class Container : AsyncSerializer.IKeyValue
         [DataMember] public bool conditions;
         [DataMember] public List<string> list;
         [DataMember] public List<Vector3> vectors;
-        [DataMember] public List<ContractType> contracts;
+        [DataMember] public List<ContainingClass.ContractType> contracts;
         [DataMember] public object nil;
     }
 
@@ -511,7 +513,7 @@ public class Container : AsyncSerializer.IKeyValue
             conditions = value != 0,
             list = new List<string>(),
             vectors = new List<Vector3>(),
-            contracts = new List<ContractType>(),
+            contracts = new List<ContainingClass.ContractType>(),
             nil = null
         };
         this.value.customType.vector.x = value;
@@ -520,7 +522,7 @@ public class Container : AsyncSerializer.IKeyValue
         {
             this.value.list.Add(i.ToString());
             this.value.vectors.Add(Vector3.one * i);
-            this.value.contracts.Add(new ContractType(i));
+            this.value.contracts.Add(new ContainingClass.ContractType(i));
         }
     }
 
@@ -528,33 +530,53 @@ public class Container : AsyncSerializer.IKeyValue
     public object Value => value;
 }
 
-[System.Serializable, DataContract]
-public class ContractType
+public class ContainingClass
 {
-    public ContractType(int i)
+    [System.Serializable, DataContract]
+    public class ContractType
     {
-        alpha = i;
-        list = new List<object>();
-        list.Add(i);
-        list.Add(new ContractPlainData(i));
-    }
+        public ContractType(int i)
+        {
+            alpha = i;
+            dataList = new List<OtherContainingClass.ContractMixedData>();
+            dataList.Add(new OtherContainingClass.ContractMixedData(i));
+            dataList.Add(new OtherContainingClass.ContractMixedData(i+1));
+            aStringList = new List<string>();
+            aStringList.Add(i.ToString());
+        }
 
-    [DataMember] public double alpha;
-    [DataMember] public List<object> list;
+        [DataMember] public double alpha;
+        [DataMember] public List<OtherContainingClass.ContractMixedData> dataList;
+        [DataMember] public List<string> aStringList;
+    }
 }
 
-[System.Serializable, DataContract]
-public class ContractPlainData
+public class OtherContainingClass
 {
-    public ContractPlainData(int i)
+    [System.Serializable, DataContract]
+    [KnownType(typeof(ContractPlainData))]
+    public class ContractMixedData
     {
-        text = i.ToString();
-        list = new List<string>();
-        list.Add(i.ToString());
+        public ContractMixedData(int i)
+        {
+            text = i.ToString();
+            list = new List<ContractPlainData>();
+        }
+
+        [DataMember] public string text;
+        [DataMember] public List<ContractPlainData> list;
     }
 
-    [DataMember] public string text;
-    [DataMember] public List<string> list;
+    [System.Serializable, DataContract]
+    public class ContractPlainData
+    {
+        public ContractPlainData(int i)
+        {
+            text = i.ToString();
+        }
+
+        [DataMember] public string text;
+    }
 }
 
 [System.Serializable, DataContract]
@@ -621,10 +643,10 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(reference));
-        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
@@ -647,7 +669,7 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new Vector()));
         list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new Container(0)));
-        list.Add(new SaveValue(new Container(2)));
+        //list.Add(new SaveValue(new Container(2)));
         yield return null;
         var serialiser = new DataContractSerializer(list.GetType());
         var asyncSerialiser = new AsyncSerialization.DataContractSerializer(list.GetType());

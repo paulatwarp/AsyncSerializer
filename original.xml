@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ArrayOfData</Key>
+		<Value i:type=":ArrayOfArrayOfData.SaveValues">
+			<ArrayOfData.SaveValues>
+				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:SaveData z:Id="i1" i:type="d5p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+						<d5p1:enable>true</d5p1:enable>
+						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+							<d7p1:anyType i:nil="true" />
+							<d7p1:anyType i:type=":ContainingClass.ContractType">
+								<aStringList>
+									<d7p1:string>1</d7p1:string>
+								</aStringList>
+								<alpha>1</alpha>
+								<dataList>
+									<OtherContainingClass.ContractMixedData>
+										<list />
+										<text>1</text>
+									</OtherContainingClass.ContractMixedData>
+									<OtherContainingClass.ContractMixedData>
+										<list />
+										<text>2</text>
+									</OtherContainingClass.ContractMixedData>
+								</dataList>
+							</d7p1:anyType>
+						</d5p1:list>
+						<d5p1:name i:nil="true" />
+					</d5p1:SaveData>
+				</data>
+			</ArrayOfData.SaveValues>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
 		<Value i:type=":Container.SaveValues">
 			<alpha>0.5</alpha>
@@ -8,18 +40,22 @@
 			<condition>true</condition>
 			<conditions>true</conditions>
 			<contracts>
-				<ContractType>
+				<ContainingClass.ContractType>
+					<aStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+					</aStringList>
 					<alpha>0</alpha>
-					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">0</d6p1:anyType>
-						<d6p1:anyType i:type=":ContractPlainData">
-							<list>
-								<d6p1:string>0</d6p1:string>
-							</list>
+					<dataList>
+						<OtherContainingClass.ContractMixedData>
+							<list />
 							<text>0</text>
-						</d6p1:anyType>
-					</list>
-				</ContractType>
+						</OtherContainingClass.ContractMixedData>
+						<OtherContainingClass.ContractMixedData>
+							<list />
+							<text>1</text>
+						</OtherContainingClass.ContractMixedData>
+					</dataList>
+				</ContainingClass.ContractType>
 			</contracts>
 			<customType>
 				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
@@ -55,22 +91,26 @@
 	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
-			<d3p1:SaveData z:Id="i1" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-					<d5p1:anyType i:type=":ArrayOfContractType">
-						<ContractType>
+					<d5p1:anyType i:type=":ArrayOfContainingClass.ContractType">
+						<ContainingClass.ContractType>
+							<aStringList>
+								<d5p1:string>1</d5p1:string>
+							</aStringList>
 							<alpha>1</alpha>
-							<list>
-								<d5p1:anyType xmlns:d9p1="http://www.w3.org/2001/XMLSchema" i:type="d9p1:int">1</d5p1:anyType>
-								<d5p1:anyType i:type=":ContractPlainData">
-									<list>
-										<d5p1:string>1</d5p1:string>
-									</list>
+							<dataList>
+								<OtherContainingClass.ContractMixedData>
+									<list />
 									<text>1</text>
-								</d5p1:anyType>
-							</list>
-						</ContractType>
+								</OtherContainingClass.ContractMixedData>
+								<OtherContainingClass.ContractMixedData>
+									<list />
+									<text>2</text>
+								</OtherContainingClass.ContractMixedData>
+							</dataList>
+						</ContainingClass.ContractType>
 					</d5p1:anyType>
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
 					<d5p1:anyType i:type=":NonContract">
@@ -80,45 +120,25 @@
 							<d5p1:string i:nil="true" />
 						</list>
 					</d5p1:anyType>
-					<d5p1:anyType i:type=":ContractType">
+					<d5p1:anyType i:type=":ContainingClass.ContractType">
+						<aStringList>
+							<d5p1:string>2</d5p1:string>
+						</aStringList>
 						<alpha>2</alpha>
-						<list>
-							<d5p1:anyType xmlns:d8p1="http://www.w3.org/2001/XMLSchema" i:type="d8p1:int">2</d5p1:anyType>
-							<d5p1:anyType i:type=":ContractPlainData">
-								<list>
-									<d5p1:string>2</d5p1:string>
-								</list>
+						<dataList>
+							<OtherContainingClass.ContractMixedData>
+								<list />
 								<text>2</text>
-							</d5p1:anyType>
-						</list>
+							</OtherContainingClass.ContractMixedData>
+							<OtherContainingClass.ContractMixedData>
+								<list />
+								<text>3</text>
+							</OtherContainingClass.ContractMixedData>
+						</dataList>
 					</d5p1:anyType>
 				</d3p1:list>
 				<d3p1:name>MyName</d3p1:name>
 			</d3p1:SaveData>
-		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>ArrayOfData</Key>
-		<Value i:type=":ArrayOfArrayOfData.SaveValues">
-			<ArrayOfData.SaveValues>
-				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:NonReferenceData>
-						<d5p1:data>
-							<alpha>1</alpha>
-							<list xmlns:d8p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-								<d8p1:anyType xmlns:d9p1="http://www.w3.org/2001/XMLSchema" i:type="d9p1:int">1</d8p1:anyType>
-								<d8p1:anyType i:type=":ContractPlainData">
-									<list>
-										<d8p1:string>1</d8p1:string>
-									</list>
-									<text>1</text>
-								</d8p1:anyType>
-							</list>
-						</d5p1:data>
-						<d5p1:test>false</d5p1:test>
-					</d5p1:NonReferenceData>
-				</data>
-			</ArrayOfData.SaveValues>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -147,7 +167,7 @@
 	<AsyncSerializer.SaveValue>
 		<Key>Reference</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
-			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
+			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i2" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -305,72 +325,6 @@
 				<d4p1:z>0</d4p1:z>
 			</vector>
 			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine" />
-		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>Container</Key>
-		<Value i:type=":Container.SaveValues">
-			<alpha>0.33333333333333331</alpha>
-			<beta>2</beta>
-			<condition>true</condition>
-			<conditions>true</conditions>
-			<contracts>
-				<ContractType>
-					<alpha>0</alpha>
-					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">0</d6p1:anyType>
-						<d6p1:anyType i:type=":ContractPlainData">
-							<list>
-								<d6p1:string>0</d6p1:string>
-							</list>
-							<text>0</text>
-						</d6p1:anyType>
-					</list>
-				</ContractType>
-				<ContractType>
-					<alpha>1</alpha>
-					<list xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:anyType xmlns:d7p1="http://www.w3.org/2001/XMLSchema" i:type="d7p1:int">1</d6p1:anyType>
-						<d6p1:anyType i:type=":ContractPlainData">
-							<list>
-								<d6p1:string>1</d6p1:string>
-							</list>
-							<text>1</text>
-						</d6p1:anyType>
-					</list>
-				</ContractType>
-			</contracts>
-			<customType>
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>2</d5p1:x>
-					<d5p1:y>2</d5p1:y>
-				</vector>
-			</customType>
-			<gamma>2</gamma>
-			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-				<d4p1:string>0</d4p1:string>
-				<d4p1:string>1</d4p1:string>
-			</list>
-			<nil i:nil="true" />
-			<phi>0.333333343</phi>
-			<secret>2</secret>
-			<vector xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<d4p1:x>2</d4p1:x>
-				<d4p1:y>2</d4p1:y>
-				<d4p1:z>2</d4p1:z>
-			</vector>
-			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<d4p1:Vector3>
-					<d4p1:x>0</d4p1:x>
-					<d4p1:y>0</d4p1:y>
-					<d4p1:z>0</d4p1:z>
-				</d4p1:Vector3>
-				<d4p1:Vector3>
-					<d4p1:x>1</d4p1:x>
-					<d4p1:y>1</d4p1:y>
-					<d4p1:z>1</d4p1:z>
-				</d4p1:Vector3>
-			</vectors>
 		</Value>
 	</AsyncSerializer.SaveValue>
 </ArrayOfAsyncSerializer.SaveValue>
