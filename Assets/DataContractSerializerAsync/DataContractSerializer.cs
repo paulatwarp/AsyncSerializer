@@ -161,6 +161,10 @@ namespace AsyncSerialization
                     {
                         ns = Namespace + element.Namespace;
                     }
+                    else
+                    {
+                        ns = Namespace;
+                    }
                 }
                 else if (valueType.Namespace != null)
                 {
@@ -171,19 +175,26 @@ namespace AsyncSerialization
                     ns = Namespace;
                 }
 
-                if (incomingNS != ns || !IsTopNamespace(ns))
+                bool isArray = IsArray(valueType);
+                if (!isArray || !IsEmpty(value as IEnumerable) || !typeWritten)
                 {
-                    if (element != null)
+                    if (element != null || incomingNS != ns || !IsTopNamespace(ns))
                     {
-                        WritePrefix(null, element, ns);
-                    }
-                    else
-                    {
-                        WritePrefix(null, valueType, ns);
-                    }
-                    if (type == typeof(object) || !typeWritten)
-                    {
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        if (element != null)
+                        {
+                            if (!IsTopNamespace(ns))
+                            {
+                                WritePrefix(null, element, ns);
+                            }
+                        }
+                        else
+                        {
+                            WritePrefix(null, valueType, ns);
+                        }
+                        if (type == typeof(object) || !typeWritten)
+                        {
+                            namespaced = WriteTypeNamespace(valueType, ns);
+                        }
                     }
                 }
 
@@ -384,7 +395,8 @@ namespace AsyncSerialization
 
         bool IsArray(Type type)
         {
-            return type != typeof(string) && type.GetInterface("IEnumerable", false) != null;
+            bool isArray = type != typeof(string) && type.GetInterface("IEnumerable", false) != null;
+            return isArray;
         }
 
         string GetTypeString(DictionaryEntry entry)

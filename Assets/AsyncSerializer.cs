@@ -549,9 +549,12 @@ public class ContractPlainData
     public ContractPlainData(int i)
     {
         text = i.ToString();
+        list = new List<string>();
+        list.Add(i.ToString());
     }
 
     [DataMember] public string text;
+    [DataMember] public List<string> list;
 }
 
 [System.Serializable, DataContract]
@@ -618,6 +621,8 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new Container(1)));
+        list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
@@ -640,10 +645,8 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new ArrayOfNull()));
         list.Add(new SaveValue(new BoolAsString()));
         list.Add(new SaveValue(new Vector()));
-        list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new Container(0)));
-        list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new Container(2)));
         yield return null;
         var serialiser = new DataContractSerializer(list.GetType());
