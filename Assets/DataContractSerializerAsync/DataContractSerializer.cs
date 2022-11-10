@@ -32,6 +32,7 @@ namespace AsyncSerialization
         Dictionary<Type, string> primitives;
         Stack<string> namespaces;
         Dictionary<object, string> references;
+        bool typeWritten = false;
 
         public DataContractSerializer(Type type)
         {
@@ -137,6 +138,7 @@ namespace AsyncSerialization
                 writer.WriteEndAttribute();
                 namespaces.Push(ns);
                 written = true;
+                typeWritten = true;
             }
             return written;
         }
@@ -183,7 +185,10 @@ namespace AsyncSerialization
                     {
                         WritePrefix(null, valueType, ns);
                     }
-                    namespaced = WriteTypeNamespace(valueType, ns);
+                    if (type == typeof(object) || !typeWritten)
+                    {
+                        namespaced = WriteTypeNamespace(valueType, ns);
+                    }
                 }
 
                 if (value is IEnumerable)
@@ -375,6 +380,7 @@ namespace AsyncSerialization
             if (namespaced)
             {
                 namespaces.Pop();
+                typeWritten = false;
             }
             depth--;
             writer.WriteEndElement();

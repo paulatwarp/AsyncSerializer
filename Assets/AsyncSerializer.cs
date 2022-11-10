@@ -53,6 +53,12 @@ namespace My.Namespace
         }
     }
 
+    [System.Serializable, DataContract]
+    public class NonReferenceData
+    {
+        [DataMember] public bool test;
+    }
+
     [System.Serializable]
     public struct CustomVector
     {
@@ -72,15 +78,14 @@ public class ArrayOfData: AsyncSerializer.IKeyValue
     [System.Serializable, DataContract]
     public class SaveValues
     {
-        [DataMember] public My.Namespace.SaveData [] references;
+        [DataMember] public My.Namespace.NonReferenceData[] data;
     }
 
     public ArrayOfData()
     {
         var saveValues = new SaveValues[1];
         saveValues[0] = new SaveValues();
-        saveValues[0].references = new My.Namespace.SaveData[1];
-        saveValues[0].references[0] = new My.Namespace.SaveName(true);
+        saveValues[0].data = new My.Namespace.NonReferenceData[0];
         values = saveValues;
     }
 }

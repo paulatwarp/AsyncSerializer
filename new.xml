@@ -4,13 +4,7 @@
 		<Key>ArrayOfData</Key>
 		<Value i:type=":ArrayOfArrayOfData.SaveValues">
 			<ArrayOfData.SaveValues>
-				<references xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d5p1:ArrayOfSaveData">
-					<d5p1:SaveData z:Id="i1" i:type="d5p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
-						<d5p1:enable>true</d5p1:enable>
-						<d5p1:list i:nil="true" />
-						<d5p1:name i:nil="true" />
-					</d5p1:SaveData>
-				</references>
+				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace" />
 			</ArrayOfData.SaveValues>
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -40,7 +34,7 @@
 	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
-			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+			<d3p1:SaveData z:Id="i1" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType xmlns:d6p1="http://www.w3.org/2001/XMLSchema" i:type="d6p1:string">MyName</d5p1:anyType>
@@ -66,7 +60,7 @@
 	<AsyncSerializer.SaveValue>
 		<Key>Reference</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
-			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i2" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
+			<d3p1:anyType xmlns:d4p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d4p1:SaveName" z:Ref="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
