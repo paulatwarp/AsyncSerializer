@@ -123,24 +123,19 @@ namespace AsyncSerialization
 
         bool WriteTypeNamespace(Type type, string ns)
         {
-            bool written = false;
-            if (!namespaces.Contains(ns))
+            writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+            try
             {
-                writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                try
-                {
-                    writer.WriteQualifiedName(GetTypeString(type), ns);
-                }
-                catch (Exception exception)
-                {
-                    Debug.LogError(exception);
-                }
-                writer.WriteEndAttribute();
-                namespaces.Push(ns);
-                written = true;
-                typeWritten = true;
+                writer.WriteQualifiedName(GetTypeString(type), ns);
             }
-            return written;
+            catch (Exception exception)
+            {
+                Debug.LogError(exception);
+            }
+            writer.WriteEndAttribute();
+            namespaces.Push(ns);
+            typeWritten = true;
+            return true;
         }
 
         bool IsTopNamespace(string ns)
