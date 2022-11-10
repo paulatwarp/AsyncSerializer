@@ -118,10 +118,12 @@ public class ReferenceObject : AsyncSerializer.IKeyValue
     public ReferenceObject()
     {
         var saves = new My.Namespace.SaveData[1];
-        saves[0] = new OverrideName(true)
+        var array = new ContractType[1];
+        array[0] = new ContractType(1);
+        saves[0] = new My.Namespace.SaveName(true)
         {
             name = "MyName",
-            list = new object[] { "MyName", new NonContract(1), new ContractType(1) }
+            list = new object[] { array, "MyName", new NonContract(1), new ContractType(2) }
         };
         values = saves;
     }
@@ -616,8 +618,8 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
-        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(reference));
+        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
