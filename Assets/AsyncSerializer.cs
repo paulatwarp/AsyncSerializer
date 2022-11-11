@@ -37,6 +37,12 @@ namespace My.Namespace
         [DataMember] public object [] list;
 
         protected abstract void Save(bool enable);
+
+        [DataContract]
+        public class Reference
+        {
+            [DataMember] public SaveData reference;
+        }
     }
 
     [System.Serializable, DataContract(IsReference = true)]
@@ -80,7 +86,10 @@ public class OverrideName : My.Namespace.SaveData
     {
         Save(enable);
         anyReferences = new List<object>();
-        anyReferences.Add(reference);
+        var container = new ReferenceContainer();
+        container.reference = new My.Namespace.SaveData.Reference();
+        container.reference.reference = reference;
+        anyReferences.Add(container);
     }
 
     protected override void Save(bool enable)
@@ -90,26 +99,25 @@ public class OverrideName : My.Namespace.SaveData
 }
 
 [System.Serializable, DataContract]
+public class ReferenceContainer
+{
+    [DataMember] public My.Namespace.SaveData.Reference reference;
+}
+
+
+[System.Serializable, DataContract]
 public class ArrayOfData: AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
     public object Value => values;
 
-    IEnumerable<SaveValues> values;
-
-    [System.Serializable, DataContract]
-    public class SaveValues
-    {
-        [DataMember] public My.Namespace.SaveData[] data;
-    }
+    IEnumerable<My.Namespace.SaveData> values;
 
     public ArrayOfData(My.Namespace.SaveData reference)
     {
-        var saveValues = new SaveValues[1];
-        saveValues[0] = new SaveValues();
-        saveValues[0].data = new My.Namespace.SaveData[2];
-        saveValues[0].data[0] = new My.Namespace.SaveName(true);
-        saveValues[0].data[1] = new OverrideName(true, reference);
+        var saveValues = new My.Namespace.SaveData[2];
+        saveValues[0] = new My.Namespace.SaveName(true);
+        saveValues[1] = new OverrideName(true, reference);
         values = saveValues;
     }
 }

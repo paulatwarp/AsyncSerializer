@@ -175,27 +175,24 @@ WriteStartElement(null, "Key", "http://schemas.datacontract.org/2004/07/")
 WriteString("ArrayOfData")
 WriteEndElement()
 WriteStartElement(null, "Value", "http://schemas.datacontract.org/2004/07/")
-LookupPrefix("http://schemas.datacontract.org/2004/07/") -> ""
-WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
-LookupPrefix("http://schemas.datacontract.org/2004/07/") -> ""
-WriteString("")
-WriteString(":")
-WriteString("ArrayOfArrayOfData.SaveValues")
-WriteEndAtrribute()
-WriteStartElement(null, "ArrayOfData.SaveValues", "http://schemas.datacontract.org/2004/07/")
-WriteStartElement(null, "data", "http://schemas.datacontract.org/2004/07/")
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> null
-WriteStartAttribute("xmlns", "d5p1", null)
+WriteStartAttribute("xmlns", "d3p1", null)
 WriteString("http://schemas.datacontract.org/2004/07/My.Namespace")
+WriteEndAtrribute()
+WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
+LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteString("d3p1")
+WriteString(":")
+WriteString("ArrayOfSaveData")
 WriteEndAtrribute()
 WriteStartElement(null, "SaveData", "http://schemas.datacontract.org/2004/07/My.Namespace")
 WriteStartAttribute("z", "Id", "http://schemas.microsoft.com/2003/10/Serialization/")
 WriteString("i2")
 WriteEndAtrribute()
-LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d5p1"
+LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
 WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
-LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d5p1"
-WriteString("d5p1")
+LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteString("d3p1")
 WriteString(":")
 WriteString("SaveName")
 WriteEndAtrribute()
@@ -204,7 +201,7 @@ WriteString("true")
 WriteEndElement()
 WriteStartElement(null, "list", "http://schemas.datacontract.org/2004/07/My.Namespace")
 LookupPrefix("http://schemas.microsoft.com/2003/10/Serialization/Arrays") -> null
-WriteStartAttribute("xmlns", "d7p1", null)
+WriteStartAttribute("xmlns", "d5p1", null)
 WriteString("http://schemas.microsoft.com/2003/10/Serialization/Arrays")
 WriteEndAtrribute()
 WriteStartElement(null, "anyType", "http://schemas.microsoft.com/2003/10/Serialization/Arrays")
@@ -224,7 +221,7 @@ WriteStartElement(null, "anInt", "http://schemas.datacontract.org/2004/07/")
 WriteString("1")
 WriteEndElement()
 WriteStartElement(null, "bStringList", "http://schemas.datacontract.org/2004/07/")
-LookupPrefix("http://schemas.microsoft.com/2003/10/Serialization/Arrays") -> "d7p1"
+LookupPrefix("http://schemas.microsoft.com/2003/10/Serialization/Arrays") -> "d5p1"
 WriteStartElement(null, "string", "http://schemas.microsoft.com/2003/10/Serialization/Arrays")
 WriteString("1")
 WriteEndElement()
@@ -269,7 +266,7 @@ WriteString("true")
 WriteEndElement()
 WriteStartElement(null, "list", "http://schemas.datacontract.org/2004/07/My.Namespace")
 LookupPrefix("http://schemas.microsoft.com/2003/10/Serialization/Arrays") -> null
-WriteStartAttribute("xmlns", "d7p1", null)
+WriteStartAttribute("xmlns", "d5p1", null)
 WriteString("http://schemas.microsoft.com/2003/10/Serialization/Arrays")
 WriteEndAtrribute()
 WriteStartAttribute("i", "nil", "http://www.w3.org/2001/XMLSchema-instance")
@@ -283,17 +280,20 @@ WriteEndAtrribute()
 WriteEndElement()
 WriteStartElement(null, "anyReferences", "http://schemas.datacontract.org/2004/07/")
 LookupPrefix("http://schemas.microsoft.com/2003/10/Serialization/Arrays") -> null
-WriteStartAttribute("xmlns", "d7p1", null)
+WriteStartAttribute("xmlns", "d5p1", null)
 WriteString("http://schemas.microsoft.com/2003/10/Serialization/Arrays")
 WriteEndAtrribute()
 WriteStartElement(null, "anyType", "http://schemas.microsoft.com/2003/10/Serialization/Arrays")
-LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d5p1"
+LookupPrefix("http://schemas.datacontract.org/2004/07/") -> ""
 WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
-LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d5p1"
-WriteString("d5p1")
+LookupPrefix("http://schemas.datacontract.org/2004/07/") -> ""
+WriteString("")
 WriteString(":")
-WriteString("SaveName")
+WriteString("ReferenceContainer")
 WriteEndAtrribute()
+WriteStartElement(null, "reference", "http://schemas.datacontract.org/2004/07/")
+LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteStartElement(null, "reference", "http://schemas.datacontract.org/2004/07/My.Namespace")
 WriteStartAttribute("z", "Ref", "http://schemas.microsoft.com/2003/10/Serialization/")
 WriteString("i1")
 WriteEndAtrribute()

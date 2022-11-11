@@ -61,42 +61,42 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfData</Key>
-		<Value i:type=":ArrayOfArrayOfData.SaveValues">
-			<ArrayOfData.SaveValues>
-				<data xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:SaveData z:Id="i2" i:type="d5p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
-						<d5p1:enable>true</d5p1:enable>
-						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-							<d7p1:anyType i:nil="true" />
-							<d7p1:anyType i:type=":ContainingClass.ContractType">
-								<anInt>1</anInt>
-								<bStringList>
-									<d7p1:string>1</d7p1:string>
-								</bStringList>
-								<cDataList>
-									<OtherContainingClass.ContractMixedData>
-										<list />
-										<text>1</text>
-									</OtherContainingClass.ContractMixedData>
-									<OtherContainingClass.ContractMixedData>
-										<list />
-										<text>2</text>
-									</OtherContainingClass.ContractMixedData>
-								</cDataList>
-							</d7p1:anyType>
-						</d5p1:list>
-						<d5p1:name i:nil="true" />
-					</d5p1:SaveData>
-					<d5p1:SaveData z:Id="i3" i:type=":OverrideName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
-						<d5p1:enable>true</d5p1:enable>
-						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:nil="true" />
-						<d5p1:name i:nil="true" />
-						<anyReferences xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-							<d7p1:anyType i:type="d5p1:SaveName" z:Ref="i1" />
-						</anyReferences>
-					</d5p1:SaveData>
-				</data>
-			</ArrayOfData.SaveValues>
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
+			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+				<d3p1:enable>true</d3p1:enable>
+				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+					<d5p1:anyType i:nil="true" />
+					<d5p1:anyType i:type=":ContainingClass.ContractType">
+						<anInt>1</anInt>
+						<bStringList>
+							<d5p1:string>1</d5p1:string>
+						</bStringList>
+						<cDataList>
+							<OtherContainingClass.ContractMixedData>
+								<list />
+								<text>1</text>
+							</OtherContainingClass.ContractMixedData>
+							<OtherContainingClass.ContractMixedData>
+								<list />
+								<text>2</text>
+							</OtherContainingClass.ContractMixedData>
+						</cDataList>
+					</d5p1:anyType>
+				</d3p1:list>
+				<d3p1:name i:nil="true" />
+			</d3p1:SaveData>
+			<d3p1:SaveData z:Id="i3" i:type=":OverrideName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+				<d3p1:enable>true</d3p1:enable>
+				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:nil="true" />
+				<d3p1:name i:nil="true" />
+				<anyReferences xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+					<d5p1:anyType i:type=":ReferenceContainer">
+						<reference>
+							<d3p1:reference z:Ref="i1" />
+						</reference>
+					</d5p1:anyType>
+				</anyReferences>
+			</d3p1:SaveData>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
