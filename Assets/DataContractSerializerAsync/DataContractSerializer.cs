@@ -118,7 +118,7 @@ namespace AsyncSerialization
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
             }
-            if (prefix != string.Empty && type.Namespace != null && !namespaces.Contains(ns))
+            if (prefix != string.Empty && type.Namespace != null && !IsTopNamespace(ns))
             {
                 try
                 {
@@ -146,8 +146,8 @@ namespace AsyncSerialization
                 Debug.LogError(exception);
             }
             writer.WriteEndAttribute();
-            namespaces.Push(ns);
-            return 1;
+            //namespaces.Push(ns);
+            return 0;
         }
 
         bool IsTopNamespace(string ns)
@@ -202,8 +202,9 @@ namespace AsyncSerialization
                             addedNS += WritePrefix(null, element, ns);
                         }
                     }
-                    else
+                    else if (incomingNS != ns || !IsTopNamespace(ns))
                     {
+                        Debug.Log($"WritePrefix(null, {valueType}, {ns})");
                         addedNS += WritePrefix(null, valueType, ns);
                     }
                     if (type == typeof(object))
@@ -297,7 +298,7 @@ namespace AsyncSerialization
                                     addedNS += WriteTypeNamespace(valueType, ns);
                                 }
                             }
-                            else if (!IsTopNamespace(ns))
+                            else
                             {
                                 writer.LookupPrefix(ns);
                             }
