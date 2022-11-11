@@ -74,9 +74,13 @@ namespace My.Namespace
 [System.Serializable, DataContract(IsReference = true)]
 public class OverrideName : My.Namespace.SaveData
 {
-    public OverrideName(bool enable)
+    [DataMember] public List<object> anyReferences;
+
+    public OverrideName(bool enable, My.Namespace.SaveData reference)
     {
         Save(enable);
+        anyReferences = new List<object>();
+        anyReferences.Add(reference);
     }
 
     protected override void Save(bool enable)
@@ -99,12 +103,13 @@ public class ArrayOfData: AsyncSerializer.IKeyValue
         [DataMember] public My.Namespace.SaveData[] data;
     }
 
-    public ArrayOfData()
+    public ArrayOfData(My.Namespace.SaveData reference)
     {
         var saveValues = new SaveValues[1];
         saveValues[0] = new SaveValues();
-        saveValues[0].data = new My.Namespace.SaveData[1];
+        saveValues[0].data = new My.Namespace.SaveData[2];
         saveValues[0].data[0] = new My.Namespace.SaveName(true);
+        saveValues[0].data[1] = new OverrideName(true, reference);
         values = saveValues;
     }
 }
@@ -695,17 +700,18 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(reference));
+        list.Add(new SaveValue(new Reference(null)));
+        list.Add(new SaveValue(new ArrayOfData(data)));
+        list.Add(new SaveValue(new ReferenceObject()));
+        list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ContainerList()));
-        list.Add(new SaveValue(new ArrayOfData()));
         list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new AlphaTest()));
         list.Add(new SaveValue(new BetaTest()));
         list.Add(new SaveValue(new Container(1)));
-        list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
-        list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
-        list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ArrayOfArray()));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));

@@ -85,6 +85,17 @@ namespace AsyncSerialization
                 ns += type.Namespace;
                 writer.LookupPrefix(ns);
             }
+            else if (IsArray(type))
+            {
+                ns = CollectionsNamespace;
+                depth++;
+                int added = WritePrefix(null, type, ns);
+                if (added == 1)
+                {
+                    namespaces.Pop();
+                }
+                depth--;
+            }
             writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
             writer.WriteEndElement();
         }
@@ -96,7 +107,7 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        void WritePrefix(string prefix, Type type, string ns)
+        int WritePrefix(string prefix, Type type, string ns)
         {
             if (prefix == null)
             {
@@ -112,15 +123,18 @@ namespace AsyncSerialization
                 try
                 {
                     writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                    namespaces.Push(ns);
+                    return 1;
                 }
                 catch (XmlException e)
                 {
                     Debug.LogError(e);
                 }
             }
+            return 0;
         }
 
-        bool WriteTypeNamespace(Type type, string ns)
+        int WriteTypeNamespace(Type type, string ns)
         {
             writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
             try
@@ -133,12 +147,36 @@ namespace AsyncSerialization
             }
             writer.WriteEndAttribute();
             namespaces.Push(ns);
-            return true;
+            return 1;
         }
 
         bool IsTopNamespace(string ns)
         {
             return namespaces.Count == 0 ? false : namespaces.Peek() == ns;
+        }
+
+        string GetNamespace(Type reference, Type instance, string ns)
+        {
+            if (reference != null)
+            {
+                if (reference.Namespace != null && reference.Namespace != "System")
+                {
+                    ns = Namespace + reference.Namespace;
+                }
+                else
+                {
+                    ns = Namespace;
+                }
+            }
+            else if (instance.Namespace != null)
+            {
+                ns = Namespace + instance.Namespace;
+            }
+            else if (instance.Namespace == null)
+            {
+                ns = Namespace;
+            }
+            return ns;
         }
 
         IEnumerable WriteField(string name, Type type, object value, string ns)
@@ -149,29 +187,11 @@ namespace AsyncSerialization
             writer.WriteStartElement(name, ns);
             Type valueType = value.GetType();
             Type element = GetArrayType(valueType);
-            bool namespaced = false;
+            int addedNS = 0;
             if (valueType.IsDefined(typeof(DataContractAttribute), true) || (element != null && element != rootElementType && element.IsDefined(typeof(DataContractAttribute), true)))
             {
                 string incomingNS = ns;
-                if (element != null)
-                {
-                    if (element.Namespace != null)
-                    {
-                        ns = Namespace + element.Namespace;
-                    }
-                    else
-                    {
-                        ns = Namespace;
-                    }
-                }
-                else if (valueType.Namespace != null)
-                {
-                    ns = Namespace + valueType.Namespace;
-                }
-                else if (valueType.Namespace == null)
-                {
-                    ns = Namespace;
-                }
+                ns = GetNamespace(element, valueType, ns);
 
                 if (element != null || incomingNS != ns || !IsTopNamespace(ns))
                 {
@@ -179,16 +199,16 @@ namespace AsyncSerialization
                     {
                         if (!IsTopNamespace(ns))
                         {
-                            WritePrefix(null, element, ns);
+                            addedNS += WritePrefix(null, element, ns);
                         }
                     }
                     else
                     {
-                        WritePrefix(null, valueType, ns);
+                        addedNS += WritePrefix(null, valueType, ns);
                     }
                     if (type == typeof(object))
                     {
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        addedNS += WriteTypeNamespace(valueType, ns);
                     }
                 }
 
@@ -215,7 +235,7 @@ namespace AsyncSerialization
                     }
                     else
                     {
-                        foreach (var item in WriteDataContractObjectContents(value, ns))
+                        foreach (var item in WriteDataContractObjectContents(value))
                         {
                             yield return item;
                         }
@@ -227,7 +247,7 @@ namespace AsyncSerialization
             {
                 if (element != null && element.IsDefined(typeof(DataContractAttribute), true))
                 {
-                    WritePrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
+                    addedNS += WritePrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
                     foreach (var item in WriteDataContractEnumerable(value as IEnumerable, ns))
                     {
                         yield return item;
@@ -252,7 +272,7 @@ namespace AsyncSerialization
                     }
                     if (value is IDictionary)
                     {
-                        WritePrefix(null, valueType, ns);
+                        addedNS += WritePrefix(null, valueType, ns);
                         foreach (var item in WriteDictionary(value as IDictionary, ns))
                         {
                             yield return item;
@@ -264,27 +284,27 @@ namespace AsyncSerialization
                         {
                             if (element != null && element.Namespace != null)
                             {
-                                WritePrefix(null, valueType, ns);
+                                addedNS += WritePrefix(null, valueType, ns);
                             }
                         }
                         else
                         {
                             if (!namespaces.Contains(ns))
                             {
-                                WritePrefix(null, valueType, ns);
+                                addedNS += WritePrefix(null, valueType, ns);
                                 if (type.Namespace == "System" && type != valueType)
                                 {
-                                    namespaced = WriteTypeNamespace(valueType, ns);
+                                    addedNS += WriteTypeNamespace(valueType, ns);
                                 }
                             }
                             else if (!IsTopNamespace(ns))
                             {
                                 writer.LookupPrefix(ns);
                             }
-                            if (!namespaced)
+                            if (addedNS == 0)
                             {
                                 namespaces.Push(ns);
-                                namespaced = true;
+                                addedNS++;
                             }
                             foreach (var item in WritePrimitiveEnumerable(value as IEnumerable, ns))
                             {
@@ -298,8 +318,8 @@ namespace AsyncSerialization
             {
                 if (type == typeof(object) && valueType.Namespace == "System")
                 {
-                    WritePrefix(null, valueType, XmlSchema.Namespace);
-                    namespaced = WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                    addedNS += WritePrefix(null, valueType, XmlSchema.Namespace);
+                    addedNS += WriteTypeNamespace(valueType, XmlSchema.Namespace);
                 }
                 if (value is bool)
                 {
@@ -329,8 +349,8 @@ namespace AsyncSerialization
                 {
                     if (!namespaces.Contains(ns))
                     {
-                        WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        addedNS += WritePrefix(null, valueType, ns);
+                        addedNS += WriteTypeNamespace(valueType, ns);
                     }
                     writer.WriteString(value.ToString());
                 }
@@ -339,17 +359,17 @@ namespace AsyncSerialization
                     if (valueType.Namespace != null && !ns.EndsWith(valueType.Namespace))
                     {
                         ns += valueType.Namespace;
-                        WritePrefix(null, valueType, ns);
+                        addedNS += WritePrefix(null, valueType, ns);
                         if (type.Namespace != valueType.Namespace)
                         {
-                            namespaced = WriteTypeNamespace(valueType, ns);
+                            addedNS += WriteTypeNamespace(valueType, ns);
                         }
                     }
                     else if (type == typeof(object))
                     {
                         ns = Namespace;
-                        WritePrefix(null, valueType, ns);
-                        namespaced = WriteTypeNamespace(valueType, ns);
+                        addedNS += WritePrefix(null, valueType, ns);
+                        addedNS += WriteTypeNamespace(valueType, ns);
                     }
                     BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
                     if (type.IsGenericType)
@@ -357,23 +377,23 @@ namespace AsyncSerialization
                         flags |= BindingFlags.NonPublic;
                     }
                     var members = GetSortedMembers(value, null, flags);
-                    foreach (var (fieldName, fieldType, fieldValue) in members)
+                    foreach (var entry in members)
                     {
-                        if (fieldValue != null)
+                        if (entry.value != null)
                         {
-                            foreach (var item in WriteField(fieldName, fieldType, fieldValue, ns))
+                            foreach (var item in WriteField(entry.name, entry.type, entry.value, entry.ns))
                             {
                                 yield return item;
                             }
                         }
                         else
                         {
-                            WriteNull(fieldName, ns);
+                            WriteNull(entry.name, entry.ns);
                         }
                     }
                 }
             }
-            if (namespaced)
+            for (int i = 0; i < addedNS; ++i)
             {
                 namespaces.Pop();
             }
@@ -484,7 +504,7 @@ namespace AsyncSerialization
                         writer.WriteQualifiedName(GetTypeString(itemType), prefixNS);
                         writer.WriteEndAttribute();
                     }
-                    foreach (var item in WriteDataContractObjectContents(entry, ns))
+                    foreach (var item in WriteDataContractObjectContents(entry))
                     {
                         yield return item;
                     }
@@ -533,8 +553,25 @@ namespace AsyncSerialization
             }
         }
 
-        void AddSortedMembers(List<(string, Type, object)> list, object graph, Type type, Type filter, BindingFlags flags)
+        class MemberEntry
         {
+            public string name;
+            public Type type;
+            public object value;
+            public string ns;
+
+            public MemberEntry(string name, Type type, object value, string ns)
+            {
+                this.name = name;
+                this.type = type;
+                this.value = value;
+                this.ns = ns;
+            }
+        }
+
+        void AddSortedMembers(List<MemberEntry> list, object graph, Type type, Type filter, BindingFlags flags)
+        {
+            string ns = GetNamespace(type, graph.GetType(), Namespace);
             var sortedList = new SortedList<string, (Type, object)>();
             if (type.BaseType != null)
             {
@@ -562,9 +599,9 @@ namespace AsyncSerialization
             }
             foreach (var (name, (memberType, value)) in sortedList)
             {
-                if (!list.Contains((name, memberType, value)))
+                if (!list.Exists((entry) => entry.name == name))
                 {
-                    list.Add((name, memberType, value));
+                    list.Add(new MemberEntry(name, memberType, value, ns));
                 }
             }
             sortedList.Clear();
@@ -578,37 +615,37 @@ namespace AsyncSerialization
             }
             foreach (var (name, (memberType, value)) in sortedList)
             {
-                if (!list.Contains((name, memberType, value)))
+                if (!list.Exists((entry) => entry.name == name))
                 {
-                    list.Add((name, memberType, value));
+                    list.Add(new MemberEntry(name, memberType, value, ns));
                 }
             }
         }
 
-        List<(string, Type, object)> GetSortedMembers(object graph, Type filter, BindingFlags flags)
+        List<MemberEntry> GetSortedMembers(object graph, Type filter, BindingFlags flags)
         {
             Type type = graph.GetType();
-            var members = new List<(string, Type, object)>();
+            var members = new List<MemberEntry>();
             AddSortedMembers(members, graph, type, filter, flags);
             return members;
         }
 
-        private IEnumerable WriteDataContractObjectContents(object graph, string ns)
+        private IEnumerable WriteDataContractObjectContents(object graph)
         {
             var members = GetSortedMembers(graph, typeof(DataMemberAttribute), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            foreach (var (name, type, value) in members)
+            foreach (var entry in members)
             {
-                if (value != null)
+                if (entry.value != null)
                 {
-                    foreach (var item in WriteField(name, type, value, ns))
+                    foreach (var item in WriteField(entry.name, entry.type, entry.value, entry.ns))
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    yield return value;
-                    WriteNull(name, type, ns);
+                    yield return entry.value;
+                    WriteNull(entry.name, entry.type, entry.ns);
                 }
             }
         }
