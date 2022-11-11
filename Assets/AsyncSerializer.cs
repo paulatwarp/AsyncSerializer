@@ -537,7 +537,7 @@ public class ContainingClass
     {
         public ContractType(int i)
         {
-            aInt = i;
+            anInt = i;
             cDataList = new List<OtherContainingClass.ContractMixedData>();
             cDataList.Add(new OtherContainingClass.ContractMixedData(i));
             cDataList.Add(new OtherContainingClass.ContractMixedData(i+1));
@@ -546,7 +546,7 @@ public class ContainingClass
         }
 
         [DataMember] public List<OtherContainingClass.ContractMixedData> cDataList;
-        [DataMember] public int aInt;
+        [DataMember] public int anInt;
         [DataMember] public List<string> bStringList;
     }
 }
@@ -695,12 +695,12 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
-        list.Add(new SaveValue(new ContainerList(1)));
+        list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(new ArrayOfData()));
+        list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new AlphaTest()));
         list.Add(new SaveValue(new BetaTest()));
         list.Add(new SaveValue(new Container(1)));
-        list.Add(new SaveValue(new ContainerList()));
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));

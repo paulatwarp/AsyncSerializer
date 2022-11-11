@@ -2,13 +2,7 @@
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
 		<Key>ContainerList</Key>
-		<Value i:type=":ArrayOfContainerList.SaveValues">
-			<ContainerList.SaveValues>
-				<aByte>1</aByte>
-				<aDouble>1</aDouble>
-				<anInt>1</anInt>
-			</ContainerList.SaveValues>
-		</Value>
+		<Value i:type=":ArrayOfContainerList.SaveValues" />
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfData</Key>
@@ -20,7 +14,7 @@
 						<d5p1:list xmlns:d7p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 							<d7p1:anyType i:nil="true" />
 							<d7p1:anyType i:type=":ContainingClass.ContractType">
-								<aInt>1</aInt>
+								<anInt>1</anInt>
 								<bStringList>
 									<d7p1:string>1</d7p1:string>
 								</bStringList>
@@ -40,6 +34,16 @@
 					</d5p1:SaveData>
 				</data>
 			</ArrayOfData.SaveValues>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>ContainerList</Key>
+		<Value i:type=":ArrayOfContainerList.SaveValues">
+			<ContainerList.SaveValues>
+				<aByte>1</aByte>
+				<aDouble>1</aDouble>
+				<anInt>1</anInt>
+			</ContainerList.SaveValues>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -67,7 +71,7 @@
 			<conditions>true</conditions>
 			<contracts>
 				<ContainingClass.ContractType>
-					<aInt>0</aInt>
+					<anInt>0</anInt>
 					<bStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 						<d6p1:string>0</d6p1:string>
 					</bStringList>
@@ -111,10 +115,6 @@
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
-		<Key>ContainerList</Key>
-		<Value i:type=":ArrayOfContainerList.SaveValues" />
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
 			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
@@ -122,7 +122,7 @@
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType i:type=":ArrayOfContainingClass.ContractType">
 						<ContainingClass.ContractType>
-							<aInt>1</aInt>
+							<anInt>1</anInt>
 							<bStringList>
 								<d5p1:string>1</d5p1:string>
 							</bStringList>
@@ -147,7 +147,7 @@
 						</list>
 					</d5p1:anyType>
 					<d5p1:anyType i:type=":ContainingClass.ContractType">
-						<aInt>2</aInt>
+						<anInt>2</anInt>
 						<bStringList>
 							<d5p1:string>2</d5p1:string>
 						</bStringList>

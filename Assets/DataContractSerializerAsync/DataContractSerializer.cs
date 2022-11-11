@@ -32,7 +32,6 @@ namespace AsyncSerialization
         Dictionary<Type, string> primitives;
         Stack<string> namespaces;
         Dictionary<object, string> references;
-        bool typeWritten = false;
 
         public DataContractSerializer(Type type)
         {
@@ -134,7 +133,6 @@ namespace AsyncSerialization
             }
             writer.WriteEndAttribute();
             namespaces.Push(ns);
-            typeWritten = true;
             return true;
         }
 
@@ -175,26 +173,22 @@ namespace AsyncSerialization
                     ns = Namespace;
                 }
 
-                bool isArray = IsArray(valueType);
-                if (!isArray || !IsEmpty(value as IEnumerable) || !typeWritten)
+                if (element != null || incomingNS != ns || !IsTopNamespace(ns))
                 {
-                    if (element != null || incomingNS != ns || !IsTopNamespace(ns))
+                    if (element != null)
                     {
-                        if (element != null)
+                        if (!IsTopNamespace(ns))
                         {
-                            if (!IsTopNamespace(ns))
-                            {
-                                WritePrefix(null, element, ns);
-                            }
+                            WritePrefix(null, element, ns);
                         }
-                        else
-                        {
-                            WritePrefix(null, valueType, ns);
-                        }
-                        if (type == typeof(object) || !typeWritten)
-                        {
-                            namespaced = WriteTypeNamespace(valueType, ns);
-                        }
+                    }
+                    else
+                    {
+                        WritePrefix(null, valueType, ns);
+                    }
+                    if (type == typeof(object))
+                    {
+                        namespaced = WriteTypeNamespace(valueType, ns);
                     }
                 }
 
@@ -382,7 +376,6 @@ namespace AsyncSerialization
             if (namespaced)
             {
                 namespaces.Pop();
-                typeWritten = false;
             }
             depth--;
             writer.WriteEndElement();
