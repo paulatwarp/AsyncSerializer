@@ -26,6 +26,7 @@ public class XmlSpy : XmlWriter
             {
                 file.WriteLine(line);
             }
+            file.Flush();
         }
     }
 
@@ -52,6 +53,7 @@ public class XmlSpy : XmlWriter
 
     void LogLine(string line)
     {
+        line = line.Replace("\n", "\\n");
         if (compare)
         {
             if (position < log.Count)
