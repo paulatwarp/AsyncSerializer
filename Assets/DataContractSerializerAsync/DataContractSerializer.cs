@@ -85,7 +85,7 @@ namespace AsyncSerialization
                 ns += type.Namespace;
                 writer.LookupPrefix(ns);
             }
-            else if (IsArray(type))
+            else if (IsArray(type) && !namespaces.Contains(CollectionsNamespace))
             {
                 ns = CollectionsNamespace;
                 depth++;
