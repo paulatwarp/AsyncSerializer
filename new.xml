@@ -85,16 +85,16 @@
 				</d3p1:list>
 				<d3p1:name i:nil="true" />
 			</d3p1:SaveData>
-			<d3p1:SaveData z:Id="i3" i:type="d3p1:OverrideName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+			<d3p1:SaveData z:Id="i3" i:type=":OverrideName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:nil="true" />
 				<d3p1:name i:nil="true" />
 				<d3p1:anyReferences xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-					<anyType>
-						<reference i:type="d3p1:SaveData.Reference">
+					<d5p1:anyType i:type=":ReferenceContainer">
+						<d3p1:reference>
 							<d3p1:reference z:Ref="i1" />
-						</reference>
-					</anyType>
+						</d3p1:reference>
+					</d5p1:anyType>
 				</d3p1:anyReferences>
 			</d3p1:SaveData>
 		</Value>
@@ -214,9 +214,9 @@
 				</ContainingClass.ContractType>
 			</contracts>
 			<customType>
-				<vector i:type="">
-					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
-					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</y>
+				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<x>1</x>
+					<y>1</y>
 				</vector>
 			</customType>
 			<gamma>1</gamma>
@@ -225,10 +225,10 @@
 			</list>
 			<nil i:nil="true" />
 			<phi>0.5</phi>
-			<vector i:type="">
-				<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</x>
-				<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</y>
-				<z xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</z>
+			<vector xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<x>1</x>
+				<y>1</y>
+				<z>1</z>
 			</vector>
 			<vectors>
 				<Vector3 xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
@@ -241,17 +241,17 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>BoolAsData</Key>
-		<Value>
-			<test>false</test>
+		<Value i:type="">
+			<test xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">false</test>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>SaveCustomType</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
 			<d3p1:anyType i:type=":CustomType">
-				<vector i:type="">
-					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
-					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">2</y>
+				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<x>1</x>
+					<y>2</y>
 				</vector>
 			</d3p1:anyType>
 		</Value>
@@ -270,8 +270,8 @@
 		<Key>ListOfList</Key>
 		<Value>
 			<flags>
-				<ArrayOfboolean xmlns="http://schemas.datacontract.org/2004/07/System.Collections.Generic">
-					<boolean xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">true</boolean>
+				<ArrayOfboolean xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+					<boolean>true</boolean>
 				</ArrayOfboolean>
 			</flags>
 		</Value>
@@ -299,7 +299,7 @@
 		<Key>ListOfKeyValuePair</Key>
 		<Value>
 			<list>
-				<KeyValuePairOfstringfloat xmlns="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
+				<KeyValuePairOfstringfloat xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
 			</list>
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -315,9 +315,9 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Vector2D</Key>
-		<Value>
-			<x>1</x>
-			<y>2</y>
+		<Value i:type="">
+			<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</x>
+			<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">2</y>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -367,10 +367,10 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Vector</Key>
-		<Value>
-			<x>1</x>
-			<y>2</y>
-			<z>3</z>
+		<Value i:type="">
+			<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</x>
+			<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">2</y>
+			<z xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">3</z>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
@@ -382,19 +382,19 @@
 			<conditions>false</conditions>
 			<contracts />
 			<customType>
-				<vector i:type="">
-					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</x>
-					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</y>
+				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<x>0</x>
+					<y>0</y>
 				</vector>
 			</customType>
 			<gamma>0</gamma>
 			<list />
 			<nil i:nil="true" />
 			<phi>1</phi>
-			<vector i:type="">
-				<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</x>
-				<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</y>
-				<z xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</z>
+			<vector xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
 			</vector>
 			<vectors />
 		</Value>
