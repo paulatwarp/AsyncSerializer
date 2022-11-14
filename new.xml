@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>EnumValue</Key>
+		<Value i:type=":EnumType">First</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>EnumValue</Key>
+		<Value i:type=":EnumType">Second</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
 		<Value i:type=":Container.SaveValues">
 			<alpha>0.5</alpha>
@@ -323,14 +331,6 @@
 		<Value i:type=":InternalData">
 			<Data>1</Data>
 		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>EnumValue</Key>
-		<Value>First</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>EnumValue</Key>
-		<Value>Second</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>DictionaryData</Key>

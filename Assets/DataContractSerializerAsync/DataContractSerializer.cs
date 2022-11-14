@@ -162,13 +162,13 @@ namespace AsyncSerialization
             return ns;
         }
 
-        void WriteNamespaceAndType(Type fieldType, Type valueType)
+        void WriteNamespaceAndType(Type fieldType, Type valueType, string ns)
         {
             if (fieldType == typeof(object))
             {
-                string prefix = LookupPrefix(null, valueType, XmlSchema.Namespace);
-                writer.WriteAttributeString(XmlnsPrefix, prefix, null, XmlSchema.Namespace);
-                WriteTypeNamespace(valueType, XmlSchema.Namespace);
+                string prefix = LookupPrefix(null, valueType, ns);
+                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                WriteTypeNamespace(valueType, ns);
             }
         }
 
@@ -182,36 +182,37 @@ namespace AsyncSerialization
             
             if (value is bool)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteString(XmlConvert.ToString((bool)value));
             }
             else if (value is double)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteValue((double)value);
             }
             else if (value is float)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteValue((float)value);
             }
             else if (value is int)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteValue((int)value);
             }
             else if (value is byte)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteValue((byte)value);
             }
             else if (value is string)
             {
-                WriteNamespaceAndType(fieldType, valueType);
+                WriteNamespaceAndType(fieldType, valueType, XmlSchema.Namespace);
                 writer.WriteValue((string)value);
             }
             else if (value is Enum)
             {
+                WriteNamespaceAndType(fieldType, valueType, ns);
                 writer.WriteString(value.ToString());
             }
             else if (value is IDictionary)
