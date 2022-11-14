@@ -558,7 +558,7 @@ namespace AsyncSerialization
             sortedList.Clear();
             foreach (var field in type.GetFields(flags))
             {
-                if (field.IsPrivate && (filter == null || !field.IsDefined(filter, true)))
+                if (field.IsPrivate && filter != null && !field.IsDefined(filter, true))
                 {
                     continue;
                 }
