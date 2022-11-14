@@ -303,6 +303,13 @@ namespace AsyncSerialization
                 {
                     if (references.TryGetValue(value, out string referenceId))
                     {
+                        if (fieldType == typeof(object))
+                        {
+                            ns = GetNamespace(null, valueType, ns);
+                            string prefix = LookupPrefix(null, valueType, ns);
+                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                            WriteTypeNamespace(valueType, ns);
+                        }
                         writer.WriteAttributeString(SerPrefix, RefLocalName, SerializationNamespace, referenceId);
                     }
                     else
@@ -331,8 +338,11 @@ namespace AsyncSerialization
                     string prefixNS = GetNamespace(null, valueType, ns);
                     if (prefixNS != ns)
                     {
-                        writer.LookupPrefix(prefixNS);
-                        WriteTypeNamespace(valueType, prefixNS);
+                        string prefix = writer.LookupPrefix(prefixNS);
+                        if (prefix == string.Empty)
+                        {
+                            WriteTypeNamespace(valueType, prefixNS);
+                        }
                         ns = prefixNS;
                     }
                     namespaces.Push(ns);
