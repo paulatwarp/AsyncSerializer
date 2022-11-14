@@ -160,7 +160,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ContainerList</Key>
-		<Value />
+		<Value i:type=":ArrayOfContainerList.SaveValues" />
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ContainerList</Key>

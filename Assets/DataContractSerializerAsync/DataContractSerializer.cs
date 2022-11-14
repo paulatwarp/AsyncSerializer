@@ -266,14 +266,25 @@ namespace AsyncSerialization
                     {
                         LookupPrefix(null, valueType, ns);
                     }
-                    else if (element != null && ns != CollectionsNamespace && !IsEmpty(value as IEnumerable))
+                    else if (element != null && ns != CollectionsNamespace)
                     {
-                        string prefix = LookupPrefix(null, valueType, ns);
-                        if (prefix != string.Empty)
+                        if (IsEmpty(value as IEnumerable))
                         {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                            if (fieldType != valueType)
+                            {
+                                string prefix = LookupPrefix(null, valueType, ns);
+                                WriteTypeNamespace(valueType, ns);
+                            }
                         }
-                        WriteTypeNamespace(valueType, ns);
+                        else
+                        {
+                            string prefix = LookupPrefix(null, valueType, ns);
+                            if (prefix != string.Empty)
+                            {
+                                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                            }
+                            WriteTypeNamespace(valueType, ns);
+                        }
                     }
                     else if (fieldType == typeof(object))
                     {
