@@ -266,6 +266,10 @@ namespace AsyncSerialization
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                         }
+                        if (fieldType == typeof(object))
+                        {
+                            WriteTypeNamespace(valueType, ns);
+                        }
                     }
                     else if (element != null && ns != CollectionsNamespace)
                     {
@@ -318,7 +322,7 @@ namespace AsyncSerialization
                 }
                 if (contract != null && contract.IsReference)
                 {
-                        if (references.TryGetValue(value, out string referenceId))
+                    if (references.TryGetValue(value, out string referenceId))
                     {
                         if (fieldType == typeof(object))
                         {
@@ -359,6 +363,10 @@ namespace AsyncSerialization
                         if (prefix != string.Empty)
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, prefixNS);
+                            if (fieldType == typeof(object))
+                            {
+                                WriteTypeNamespace(valueType, prefixNS);
+                            }
                         }
                         else
                         {

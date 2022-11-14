@@ -708,8 +708,10 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
-        list.Add(new SaveValue(new Container(1)));
+        list.Add(new SaveValue(new ListOfKeyValuePair(1)));
+        list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(reference));
+        list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new ArrayOfData(data)));
         list.Add(new SaveValue(new ReferenceObject()));
@@ -718,13 +720,11 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new ContainerList(1)));
         list.Add(new SaveValue(new AlphaTest()));
         list.Add(new SaveValue(new BetaTest()));
-        list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
         list.Add(new SaveValue(new ArrayOfArray()));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfString(1)));
-        list.Add(new SaveValue(new ListOfKeyValuePair(1)));
         list.Add(new SaveValue(new InternalSet(1)));
         list.Add(new SaveValue(new BoolAsObject()));
         list.Add(new SaveValue(new Vector2D()));
