@@ -318,10 +318,12 @@ namespace AsyncSerialization
                         }
                         writer.LookupPrefix(prefixNS);
                         WriteTypeNamespace(valueType, prefixNS);
+                        namespaces.Push(ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, typeof(DataMemberAttribute)))
                         {
                             yield return item;
                         }
+                        namespaces.Pop();
                     }
                 }
                 else
