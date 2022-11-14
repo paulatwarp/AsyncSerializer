@@ -478,6 +478,7 @@ namespace AsyncSerialization
                 if (value == null)
                 {
                     yield return value;
+                    ns = GetNamespace(entryType, ns);
                     WriteNull(typeName, ns);
                 }
                 else
