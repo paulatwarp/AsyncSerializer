@@ -217,24 +217,19 @@ namespace AsyncSerialization
             }
             else if (value is IDictionary)
             {
-                if (valueType.Namespace != null && valueType.Namespace != "System")
+                ns = CollectionsNamespace;
+                string prefix = LookupPrefix(null, valueType, ns);
+                if (prefix != string.Empty)
                 {
-                    ns = Namespace + valueType.Namespace;
+                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                 }
-                else if (valueType.Namespace == null)
-                {
-                    ns = Namespace;
-                }
-                else
-                {
-                    ns = CollectionsNamespace;
-                }
-                LookupPrefix(null, valueType, ns);
 
-                foreach (var item in WriteDictionary(value as IDictionary, ns))
+                namespaces.Push(ns);
+                foreach (var item in WriteDictionary(value as IDictionary))
                 {
                     yield return item;
                 }
+                namespaces.Pop();
             }
             else if (value is IEnumerable)
             {
@@ -505,12 +500,14 @@ namespace AsyncSerialization
             }
         }
 
-        private IEnumerable WriteDictionary(IDictionary dictionary, string ns)
+        private IEnumerable WriteDictionary(IDictionary dictionary)
         {
             foreach (DictionaryEntry entry in dictionary)
             {
                 yield return entry;
+                string ns = namespaces.Peek();
                 writer.WriteStartElement(null, GetTypeString(entry), ns);
+                namespaces.Push(CollectionsNamespace);
                 foreach (var item in WriteField("Key", entry.Key.GetType(), entry.Key.GetType(), entry.Key))
                 {
                     yield return item;
@@ -519,6 +516,7 @@ namespace AsyncSerialization
                 {
                     yield return item;
                 }
+                namespaces.Pop();
                 writer.WriteEndElement();
             }
         }
