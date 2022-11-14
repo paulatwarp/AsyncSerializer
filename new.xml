@@ -91,9 +91,9 @@
 				<d3p1:name i:nil="true" />
 				<anyReferences xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType i:type=":ReferenceContainer">
-						<d3p1:reference>
+						<reference i:type="d3p1:SaveData.Reference">
 							<d3p1:reference z:Ref="i1" />
-						</d3p1:reference>
+						</reference>
 					</d5p1:anyType>
 				</anyReferences>
 			</d3p1:SaveData>
@@ -214,9 +214,9 @@
 				</ContainingClass.ContractType>
 			</contracts>
 			<customType>
-				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<x>1</x>
-					<y>1</y>
+				<vector i:type="">
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</y>
 				</vector>
 			</customType>
 			<gamma>1</gamma>
@@ -225,10 +225,10 @@
 			</list>
 			<nil i:nil="true" />
 			<phi>0.5</phi>
-			<vector xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<x>1</x>
-				<y>1</y>
-				<z>1</z>
+			<vector i:type="">
+				<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</x>
+				<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</y>
+				<z xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">1</z>
 			</vector>
 			<vectors>
 				<Vector3 xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
@@ -249,9 +249,9 @@
 		<Key>SaveCustomType</Key>
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfanyType">
 			<d3p1:anyType i:type=":CustomType">
-				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<x>1</x>
-					<y>2</y>
+				<vector i:type="">
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">1</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">2</y>
 				</vector>
 			</d3p1:anyType>
 		</Value>
@@ -382,19 +382,19 @@
 			<conditions>false</conditions>
 			<contracts />
 			<customType>
-				<vector xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<x>0</x>
-					<y>0</y>
+				<vector i:type="">
+					<x xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</x>
+					<y xmlns="http://schemas.datacontract.org/2004/07/My.Namespace">0</y>
 				</vector>
 			</customType>
 			<gamma>0</gamma>
 			<list />
 			<nil i:nil="true" />
 			<phi>1</phi>
-			<vector xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<x>0</x>
-				<y>0</y>
-				<z>0</z>
+			<vector i:type="">
+				<x xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</x>
+				<y xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</y>
+				<z xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">0</z>
 			</vector>
 			<vectors />
 		</Value>

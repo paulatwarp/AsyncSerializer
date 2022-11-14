@@ -555,8 +555,7 @@ namespace AsyncSerialization
                 if (entry.value != null)
                 {
                     Type valueType = entry.value.GetType();
-                    string ns = GetNamespace(entry.type, valueType, entry.ns);
-                    namespaces.Push(ns);
+                    namespaces.Push(entry.ns);
                     foreach (var item in WriteField(entry.name, entry.type, valueType, entry.value))
                     {
                         yield return item;
