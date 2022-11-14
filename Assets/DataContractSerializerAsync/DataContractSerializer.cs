@@ -146,7 +146,7 @@ namespace AsyncSerialization
             }
             else
             {
-                if (type.Namespace != "System" && type.Namespace != "System.Collections.Generic")
+                if (type.Namespace != "System")
                 {
                     ns = Namespace + type.Namespace;
                 }
@@ -240,7 +240,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    ns = GetNamespace(valueType, CollectionsNamespace);
+                    ns = GetNamespace(element, valueType, CollectionsNamespace);
                     if (element != null && element == typeof(object))
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
@@ -250,19 +250,10 @@ namespace AsyncSerialization
                             WriteTypeNamespace(valueType, ns);
                         }
                     }
-                    else if (element != null && element.Namespace == "System")
-                    {
-                        string prefix = LookupPrefix(null, valueType, ns);
-                        if (prefix != string.Empty)
-                        {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        }
-                    }
                     else if (element != null && element.Namespace != null)
                     {
-                        ns = GetNamespace(element, ns);
                         string prefix = LookupPrefix(null, valueType, ns);
-                        if (prefix != string.Empty)
+                        if (ns != CollectionsNamespace && prefix != string.Empty)
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                         }
@@ -283,12 +274,16 @@ namespace AsyncSerialization
                         }
                         else
                         {
-                            string prefix = LookupPrefix(null, valueType, ns);
-                            if (prefix != string.Empty)
+                            Debug.Log($"{fieldName} {fieldType} {valueType} {ns}");
+                            if (fieldType == typeof(object))
                             {
-                                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                                string prefix = LookupPrefix(null, valueType, ns);
+                                if (prefix != string.Empty)
+                                {
+                                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                                }
+                                WriteTypeNamespace(valueType, ns);
                             }
-                            WriteTypeNamespace(valueType, ns);
                         }
                     }
                     else if (fieldType == typeof(object))
