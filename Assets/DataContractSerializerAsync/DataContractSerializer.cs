@@ -383,7 +383,7 @@ namespace AsyncSerialization
                     }
                     namespaces.Push(ns);
                     BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-                    if (fieldType.IsGenericType)
+                    if (contract != null || fieldType.IsGenericType)
                     {
                         flags |= BindingFlags.NonPublic;
                     }
