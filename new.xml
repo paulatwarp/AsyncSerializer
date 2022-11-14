@@ -37,6 +37,7 @@
 			</list>
 			<nil i:nil="true" />
 			<phi>0.5</phi>
+			<secret>1</secret>
 			<vector xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
 				<d4p1:x>1</d4p1:x>
 				<d4p1:y>1</d4p1:y>
@@ -391,6 +392,7 @@
 			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
 			<nil i:nil="true" />
 			<phi>1</phi>
+			<secret>0</secret>
 			<vector xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
 				<d4p1:x>0</d4p1:x>
 				<d4p1:y>0</d4p1:y>

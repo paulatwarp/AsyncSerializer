@@ -313,10 +313,15 @@ namespace AsyncSerialization
             }
             else
             {
+                Type filter = null;
                 DataContractAttribute contract = valueType.GetCustomAttribute<DataContractAttribute>();
+                if (contract != null)
+                {
+                    filter = typeof(DataMemberAttribute);
+                }
                 if (contract != null && contract.IsReference)
                 {
-                    if (references.TryGetValue(value, out string referenceId))
+                        if (references.TryGetValue(value, out string referenceId))
                     {
                         if (fieldType == typeof(object))
                         {
@@ -341,7 +346,7 @@ namespace AsyncSerialization
                         writer.LookupPrefix(prefixNS);
                         WriteTypeNamespace(valueType, prefixNS);
                         namespaces.Push(ns);
-                        foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, typeof(DataMemberAttribute)))
+                        foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                         {
                             yield return item;
                         }
@@ -365,7 +370,7 @@ namespace AsyncSerialization
                         ns = prefixNS;
                     }
                     namespaces.Push(ns);
-                    foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.Instance, null))
+                    foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                     {
                         yield return item;
                     }
@@ -553,6 +558,10 @@ namespace AsyncSerialization
             sortedList.Clear();
             foreach (var field in type.GetFields(flags))
             {
+                if (field.IsPrivate && (filter == null || !field.IsDefined(filter, true)))
+                {
+                    continue;
+                }
                 if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
