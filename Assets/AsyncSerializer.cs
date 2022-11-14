@@ -708,6 +708,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new ListOfKeyValuePair(1)));
         list.Add(new SaveValue(reference));
@@ -722,7 +723,6 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new BetaTest()));
         list.Add(new SaveValue(new SaveCustomType(1, 2)));
         list.Add(new SaveValue(new ArrayOfArray()));
-        list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValueNoContract(EnumNoContract.FIRST)));
         list.Add(new SaveValue(new ListOfString(1)));
         list.Add(new SaveValue(new InternalSet(1)));

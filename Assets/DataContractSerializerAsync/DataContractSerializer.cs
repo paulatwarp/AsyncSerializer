@@ -133,11 +133,6 @@ namespace AsyncSerialization
             return 0;
         }
 
-        bool IsTopNamespace(string ns)
-        {
-            return namespaces.Count == 0 ? false : namespaces.Peek() == ns;
-        }
-
         string GetNamespace(Type type, string ns)
         {
             if (type.Namespace == null)
@@ -240,7 +235,15 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    ns = GetNamespace(element, valueType, CollectionsNamespace);
+                    if (element != null && IsArray(element))
+                    {
+                        ns = CollectionsNamespace;
+                    }
+                    else
+                    {
+                        ns = GetNamespace(element, valueType, CollectionsNamespace);
+                    }
+
                     if (element != null && element == typeof(object))
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
@@ -301,7 +304,7 @@ namespace AsyncSerialization
                     }
                 }
 
-                foreach (var item in WriteEnumerable(value as IEnumerable, ns))
+                foreach (var item in WriteEnumerable(value as IEnumerable))
                 {
                     yield return item;
                 }
@@ -452,7 +455,7 @@ namespace AsyncSerialization
             return stringBuilder.ToString();
         }
 
-        private IEnumerable WriteEnumerable(IEnumerable array, string ns)
+        private IEnumerable WriteEnumerable(IEnumerable array)
         {
             prefixes = 0;
             Type arrayType = array.GetType();
@@ -460,6 +463,7 @@ namespace AsyncSerialization
             string typeName = GetTypeString(entryType);
             foreach (var value in array)
             {
+                string ns = CollectionsNamespace;
                 if (value == null)
                 {
                     yield return value;
@@ -470,7 +474,7 @@ namespace AsyncSerialization
                     Type valueType = value.GetType();
                     if (arrayType != typeof(object[]))
                     {
-                        if (valueType != null && valueType != typeof(object) && valueType.Namespace != "System")
+                        if (!IsArray(entryType) && valueType != null && valueType != typeof(object) && valueType.Namespace != "System")
                         {
                             ns = GetNamespace(entryType, valueType, ns);
                         }
