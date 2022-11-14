@@ -240,19 +240,7 @@ namespace AsyncSerialization
                 }
                 else
                 {
-                    if (valueType.Namespace != null && valueType.Namespace != "System" && valueType.Namespace != "System.Collections.Generic")
-                    {
-                        ns = Namespace + valueType.Namespace;
-                    }
-                    else if (valueType.Namespace == null)
-                    {
-                        ns = Namespace;
-                    }
-                    else
-                    {
-                        ns = CollectionsNamespace;
-                    }
-
+                    ns = GetNamespace(valueType, CollectionsNamespace);
                     if (element != null && element == typeof(object))
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
@@ -264,6 +252,15 @@ namespace AsyncSerialization
                     }
                     else if (element != null && element.Namespace == "System")
                     {
+                        string prefix = LookupPrefix(null, valueType, ns);
+                        if (prefix != string.Empty)
+                        {
+                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                        }
+                    }
+                    else if (element != null && element.Namespace != null)
+                    {
+                        ns = GetNamespace(element, ns);
                         string prefix = LookupPrefix(null, valueType, ns);
                         if (prefix != string.Empty)
                         {

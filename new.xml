@@ -43,18 +43,18 @@
 				<d4p1:y>1</d4p1:y>
 				<d4p1:z>1</d4p1:z>
 			</vector>
-			<vectors>
-				<Vector3 xmlns="http://schemas.datacontract.org/2004/07/UnityEngine">
-					<x>0</x>
-					<y>0</y>
-					<z>0</z>
-				</Vector3>
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<d4p1:Vector3>
+					<d4p1:x>0</d4p1:x>
+					<d4p1:y>0</d4p1:y>
+					<d4p1:z>0</d4p1:z>
+				</d4p1:Vector3>
 			</vectors>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
-		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace">
 			<d3p1:SaveData z:Id="i1" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
@@ -113,7 +113,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfData</Key>
-		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace">
 			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
@@ -153,7 +153,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
-		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
+		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace">
 			<d3p1:SaveData z:Id="i4" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
@@ -270,10 +270,10 @@
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfList</Key>
 		<Value i:type=":ListOfList.SaveValues">
-			<flags>
-				<ArrayOfboolean xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-					<boolean>true</boolean>
-				</ArrayOfboolean>
+			<flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:ArrayOfboolean>
+					<d4p1:boolean>true</d4p1:boolean>
+				</d4p1:ArrayOfboolean>
 			</flags>
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -299,8 +299,8 @@
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfKeyValuePair</Key>
 		<Value i:type=":ListOfKeyValuePair.SaveValues">
-			<list>
-				<KeyValuePairOfstringfloat xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:KeyValuePairOfstringfloat />
 			</list>
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -398,7 +398,7 @@
 				<d4p1:y>0</d4p1:y>
 				<d4p1:z>0</d4p1:z>
 			</vector>
-			<vectors />
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine" />
 		</Value>
 	</AsyncSerializer.SaveValue>
 </ArrayOfAsyncSerializer.SaveValue>
