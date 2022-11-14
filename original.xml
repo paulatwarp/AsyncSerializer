@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>Container</Key>
+		<Value i:type=":Container.SaveValues">
+			<alpha>0.5</alpha>
+			<beta>1</beta>
+			<condition>true</condition>
+			<conditions>true</conditions>
+			<contracts>
+				<ContainingClass.ContractType>
+					<anInt>0</anInt>
+					<bStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+						<d6p1:string>0</d6p1:string>
+					</bStringList>
+					<cDataList>
+						<OtherContainingClass.ContractMixedData>
+							<list />
+							<text>0</text>
+						</OtherContainingClass.ContractMixedData>
+						<OtherContainingClass.ContractMixedData>
+							<list />
+							<text>1</text>
+						</OtherContainingClass.ContractMixedData>
+					</cDataList>
+				</ContainingClass.ContractType>
+			</contracts>
+			<customType>
+				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
+					<d5p1:x>1</d5p1:x>
+					<d5p1:y>1</d5p1:y>
+				</vector>
+			</customType>
+			<gamma>1</gamma>
+			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:string>0</d4p1:string>
+			</list>
+			<nil i:nil="true" />
+			<phi>0.5</phi>
+			<secret>1</secret>
+			<vector xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<d4p1:x>1</d4p1:x>
+				<d4p1:y>1</d4p1:y>
+				<d4p1:z>1</d4p1:z>
+			</vector>
+			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+				<d4p1:Vector3>
+					<d4p1:x>0</d4p1:x>
+					<d4p1:y>0</d4p1:y>
+					<d4p1:z>0</d4p1:z>
+				</d4p1:Vector3>
+			</vectors>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>ReferenceObject</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
 			<d3p1:SaveData z:Id="i1" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
@@ -186,58 +238,6 @@
 			<alpha>2</alpha>
 			<delta>4</delta>
 			<epsilon>3</epsilon>
-		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>Container</Key>
-		<Value i:type=":Container.SaveValues">
-			<alpha>0.5</alpha>
-			<beta>1</beta>
-			<condition>true</condition>
-			<conditions>true</conditions>
-			<contracts>
-				<ContainingClass.ContractType>
-					<anInt>0</anInt>
-					<bStringList xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-						<d6p1:string>0</d6p1:string>
-					</bStringList>
-					<cDataList>
-						<OtherContainingClass.ContractMixedData>
-							<list />
-							<text>0</text>
-						</OtherContainingClass.ContractMixedData>
-						<OtherContainingClass.ContractMixedData>
-							<list />
-							<text>1</text>
-						</OtherContainingClass.ContractMixedData>
-					</cDataList>
-				</ContainingClass.ContractType>
-			</contracts>
-			<customType>
-				<vector xmlns:d5p1="http://schemas.datacontract.org/2004/07/My.Namespace">
-					<d5p1:x>1</d5p1:x>
-					<d5p1:y>1</d5p1:y>
-				</vector>
-			</customType>
-			<gamma>1</gamma>
-			<list xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-				<d4p1:string>0</d4p1:string>
-			</list>
-			<nil i:nil="true" />
-			<phi>0.5</phi>
-			<secret>1</secret>
-			<vector xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<d4p1:x>1</d4p1:x>
-				<d4p1:y>1</d4p1:y>
-				<d4p1:z>1</d4p1:z>
-			</vector>
-			<vectors xmlns:d4p1="http://schemas.datacontract.org/2004/07/UnityEngine">
-				<d4p1:Vector3>
-					<d4p1:x>0</d4p1:x>
-					<d4p1:y>0</d4p1:y>
-					<d4p1:z>0</d4p1:z>
-				</d4p1:Vector3>
-			</vectors>
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
