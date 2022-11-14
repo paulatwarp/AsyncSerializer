@@ -89,13 +89,13 @@
 				<d3p1:enable>true</d3p1:enable>
 				<d3p1:list xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:nil="true" />
 				<d3p1:name i:nil="true" />
-				<d3p1:anyReferences xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<anyReferences xmlns:d5p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<d5p1:anyType i:type=":ReferenceContainer">
 						<d3p1:reference>
 							<d3p1:reference z:Ref="i1" />
 						</d3p1:reference>
 					</d5p1:anyType>
-				</d3p1:anyReferences>
+				</anyReferences>
 			</d3p1:SaveData>
 		</Value>
 	</AsyncSerializer.SaveValue>
