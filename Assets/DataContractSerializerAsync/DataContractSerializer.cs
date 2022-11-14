@@ -382,7 +382,12 @@ namespace AsyncSerialization
                         ns = prefixNS;
                     }
                     namespaces.Push(ns);
-                    foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
+                    BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+                    if (fieldType.IsGenericType)
+                    {
+                        flags |= BindingFlags.NonPublic;
+                    }
+                    foreach (var item in WriteObjectContent(value, flags, filter))
                     {
                         yield return item;
                     }
@@ -571,10 +576,6 @@ namespace AsyncSerialization
             sortedList.Clear();
             foreach (var field in type.GetFields(flags))
             {
-                if (field.IsPrivate && filter != null && !field.IsDefined(filter, true))
-                {
-                    continue;
-                }
                 if (filter == null || field.IsDefined(filter, true))
                 {
                     object value = field.GetValue(graph);
