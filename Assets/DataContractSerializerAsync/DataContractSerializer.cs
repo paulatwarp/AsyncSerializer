@@ -162,6 +162,16 @@ namespace AsyncSerialization
             return ns;
         }
 
+        void WriteNamespaceAndType(Type fieldType, Type valueType)
+        {
+            if (fieldType == typeof(object))
+            {
+                string prefix = LookupPrefix(null, valueType, XmlSchema.Namespace);
+                writer.WriteAttributeString(XmlnsPrefix, prefix, null, XmlSchema.Namespace);
+                WriteTypeNamespace(valueType, XmlSchema.Namespace);
+            }
+        }
+
         IEnumerable WriteField(string fieldName, Type fieldType, Type valueType, object value)
         {
             yield return value;
@@ -172,32 +182,32 @@ namespace AsyncSerialization
             
             if (value is bool)
             {
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteString(XmlConvert.ToString((bool)value));
             }
             else if (value is double)
             {
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteValue((double)value);
             }
             else if (value is float)
             {
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteValue((float)value);
             }
             else if (value is int)
             {
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteValue((int)value);
             }
             else if (value is byte)
             {
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteValue((byte)value);
             }
             else if (value is string)
             {
-                if (fieldType == typeof(object))
-                {
-                    string prefix = LookupPrefix(null, valueType, XmlSchema.Namespace);
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, XmlSchema.Namespace);
-                    WriteTypeNamespace(valueType, XmlSchema.Namespace);
-                }
+                WriteNamespaceAndType(fieldType, valueType);
                 writer.WriteValue((string)value);
             }
             else if (value is Enum)
