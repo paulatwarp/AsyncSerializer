@@ -347,7 +347,7 @@ namespace AsyncSerialization
                 else
                 {
                     string prefixNS = GetNamespace(null, valueType, ns);
-                    if (prefixNS != ns)
+                    if (fieldType == typeof(object) || prefixNS != ns)
                     {
                         string prefix = writer.LookupPrefix(prefixNS);
                         if (prefix == string.Empty)

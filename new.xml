@@ -174,7 +174,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>AlphaTest</Key>
-		<Value>
+		<Value i:type=":AlphaTest.SaveData">
 			<alpha>1</alpha>
 			<beta>2</beta>
 			<gamma>3</gamma>
@@ -182,7 +182,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>BetaTest</Key>
-		<Value>
+		<Value i:type=":BetaTest.SaveData">
 			<alpha>2</alpha>
 			<delta>4</delta>
 			<epsilon>3</epsilon>
@@ -190,7 +190,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
-		<Value>
+		<Value i:type=":Container.SaveValues">
 			<alpha>0.5</alpha>
 			<beta>1</beta>
 			<condition>true</condition>
@@ -258,7 +258,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfArray</Key>
-		<Value>
+		<Value i:type=":ArrayOfArray.SaveValues">
 			<flags>
 				<ArrayOfboolean xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<boolean>true</boolean>
@@ -268,7 +268,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfList</Key>
-		<Value>
+		<Value i:type=":ListOfList.SaveValues">
 			<flags>
 				<ArrayOfboolean xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 					<boolean>true</boolean>
@@ -278,7 +278,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>EnumValueNoContract</Key>
-		<Value>
+		<Value i:type=":EnumValueNoContract.SaveValues">
 			<list>
 				<EnumValueNoContract.Content>
 					<alpha>true</alpha>
@@ -289,7 +289,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfString</Key>
-		<Value>
+		<Value i:type=":ListOfString.SaveValues">
 			<list>
 				<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">1</string>
 			</list>
@@ -297,7 +297,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfKeyValuePair</Key>
-		<Value>
+		<Value i:type=":ListOfKeyValuePair.SaveValues">
 			<list>
 				<KeyValuePairOfstringfloat xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
 			</list>
@@ -305,7 +305,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>InternalSet</Key>
-		<Value>
+		<Value i:type=":InternalData">
 			<Data>1</Data>
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -330,7 +330,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>DictionaryData</Key>
-		<Value>
+		<Value i:type=":DictionaryData.SaveValues">
 			<entries>
 				<KeyValueOfintboolean xmlns="http://schemas.datacontract.org/2004/07/System.Collections.Generic">
 					<Key xmlns="http://schemas.datacontract.org/2004/07/">0</Key>
@@ -345,7 +345,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>EmptyArrayOfNonContract</Key>
-		<Value>
+		<Value i:type=":EmptyArrayOfNonContract.SaveValues">
 			<contracts />
 		</Value>
 	</AsyncSerializer.SaveValue>
@@ -375,7 +375,7 @@
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
-		<Value>
+		<Value i:type=":Container.SaveValues">
 			<alpha>1</alpha>
 			<beta>0</beta>
 			<condition>false</condition>
