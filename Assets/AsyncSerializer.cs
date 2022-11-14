@@ -708,10 +708,10 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new ListOfKeyValuePair(1)));
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
-        list.Add(new SaveValue(new Container(1)));
         list.Add(new SaveValue(new Reference(null)));
         list.Add(new SaveValue(new ArrayOfData(data)));
         list.Add(new SaveValue(new ReferenceObject()));
