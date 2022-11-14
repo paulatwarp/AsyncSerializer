@@ -167,7 +167,10 @@ namespace AsyncSerialization
             if (fieldType == typeof(object))
             {
                 string prefix = LookupPrefix(null, valueType, ns);
-                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                if (prefix != string.Empty)
+                {
+                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                }
                 WriteTypeNamespace(valueType, ns);
             }
         }

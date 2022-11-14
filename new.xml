@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>EnumValue</Key>
+		<Value i:type=":EnumType">First</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
+		<Key>EnumValue</Key>
+		<Value i:type=":EnumType">Second</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>ArrayOfNull</Key>
 		<Value i:type=":ArrayOfVector">
 			<Vector i:nil="true" />
@@ -20,14 +28,6 @@
 				</d4p1:KeyValueOfintboolean>
 			</entries>
 		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>EnumValue</Key>
-		<Value i:type=":EnumType">First</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>EnumValue</Key>
-		<Value i:type=":EnumType">Second</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Container</Key>
