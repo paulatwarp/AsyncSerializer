@@ -257,7 +257,7 @@ namespace AsyncSerialization
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
                         writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        if (fieldType == typeof(object))
+                        if (fieldType != valueType)
                         {
                             WriteTypeNamespace(valueType, ns);
                         }
@@ -269,7 +269,7 @@ namespace AsyncSerialization
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                         }
-                        if (fieldType == typeof(object))
+                        if (fieldType != valueType)
                         {
                             WriteTypeNamespace(valueType, ns);
                         }
@@ -286,7 +286,7 @@ namespace AsyncSerialization
                         }
                         else
                         {
-                            if (fieldType == typeof(object))
+                            if (fieldType != valueType)
                             {
                                 string prefix = LookupPrefix(null, valueType, ns);
                                 if (prefix != string.Empty)
@@ -295,9 +295,10 @@ namespace AsyncSerialization
                                 }
                                 WriteTypeNamespace(valueType, ns);
                             }
+
                         }
                     }
-                    else if (fieldType == typeof(object))
+                    else if (fieldType != valueType)
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
                         if (prefix != string.Empty && valueType.Namespace != "System.Collections.Generic")
@@ -306,10 +307,13 @@ namespace AsyncSerialization
                             WriteTypeNamespace(valueType, ns);
                         }
                     }
-                    else if (element == null)
+                    else
                     {
-                        LookupPrefix(null, valueType, ns);
-                        WriteTypeNamespace(valueType, ns);
+                        if (element == null)
+                        {
+                            LookupPrefix(null, valueType, ns);
+                            WriteTypeNamespace(valueType, ns);
+                        }
                     }
                 }
 
