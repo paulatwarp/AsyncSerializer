@@ -257,10 +257,6 @@ namespace AsyncSerialization
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
                         writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        if (fieldType != valueType)
-                        {
-                            WriteTypeNamespace(valueType, ns);
-                        }
                     }
                     else if (element != null && element.Namespace != null)
                     {
@@ -268,10 +264,6 @@ namespace AsyncSerialization
                         if (prefix != string.Empty)
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        }
-                        if (fieldType != valueType)
-                        {
-                            WriteTypeNamespace(valueType, ns);
                         }
                     }
                     else if (element != null && ns != CollectionsNamespace)
@@ -281,7 +273,6 @@ namespace AsyncSerialization
                             if (fieldType != valueType)
                             {
                                 LookupPrefix(null, valueType, ns);
-                                WriteTypeNamespace(valueType, ns);
                             }
                         }
                         else
@@ -293,7 +284,6 @@ namespace AsyncSerialization
                                 {
                                     writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                                 }
-                                WriteTypeNamespace(valueType, ns);
                             }
 
                         }
@@ -304,7 +294,6 @@ namespace AsyncSerialization
                         if (prefix != string.Empty && valueType.Namespace != "System.Collections.Generic")
                         {
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                            WriteTypeNamespace(valueType, ns);
                         }
                     }
                     else
@@ -312,8 +301,12 @@ namespace AsyncSerialization
                         if (element == null)
                         {
                             LookupPrefix(null, valueType, ns);
-                            WriteTypeNamespace(valueType, ns);
                         }
+                    }
+
+                    if (fieldType != valueType)
+                    {
+                        WriteTypeNamespace(valueType, ns);
                     }
                 }
 
