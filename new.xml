@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ListOfList</Key>
+		<Value i:type=":ListOfList.SaveValues">
+			<flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+				<d4p1:ArrayOfboolean>
+					<d4p1:boolean>true</d4p1:boolean>
+				</d4p1:ArrayOfboolean>
+			</flags>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>EnumValue</Key>
 		<Value i:type=":EnumType">First</Value>
 	</AsyncSerializer.SaveValue>
@@ -91,16 +101,6 @@
 	<AsyncSerializer.SaveValue>
 		<Key>BoolAsObject</Key>
 		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:boolean">false</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>ListOfList</Key>
-		<Value i:type=":ListOfList.SaveValues">
-			<flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-				<d4p1:ArrayOfboolean>
-					<d4p1:boolean>true</d4p1:boolean>
-				</d4p1:ArrayOfboolean>
-			</flags>
-		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>ListOfKeyValuePair</Key>

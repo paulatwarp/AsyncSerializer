@@ -164,7 +164,7 @@ namespace AsyncSerialization
 
         void WriteNamespaceAndType(Type fieldType, Type valueType, string ns)
         {
-            if (fieldType == typeof(object))
+            if (fieldType != valueType)
             {
                 string prefix = LookupPrefix(null, valueType, ns);
                 if (prefix != string.Empty)
@@ -221,6 +221,7 @@ namespace AsyncSerialization
             else if (value is IDictionary)
             {
                 ns = CollectionsNamespace;
+
                 string prefix = LookupPrefix(null, valueType, ns);
                 if (prefix != string.Empty)
                 {
@@ -256,7 +257,10 @@ namespace AsyncSerialization
                     if (element != null && element == typeof(object))
                     {
                         string prefix = LookupPrefix(null, valueType, ns);
-                        writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                        if (prefix != string.Empty)
+                        {
+                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                        }
                     }
                     else if (element != null && element.Namespace != null)
                     {
