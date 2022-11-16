@@ -118,21 +118,6 @@ namespace AsyncSerialization
             return prefix;
         }
 
-        int WriteTypeNamespace(Type type, string ns)
-        {
-            try
-            {
-                writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
-                writer.WriteQualifiedName(GetTypeString(type), ns);
-                writer.WriteEndAttribute();
-            }
-            catch (Exception exception)
-            {
-                Debug.LogError(exception);
-            }
-            return 0;
-        }
-
         string GetNamespace(Type type, string ns)
         {
             if (type.Namespace == null)
@@ -178,14 +163,17 @@ namespace AsyncSerialization
         {
             if (fieldType != valueType)
             {
-                WriteTypeNamespace(valueType, ns);
+                try
+                {
+                    writer.WriteStartAttribute(XsiPrefix, XsiTypeLocalName, XmlSchema.InstanceNamespace);
+                    writer.WriteQualifiedName(GetTypeString(valueType), ns);
+                    writer.WriteEndAttribute();
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError(exception);
+                }
             }
-        }
-
-        void WriteNamespaceAndType(Type fieldType, Type valueType, string ns)
-        {
-            WriteNamespace(fieldType, valueType, ns);
-            WriteType(fieldType, valueType, ns);
         }
 
         IEnumerable WriteField(string fieldName, Type fieldType, Type valueType, object value)
@@ -237,11 +225,7 @@ namespace AsyncSerialization
             {
                 ns = CollectionsNamespace;
 
-                string prefix = LookupPrefix(null, valueType, ns);
-                if (prefix != string.Empty)
-                {
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                }
+                WriteNamespace(null, valueType, ns);
 
                 namespaces.Push(ns);
                 foreach (var item in WriteDictionary(value as IDictionary))
@@ -273,7 +257,8 @@ namespace AsyncSerialization
                     {
                         if (fieldType != valueType)
                         {
-                            WriteNamespaceAndType(null, valueType, ns);
+                            WriteNamespace(fieldType, valueType, ns);
+                            WriteType(fieldType, valueType, ns);
                         }
                         else
                         {
@@ -286,7 +271,8 @@ namespace AsyncSerialization
                     }
                     else
                     {
-                        WriteNamespaceAndType(fieldType, valueType, ns);
+                        WriteNamespace(fieldType, valueType, ns);
+                        WriteType(fieldType, valueType, ns);
                     }
                 }
 
@@ -309,7 +295,9 @@ namespace AsyncSerialization
                     {
                         if (fieldType == typeof(object))
                         {
-                            WriteNamespaceAndType(fieldType, valueType, GetNamespace(null, valueType, ns));
+                            ns = GetNamespace(null, valueType, ns);
+                            WriteNamespace(fieldType, valueType, ns);
+                            WriteType(fieldType, valueType, ns);
                         }
                         writer.WriteAttributeString(SerPrefix, RefLocalName, SerializationNamespace, referenceId);
                     }
@@ -325,7 +313,7 @@ namespace AsyncSerialization
                             prefixNS = GetNamespace(null, valueType, ns);
                         }
                         writer.LookupPrefix(prefixNS);
-                        WriteTypeNamespace(valueType, prefixNS);
+                        WriteType(null, valueType, prefixNS);
                         namespaces.Push(ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                         {
@@ -345,12 +333,12 @@ namespace AsyncSerialization
                             writer.WriteAttributeString(XmlnsPrefix, prefix, null, prefixNS);
                             if (fieldType == typeof(object))
                             {
-                                WriteTypeNamespace(valueType, prefixNS);
+                                WriteType(null, valueType, prefixNS);
                             }
                         }
                         else
                         {
-                            WriteTypeNamespace(valueType, prefixNS);
+                            WriteType(null, valueType, prefixNS);
                         }
                         ns = prefixNS;
                     }
