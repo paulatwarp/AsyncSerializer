@@ -254,7 +254,7 @@ namespace AsyncSerialization
                         ns = GetNamespace(element, valueType, CollectionsNamespace);
                     }
 
-                    if (element != null && element == typeof(object))
+                    if (element != null && (element == typeof(object) || element.Namespace != null))
                     {
                         if (fieldType != valueType)
                         {
@@ -267,18 +267,6 @@ namespace AsyncSerialization
                             {
                                 writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                             }
-                        }
-                    }
-                    else if (element != null && element.Namespace != null)
-                    {
-                        string prefix = LookupPrefix(null, valueType, ns);
-                        if (prefix != string.Empty)
-                        {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        }
-                        if (fieldType != valueType)
-                        {
-                            WriteTypeNamespace(valueType, ns);
                         }
                     }
                     else
