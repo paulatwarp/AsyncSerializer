@@ -256,14 +256,17 @@ namespace AsyncSerialization
 
                     if (element != null && element == typeof(object))
                     {
-                        string prefix = LookupPrefix(null, valueType, ns);
-                        if (prefix != string.Empty)
-                        {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                        }
                         if (fieldType != valueType)
                         {
-                            WriteTypeNamespace(valueType, ns);
+                            WriteNamespaceAndType(null, valueType, ns);
+                        }
+                        else
+                        {
+                            string prefix = LookupPrefix(null, valueType, ns);
+                            if (prefix != string.Empty)
+                            {
+                                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                            }
                         }
                     }
                     else if (element != null && element.Namespace != null)
