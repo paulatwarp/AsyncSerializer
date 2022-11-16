@@ -66,17 +66,6 @@ namespace AsyncSerialization
             return type;
         }
 
-        bool IsEmpty(IEnumerable array)
-        {
-            bool empty = true;
-            foreach (var entry in array)
-            {
-                empty = false;
-                break;
-            }
-            return empty;
-        }
-
         void WriteNull(string field, Type type, string ns)
         {
             writer.WriteStartElement(field, ns);
