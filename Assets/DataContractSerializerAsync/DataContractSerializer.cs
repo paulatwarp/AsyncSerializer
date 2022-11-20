@@ -79,8 +79,7 @@ namespace AsyncSerialization
             {
                 ns = CollectionsNamespace;
                 depth++;
-                string prefix = LookupPrefix(null, type, ns);
-                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                WriteNamespace(null, type, ns);
                 depth--;
             }
             writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
@@ -313,16 +312,8 @@ namespace AsyncSerialization
                     string prefixNS = GetNamespace(null, valueType, ns);
                     if (fieldType == typeof(object) || prefixNS != ns)
                     {
-                        string prefix = LookupPrefix(null, valueType, prefixNS);
-                        if (prefix != string.Empty)
-                        {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, prefixNS);
-                            if (fieldType == typeof(object))
-                            {
-                                WriteType(null, valueType, prefixNS);
-                            }
-                        }
-                        else
+                        WriteNamespace(null, valueType, prefixNS);
+                        if (fieldType == typeof(object))
                         {
                             WriteType(null, valueType, prefixNS);
                         }
