@@ -7,22 +7,32 @@ public class XmlSpy : XmlWriter
 {
     XmlWriter writer;
     List<string> log = new List<string>();
-    string logName;
-    bool compare = false;
+    List<string> compare;
     int position = 0;
     public bool verified = true;
 
-    public XmlSpy(XmlWriter writer, string log)
+    public XmlSpy(XmlWriter writer)
     {
         this.writer = writer;
-        logName = log;
     }
 
-    public void WriteLog()
+    public void WriteOriginalLog(string name)
     {
-        using (var file = new StreamWriter(logName))
+        using (var file = new StreamWriter(name))
         {
             foreach (var line in log)
+            {
+                file.WriteLine(line);
+            }
+            file.Flush();
+        }
+    }
+
+    public void WriteComparisonLog(string name)
+    {
+        using (var file = new StreamWriter(name))
+        {
+            foreach (var line in compare)
             {
                 file.WriteLine(line);
             }
@@ -33,7 +43,7 @@ public class XmlSpy : XmlWriter
     public void CheckLog(XmlWriter writer)
     {
         this.writer = writer;
-        compare = true;
+        compare = new List<string>();
         verified = true;
         position = 0;
     }
@@ -54,23 +64,27 @@ public class XmlSpy : XmlWriter
     void LogLine(string line)
     {
         line = line.Replace("\n", "\\n");
-        if (compare)
+        if (compare != null)
         {
-            if (position < log.Count)
+            if (verified)
             {
-                string expected = log[position];
-                if (expected != line)
+                if (position < log.Count)
+                {
+                    string expected = log[position];
+                    if (expected != line)
+                    {
+                        verified = false;
+                        Debug.LogError($"expected {expected} got {line} at line {position + 1}");
+                    }
+                }
+                else
                 {
                     verified = false;
-                    Debug.LogError($"expected {expected} got {line} at line {position + 1}");
+                    Debug.LogError($"additional entry {line} at line {position + 1}");
                 }
             }
-            else
-            {
-                verified = false;
-                Debug.LogError($"additional entry {line} at line {position + 1}");
-            }
             position++;
+            compare.Add(line);
         }
         else
         {

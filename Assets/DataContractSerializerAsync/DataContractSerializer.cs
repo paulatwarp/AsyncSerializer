@@ -56,6 +56,7 @@ namespace AsyncSerialization
             {
                 yield return item;
             }
+            namespaces.Pop();
         }
 
         Type GetArrayType(Type arrayType)
@@ -249,13 +250,9 @@ namespace AsyncSerialization
                             WriteNamespace(fieldType, valueType, ns);
                             WriteType(fieldType, valueType, ns);
                         }
-                        else
+                        else if (namespaces.Peek() != ns)
                         {
-                            string prefix = LookupPrefix(null, valueType, ns);
-                            if (prefix != string.Empty)
-                            {
-                                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                            }
+                            WriteNamespace(null, valueType, ns);
                         }
                     }
                     else
