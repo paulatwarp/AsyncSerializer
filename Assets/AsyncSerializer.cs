@@ -140,6 +140,30 @@ public class ArrayOfContractData : AsyncSerializer.IKeyValue
 }
 
 [System.Serializable, DataContract]
+public class NestedArrayOfReference : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => values;
+
+    SaveData [] values;
+
+    [DataContract]
+    public class SaveData
+    {
+        [DataMember] public IEnumerable<My.Namespace.SaveData> array;
+    }
+
+    public NestedArrayOfReference()
+    {
+        values = new SaveData[1];
+        values[0] = new SaveData();
+        var array = new My.Namespace.SaveData[1];
+        array[0] = new My.Namespace.SaveName(true);
+        values[0].array = array;
+    }
+}
+
+[System.Serializable, DataContract]
 public class ArrayOfBaseData : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
@@ -742,6 +766,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new NestedArrayOfReference()));
         list.Add(new SaveValue(new ArrayOfContractData()));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));

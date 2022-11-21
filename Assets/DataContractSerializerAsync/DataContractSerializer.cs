@@ -245,7 +245,10 @@ namespace AsyncSerialization
                         if (fieldType != valueType)
                         {
                             WriteNamespace(fieldType, valueType, ns);
-                            WriteType(fieldType, valueType, ns);
+                            if (fieldType == typeof(object))
+                            {
+                                WriteType(fieldType, valueType, ns);
+                            }
                         }
                         else if (namespaces.Peek() != ns)
                         {
