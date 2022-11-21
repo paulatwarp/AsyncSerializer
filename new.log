@@ -328,6 +328,9 @@ WriteStartAttribute("z", "Id", "http://schemas.microsoft.com/2003/10/Serializati
 WriteString("i1")
 WriteEndAtrribute()
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteStartAttribute("xmlns", "d3p1", null)
+WriteString("http://schemas.datacontract.org/2004/07/My.Namespace")
+WriteEndAtrribute()
 WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
 WriteString("d3p1")
@@ -525,6 +528,9 @@ WriteStartAttribute("z", "Id", "http://schemas.microsoft.com/2003/10/Serializati
 WriteString("i2")
 WriteEndAtrribute()
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteStartAttribute("xmlns", "d3p1", null)
+WriteString("http://schemas.datacontract.org/2004/07/My.Namespace")
+WriteEndAtrribute()
 WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
 WriteString("d3p1")
@@ -665,6 +671,9 @@ WriteStartAttribute("z", "Id", "http://schemas.microsoft.com/2003/10/Serializati
 WriteString("i4")
 WriteEndAtrribute()
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
+WriteStartAttribute("xmlns", "d3p1", null)
+WriteString("http://schemas.datacontract.org/2004/07/My.Namespace")
+WriteEndAtrribute()
 WriteStartAttribute("i", "type", "http://www.w3.org/2001/XMLSchema-instance")
 LookupPrefix("http://schemas.datacontract.org/2004/07/My.Namespace") -> "d3p1"
 WriteString("d3p1")

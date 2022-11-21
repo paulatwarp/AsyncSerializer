@@ -228,8 +228,7 @@ namespace AsyncSerialization
                 Type element = GetArrayType(valueType);
                 if (depth == 1)
                 {
-                    string prefix = LookupPrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, XmlSchema.InstanceNamespace);
+                    writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
                 }
                 else
                 {
@@ -297,7 +296,7 @@ namespace AsyncSerialization
                         {
                             prefixNS = GetNamespace(null, valueType, ns);
                         }
-                        writer.LookupPrefix(prefixNS);
+                        WriteNamespace(null, valueType, prefixNS);
                         WriteType(null, valueType, prefixNS);
                         namespaces.Push(ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
@@ -313,10 +312,7 @@ namespace AsyncSerialization
                     if (fieldType == typeof(object) || prefixNS != ns)
                     {
                         WriteNamespace(null, valueType, prefixNS);
-                        if (fieldType == typeof(object))
-                        {
-                            WriteType(null, valueType, prefixNS);
-                        }
+                        WriteType(fieldType, valueType, prefixNS);
                         ns = prefixNS;
                     }
                     namespaces.Push(ns);
