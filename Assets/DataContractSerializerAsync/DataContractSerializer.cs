@@ -291,14 +291,13 @@ namespace AsyncSerialization
                         referenceId = $"{XsiPrefix}{id}";
                         references.Add(value, referenceId);
                         writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, referenceId);
-                        string prefixNS = ns;
+                        namespaces.Push(ns);
                         if (fieldType != valueType)
                         {
-                            prefixNS = GetNamespace(null, valueType, ns);
+                            ns = GetNamespace(null, valueType, ns);
                         }
-                        WriteNamespace(null, valueType, prefixNS);
-                        WriteType(null, valueType, prefixNS);
-                        namespaces.Push(ns);
+                        WriteNamespace(null, valueType, ns);
+                        WriteType(fieldType, valueType, ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                         {
                             yield return item;
@@ -311,9 +310,9 @@ namespace AsyncSerialization
                     string prefixNS = GetNamespace(null, valueType, ns);
                     if (fieldType == typeof(object) || prefixNS != ns)
                     {
-                        WriteNamespace(null, valueType, prefixNS);
-                        WriteType(fieldType, valueType, prefixNS);
                         ns = prefixNS;
+                        WriteNamespace(null, valueType, ns);
+                        WriteType(fieldType, valueType, ns);
                     }
                     namespaces.Push(ns);
                     BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
