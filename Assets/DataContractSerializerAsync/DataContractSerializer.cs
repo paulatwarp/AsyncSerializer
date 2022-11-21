@@ -56,6 +56,7 @@ namespace AsyncSerialization
             {
                 yield return item;
             }
+            namespaces.Pop();
         }
 
         Type GetArrayType(Type arrayType)
@@ -78,8 +79,7 @@ namespace AsyncSerialization
             {
                 ns = CollectionsNamespace;
                 depth++;
-                string prefix = LookupPrefix(null, type, ns);
-                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
+                WriteNamespace(null, type, ns);
                 depth--;
             }
             writer.WriteAttributeString(XsiPrefix, XsiNilLocalName, XmlSchema.InstanceNamespace, "true");
@@ -93,18 +93,17 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        string LookupPrefix(string prefix, Type type, string ns)
+        bool LookupPrefix(Type type, string ns, out string prefix)
         {
-            if (prefix == null)
-            {
-                prefix = writer.LookupPrefix(ns);
-            }
+            bool generated = false;
+            prefix = writer.LookupPrefix(ns);
             if (prefix == null)
             {
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+                generated = true;
             }
-            return prefix;
+            return generated;
         }
 
         string GetNamespace(Type type, string ns)
@@ -140,8 +139,8 @@ namespace AsyncSerialization
         {
             if (fieldType != valueType)
             {
-                string prefix = LookupPrefix(null, valueType, ns);
-                if (prefix != string.Empty)
+                bool generated = LookupPrefix(valueType, ns, out string prefix);
+                if (generated)
                 {
                     writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                 }
@@ -228,8 +227,7 @@ namespace AsyncSerialization
                 Type element = GetArrayType(valueType);
                 if (depth == 1)
                 {
-                    string prefix = LookupPrefix(XsiPrefix, valueType, XmlSchema.InstanceNamespace);
-                    writer.WriteAttributeString(XmlnsPrefix, prefix, null, XmlSchema.InstanceNamespace);
+                    writer.WriteAttributeString(XmlnsPrefix, XsiPrefix, null, XmlSchema.InstanceNamespace);
                 }
                 else
                 {
@@ -249,13 +247,9 @@ namespace AsyncSerialization
                             WriteNamespace(fieldType, valueType, ns);
                             WriteType(fieldType, valueType, ns);
                         }
-                        else
+                        else if (namespaces.Peek() != ns)
                         {
-                            string prefix = LookupPrefix(null, valueType, ns);
-                            if (prefix != string.Empty)
-                            {
-                                writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
-                            }
+                            WriteNamespace(null, valueType, ns);
                         }
                     }
                     else
@@ -296,14 +290,13 @@ namespace AsyncSerialization
                         referenceId = $"{XsiPrefix}{id}";
                         references.Add(value, referenceId);
                         writer.WriteAttributeString(SerPrefix, IdLocalName, SerializationNamespace, referenceId);
-                        string prefixNS = ns;
+                        namespaces.Push(ns);
                         if (fieldType != valueType)
                         {
-                            prefixNS = GetNamespace(null, valueType, ns);
+                            ns = GetNamespace(null, valueType, ns);
                         }
-                        writer.LookupPrefix(prefixNS);
-                        WriteType(null, valueType, prefixNS);
-                        namespaces.Push(ns);
+                        WriteNamespace(fieldType, valueType, ns);
+                        WriteType(fieldType, valueType, ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                         {
                             yield return item;
@@ -316,20 +309,9 @@ namespace AsyncSerialization
                     string prefixNS = GetNamespace(null, valueType, ns);
                     if (fieldType == typeof(object) || prefixNS != ns)
                     {
-                        string prefix = LookupPrefix(null, valueType, prefixNS);
-                        if (prefix != string.Empty)
-                        {
-                            writer.WriteAttributeString(XmlnsPrefix, prefix, null, prefixNS);
-                            if (fieldType == typeof(object))
-                            {
-                                WriteType(null, valueType, prefixNS);
-                            }
-                        }
-                        else
-                        {
-                            WriteType(null, valueType, prefixNS);
-                        }
                         ns = prefixNS;
+                        WriteNamespace(null, valueType, ns);
+                        WriteType(fieldType, valueType, ns);
                     }
                     namespaces.Push(ns);
                     BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;

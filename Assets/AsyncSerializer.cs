@@ -753,7 +753,7 @@ public class AsyncSerializer : MonoBehaviour
         {
             using (var xwr = XmlWriter.Create(writer, settings))
             {
-                spy = new XmlSpy(xwr, "serialise.log");
+                spy = new XmlSpy(xwr);
                 try
                 {
                     serialiser.WriteObject(spy, list);
@@ -762,7 +762,7 @@ public class AsyncSerializer : MonoBehaviour
                 {
                     Debug.Log(exception.ToString());
                 }
-                spy.WriteLog();
+                spy.WriteOriginalLog("original.log");
             }
             xml = writer.ToString();
         }
@@ -779,6 +779,7 @@ public class AsyncSerializer : MonoBehaviour
                     yield return null;
                 }
             }
+            spy.WriteComparisonLog("new.log");
             xml = writer.ToString();
         }
         File.WriteAllText("new.xml", xml.ToString());
