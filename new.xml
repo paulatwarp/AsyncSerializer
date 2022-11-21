@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ArrayOfContractData</Key>
+		<Value i:type=":ArrayOfContractData.SaveData">
+			<array>
+				<ContractData>
+					<text>1</text>
+				</ContractData>
+				<ContractData>
+					<text>2</text>
+				</ContractData>
+			</array>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>ListOfList</Key>
 		<Value i:type=":ListOfList.SaveValues">
 			<flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
@@ -179,7 +192,7 @@
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
-		<Key>ArrayOfData</Key>
+		<Key>ArrayOfBaseData</Key>
 		<Value xmlns:d3p1="http://schemas.datacontract.org/2004/07/My.Namespace" i:type="d3p1:ArrayOfSaveData">
 			<d3p1:SaveData z:Id="i2" i:type="d3p1:SaveName" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
 				<d3p1:enable>true</d3p1:enable>

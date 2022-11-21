@@ -104,16 +104,50 @@ public class ReferenceContainer
     [DataMember] public My.Namespace.SaveData.Reference reference;
 }
 
+[System.Serializable, DataContract]
+public class ContractData
+{
+    [DataMember] public string text;
+
+    public ContractData(int n)
+    {
+        text = n.ToString();
+    }
+}
 
 [System.Serializable, DataContract]
-public class ArrayOfData: AsyncSerializer.IKeyValue
+public class ArrayOfContractData : AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => value;
+
+    SaveData value;
+
+    [DataContract]
+    public class SaveData
+    {
+        [DataMember] public IEnumerable<ContractData> array;
+    }
+
+    public ArrayOfContractData()
+    {
+        value = new SaveData();
+        value.array = new ContractData[] {
+            new ContractData(1),
+            new ContractData(2)
+        };
+    }
+}
+
+[System.Serializable, DataContract]
+public class ArrayOfBaseData : AsyncSerializer.IKeyValue
 {
     public string Key => GetType().Name;
     public object Value => values;
 
     IEnumerable<My.Namespace.SaveData> values;
 
-    public ArrayOfData(My.Namespace.SaveData reference)
+    public ArrayOfBaseData(My.Namespace.SaveData reference)
     {
         var saveValues = new My.Namespace.SaveData[2];
         saveValues[0] = new My.Namespace.SaveName(true);
@@ -708,6 +742,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ArrayOfContractData()));
         list.Add(new SaveValue(new ListOfList()));
         list.Add(new SaveValue(new EnumValue(EnumType.First)));
         list.Add(new SaveValue(new EnumValue(EnumType.Second)));
@@ -720,7 +755,7 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(reference));
         list.Add(new SaveValue(new My.Namespace.BoolAsData(false)));
         list.Add(new SaveValue(new Reference(null)));
-        list.Add(new SaveValue(new ArrayOfData(data)));
+        list.Add(new SaveValue(new ArrayOfBaseData(data)));
         list.Add(new SaveValue(new ReferenceObject()));
         list.Add(new SaveValue(new Reference(data)));
         list.Add(new SaveValue(new ContainerList()));
