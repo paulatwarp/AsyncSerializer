@@ -93,18 +93,17 @@ namespace AsyncSerialization
             writer.WriteEndElement();
         }
 
-        string LookupPrefix(string prefix, Type type, string ns)
+        bool LookupPrefix(Type type, string ns, out string prefix)
         {
-            if (prefix == null)
-            {
-                prefix = writer.LookupPrefix(ns);
-            }
+            bool generated = false;
+            prefix = writer.LookupPrefix(ns);
             if (prefix == null)
             {
                 prefixes++;
                 prefix = string.Format(CultureInfo.InvariantCulture, $"d{depth}p{prefixes}");
+                generated = true;
             }
-            return prefix;
+            return generated;
         }
 
         string GetNamespace(Type type, string ns)
@@ -140,8 +139,8 @@ namespace AsyncSerialization
         {
             if (fieldType != valueType)
             {
-                string prefix = LookupPrefix(null, valueType, ns);
-                if (prefix != string.Empty)
+                bool generated = LookupPrefix(valueType, ns, out string prefix);
+                if (generated)
                 {
                     writer.WriteAttributeString(XmlnsPrefix, prefix, null, ns);
                 }
@@ -296,7 +295,7 @@ namespace AsyncSerialization
                         {
                             ns = GetNamespace(null, valueType, ns);
                         }
-                        WriteNamespace(null, valueType, ns);
+                        WriteNamespace(fieldType, valueType, ns);
                         WriteType(fieldType, valueType, ns);
                         foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
                         {
