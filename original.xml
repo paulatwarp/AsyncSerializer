@@ -352,8 +352,8 @@
 	<AsyncSerializer.SaveValue>
 		<Key>AlphaTest</Key>
 		<Value i:type=":AlphaTest.SaveData">
+			<Beta>2</Beta>
 			<alpha>1</alpha>
-			<beta>2</beta>
 			<gamma>3</gamma>
 		</Value>
 	</AsyncSerializer.SaveValue>

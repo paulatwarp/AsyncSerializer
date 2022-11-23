@@ -483,7 +483,7 @@ namespace AsyncSerialization
         void AddSortedMembers(List<MemberEntry> list, object graph, Type type, Type filter, BindingFlags flags)
         {
             string ns = GetNamespace(type, graph.GetType(), Namespace);
-            var sortedList = new SortedList<string, (Type, object)>();
+            var sortedList = new SortedList<string, (Type, object)>(StringComparer.Ordinal);
             if (type.BaseType != null)
             {
                 AddSortedMembers(list, graph, type.BaseType, filter, flags);

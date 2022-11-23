@@ -697,7 +697,7 @@ public class AlphaTest : AsyncSerializer.IKeyValue
     public class SaveData
     {
         [DataMember] public int gamma;
-        [DataMember] public int beta;
+        [DataMember] public int Beta;
         [DataMember] public int alpha;
     }
 
@@ -707,7 +707,7 @@ public class AlphaTest : AsyncSerializer.IKeyValue
     {
         data = new SaveData();
         data.alpha = 1;
-        data.beta = 2;
+        data.Beta = 2;
         data.gamma = 3;
     }
 
