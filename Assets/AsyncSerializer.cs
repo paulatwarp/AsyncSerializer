@@ -145,7 +145,7 @@ public class NestedArrayOfReference : AsyncSerializer.IKeyValue
     public string Key => GetType().Name;
     public object Value => values;
 
-    SaveData [] values;
+    SaveData[] values;
 
     [DataContract]
     public class SaveData
@@ -160,6 +160,45 @@ public class NestedArrayOfReference : AsyncSerializer.IKeyValue
         var array = new My.Namespace.SaveData[1];
         array[0] = new My.Namespace.SaveName(true);
         values[0].array = array;
+    }
+}
+
+[System.Serializable, DataContract]
+[KnownType(typeof(OverrideData))]
+public class BaseClassData
+{
+}
+
+[System.Serializable, DataContract]
+[KnownType(typeof(Vector2Int))]
+public class OverrideData : BaseClassData
+{
+    [DataMember] public Vector2Int value;
+}
+
+
+[System.Serializable, DataContract]
+public class ArrayOfBaseClassPointers: AsyncSerializer.IKeyValue
+{
+    public string Key => GetType().Name;
+    public object Value => value;
+
+    SaveData value;
+
+    [DataContract]
+    public class SaveData
+    {
+        [DataMember] public IEnumerable<BaseClassData> array;
+    }
+
+    public ArrayOfBaseClassPointers()
+    {
+        value = new SaveData();
+        var array = new BaseClassData[1];
+        value.array = array;
+        var item = new OverrideData();
+        item.value = new Vector2Int(1, 2);
+        array[0] = item;
     }
 }
 
@@ -766,6 +805,7 @@ public class AsyncSerializer : MonoBehaviour
         var list = new List<SaveValue>();
         var reference = new ReferenceObject();
         var data = reference.GetReference();
+        list.Add(new SaveValue(new ArrayOfBaseClassPointers()));
         list.Add(new SaveValue(new NestedArrayOfReference()));
         list.Add(new SaveValue(new ArrayOfContractData()));
         list.Add(new SaveValue(new ListOfList()));

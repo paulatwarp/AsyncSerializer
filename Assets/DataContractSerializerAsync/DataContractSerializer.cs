@@ -313,7 +313,7 @@ namespace AsyncSerialization
                 else
                 {
                     string prefixNS = GetNamespace(null, valueType, ns);
-                    if (fieldType == typeof(object) || prefixNS != ns)
+                    if (fieldType != valueType || prefixNS != ns)
                     {
                         ns = prefixNS;
                         WriteNamespace(null, valueType, ns);

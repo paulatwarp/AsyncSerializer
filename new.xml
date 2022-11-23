@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfAsyncSerializer.SaveValue xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/">
 	<AsyncSerializer.SaveValue>
+		<Key>ArrayOfBaseClassPointers</Key>
+		<Value i:type=":ArrayOfBaseClassPointers.SaveData">
+			<array>
+				<BaseClassData i:type=":OverrideData">
+					<value xmlns:d6p1="http://schemas.datacontract.org/2004/07/UnityEngine">
+						<d6p1:x>1</d6p1:x>
+						<d6p1:y>2</d6p1:y>
+					</value>
+				</BaseClassData>
+			</array>
+		</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>NestedArrayOfReference</Key>
 		<Value i:type=":ArrayOfNestedArrayOfReference.SaveData">
 			<NestedArrayOfReference.SaveData>
