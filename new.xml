@@ -14,6 +14,10 @@
 		</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
+		<Key>BoolAsString</Key>
+		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:string">False</Value>
+	</AsyncSerializer.SaveValue>
+	<AsyncSerializer.SaveValue>
 		<Key>NestedArrayOfReference</Key>
 		<Value i:type=":ArrayOfNestedArrayOfReference.SaveData">
 			<NestedArrayOfReference.SaveData>
@@ -422,10 +426,6 @@
 		<Value xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:type="d3p1:ArrayOfint">
 			<d3p1:int>1</d3p1:int>
 		</Value>
-	</AsyncSerializer.SaveValue>
-	<AsyncSerializer.SaveValue>
-		<Key>BoolAsString</Key>
-		<Value xmlns:d3p1="http://www.w3.org/2001/XMLSchema" i:type="d3p1:string">False</Value>
 	</AsyncSerializer.SaveValue>
 	<AsyncSerializer.SaveValue>
 		<Key>Vector</Key>

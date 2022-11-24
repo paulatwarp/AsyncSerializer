@@ -129,9 +129,14 @@ public class XmlSpy : XmlWriter
         writer.WriteComment(text);
     }
 
+    public override void WriteQualifiedName(string localName, string ns)
+    {
+        writer.WriteQualifiedName(localName, ns);
+    }
+
     public override void WriteDocType(string name, string pubid, string sysid, string subset)
     {
-        LogLine($"WriteDocType({PrintString(name)}, {PrintString(pubid)}, {PrintString(sysid)}, {PrintString(subset)}");
+        LogLine($"WriteDocType({PrintString(name)}, {PrintString(pubid)}, {PrintString(sysid)}, {PrintString(subset)})");
         writer.WriteDocType(name, pubid, sysid, subset);
     }
 

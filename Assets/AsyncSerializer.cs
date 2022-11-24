@@ -806,6 +806,7 @@ public class AsyncSerializer : MonoBehaviour
         var reference = new ReferenceObject();
         var data = reference.GetReference();
         list.Add(new SaveValue(new ArrayOfBaseClassPointers()));
+        list.Add(new SaveValue(new BoolAsString()));
         list.Add(new SaveValue(new NestedArrayOfReference()));
         list.Add(new SaveValue(new ArrayOfContractData()));
         list.Add(new SaveValue(new ListOfList()));
@@ -834,7 +835,6 @@ public class AsyncSerializer : MonoBehaviour
         list.Add(new SaveValue(new InternalSet(1)));
         list.Add(new SaveValue(new EmptyArrayOfNonContract()));
         list.Add(new SaveValue(new ArrayOfInt()));
-        list.Add(new SaveValue(new BoolAsString()));
         list.Add(new SaveValue(new Vector()));
         list.Add(new SaveValue(new Container(0)));
         //list.Add(new SaveValue(new Container(2)));
@@ -845,7 +845,6 @@ public class AsyncSerializer : MonoBehaviour
         {
             Indent = true,
             IndentChars = "\t",
-            NamespaceHandling = NamespaceHandling.OmitDuplicates
         };
         string xml;
         XmlSpy spy;
