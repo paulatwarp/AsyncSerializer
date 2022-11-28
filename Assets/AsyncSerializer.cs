@@ -841,6 +841,7 @@ public class AsyncSerializer : MonoBehaviour
         yield return null;
         var serialiser = new DataContractSerializer(list.GetType());
         var asyncSerialiser = new AsyncSerialization.DataContractSerializer(list.GetType());
+        asyncSerialiser.CacheType(typeof(ReferenceObject));
         var settings = new XmlWriterSettings()
         {
             Indent = true,

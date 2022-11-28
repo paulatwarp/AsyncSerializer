@@ -280,6 +280,11 @@ namespace AsyncSerialization
                 {
                     filter = typeof(DataMemberAttribute);
                 }
+                BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+                if (contract != null || fieldType.IsGenericType)
+                {
+                    flags |= BindingFlags.NonPublic;
+                }
                 if (contract != null && contract.IsReference)
                 {
                     if (references.TryGetValue(value, out string referenceId))
@@ -305,7 +310,7 @@ namespace AsyncSerialization
                         }
                         WriteNamespace(fieldType, valueType, ns);
                         WriteType(fieldType, valueType, ns);
-                        foreach (var item in WriteObjectContent(value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, filter))
+                        foreach (var item in WriteObjectContent(value, flags, filter))
                         {
                             yield return item;
                         }
@@ -322,11 +327,6 @@ namespace AsyncSerialization
                         WriteType(fieldType, valueType, ns);
                     }
                     namespaces.Push(ns);
-                    BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-                    if (contract != null || fieldType.IsGenericType)
-                    {
-                        flags |= BindingFlags.NonPublic;
-                    }
                     foreach (var item in WriteObjectContent(value, flags, filter))
                     {
                         yield return item;
@@ -557,9 +557,20 @@ namespace AsyncSerialization
             }
         }
 
-        List<MemberEntry> GetSortedMembers(object graph, Type filter, BindingFlags flags)
+        List<MemberEntry> GetSortedMembers(Type type)
         {
-            Type type = graph.GetType();
+            DataContractAttribute contract = type.GetCustomAttribute<DataContractAttribute>();
+            Type filter = null;
+            if (contract != null)
+            {
+                filter = typeof(DataMemberAttribute);
+            }
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            if (contract != null || type.IsGenericType)
+            {
+                flags |= BindingFlags.NonPublic;
+            }
+
             if (!typeInfo.TryGetValue(type, out List<MemberEntry> members))
             {
                 members = new List<MemberEntry>();
@@ -569,9 +580,15 @@ namespace AsyncSerialization
             return members;
         }
 
+        public void CacheType(Type type)
+        {
+            GetSortedMembers(type);
+        }
+
         private IEnumerable WriteObjectContent(object graph, BindingFlags flags, Type filter)
         {
-            var members = GetSortedMembers(graph, filter, flags);
+            Type type = graph.GetType();
+            var members = GetSortedMembers(type);
             foreach (var entry in members)
             {
                 object value = entry.GetValue(graph);
